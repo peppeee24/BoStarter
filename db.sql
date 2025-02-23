@@ -270,6 +270,102 @@ INSERT INTO FINANZIAMENTO (data_finanziamento, importo, email_utente, nome_proge
 
 
 
+/* COLLEGAMENTO CON MONGO DB 
+
+Questi trigger inseriscono automaticamente un evento nel 
+log MongoDB ogni volta che viene eseguita un’operazione 
+importante.
+*/
+
+DELIMITER //
+CREATE TRIGGER log_nuovo_utente
+AFTER INSERT ON UTENTE
+FOR EACH ROW
+BEGIN
+    CALL InserisciLogEvento('Nuovo Utente', NEW.email, CONCAT('L\'utente ', NEW.nickname, ' si è registrato.'));
+END;
+// DELIMITER ;
+
+DELIMITER //
+CREATE TRIGGER log_nuovo_progetto
+AFTER INSERT ON PROGETTO
+FOR EACH ROW
+BEGIN
+    CALL InserisciLogEvento('Nuovo Progetto', NEW.email_creatore, CONCAT('L\'utente ha creato il progetto ', NEW.nome, '.'));
+END;
+// DELIMITER ;
+
+DELIMITER //
+CREATE TRIGGER log_finanziamento
+AFTER INSERT ON FINANZIAMENTO
+FOR EACH ROW
+BEGIN
+    CALL InserisciLogEvento('Nuovo Finanziamento', NEW.email_utente, 
+        CONCAT('L\'utente ha finanziato il progetto ', NEW.nome_progetto, ' con ', NEW.importo, ' euro.'));
+END;
+// DELIMITER ;
+
+DELIMITER //
+CREATE PROCEDURE InserisciLogEvento(
+    IN p_evento VARCHAR(255),
+    IN p_email_utente VARCHAR(255),
+    IN p_descrizione TEXT
+)
+BEGIN
+    -- Simuliamo l'inserimento in MongoDB usando una connessione esterna
+    INSERT INTO LOG_EVENTI (evento, email_utente, data, descrizione)
+    VALUES (p_evento, p_email_utente, NOW(), p_descrizione);
+END;
+// DELIMITER ;
+
+
+
+
+
+/* 
+STATISTICHE (VISIBILI DA TUTTI GLI UTENTI)
+Classifica utenti creatori per affidabilità
+
+*/
+CREATE VIEW ClassificaCreatori AS
+SELECT nickname, affidabilita
+FROM UTENTE_CREATORE UC
+JOIN UTENTE U ON UC.email_utente = U.email
+ORDER BY affidabilita DESC
+LIMIT 3;
+
+
+/* 
+STATISTICHE (VISIBILI DA TUTTI GLI UTENTI)
+Progetti APERTI più vicini al completamento
+
+*/
+
+CREATE VIEW ProgettiViciniAlCompletamento AS
+SELECT P.nome, P.budget, 
+       (P.budget - COALESCE(SUM(F.importo), 0)) AS mancante
+FROM PROGETTO P
+LEFT JOIN FINANZIAMENTO F ON P.nome = F.nome_progetto
+WHERE P.stato = 'aperto'
+GROUP BY P.nome, P.budget
+ORDER BY mancante ASC
+LIMIT 3;
+
+
+/* 
+STATISTICHE (VISIBILI DA TUTTI GLI UTENTI)
+Classifica utenti per finanziamenti erogati
+
+*/
+
+CREATE VIEW ClassificaFinanziatori AS
+SELECT U.nickname, SUM(F.importo) AS totale_finanziato
+FROM FINANZIAMENTO F
+JOIN UTENTE U ON F.email_utente = U.email
+GROUP BY U.nickname
+ORDER BY totale_finanziato DESC
+LIMIT 3;
+
 
 
 
