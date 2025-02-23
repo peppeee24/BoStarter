@@ -15,16 +15,16 @@ CREATE TABLE UTENTE (
 
 
 CREATE TABLE UTENTE_AMMINISTRATORE(
-	email_utente VARCHAR(255) PRIMARY KEY,
+	email_utente_amm VARCHAR(255) PRIMARY KEY,
     codice_sicurezza VARCHAR(50) NOT NULL,
     FOREIGN KEY (email_utente) REFERENCES UTENTE(email) ON DELETE CASCADE
 
 ) ENGINE "INNODB";
 
 CREATE TABLE UTENTE_CREATORE(
-	email_utente VARCHAR(255) PRIMARY KEY,
+	email_utente_creat VARCHAR(255) PRIMARY KEY,
     nr_progetti INT DEFAULT 0,
-    affidabilita FLOAT, /* Valutare se enum "Buono", ecc */
+    affidabilita FLOAT CHECK (livello BETWEEN 0 AND 10), /* Valutare se enum "Buono", ecc */
     FOREIGN KEY (email_utente) REFERENCES UTENTE(email) ON DELETE CASCADE
 ) ENGINE "INNODB";
 
@@ -33,9 +33,10 @@ CREATE TABLE SKILL_CURRICULUM(
     competenza VARCHAR(100),
     livello INT CHECK (livello BETWEEN 0 AND 5),
     email_utente VARCHAR(255),
+    email_utente_amm VARCHAR(255),
     PRIMARY KEY (competenza, livello),
-    FOREIGN KEY (email_utente) REFERENCES UTENTE(email) ON DELETE CASCADE
-    /* VERIFICARE COLLEGAMENTO CON AMMINISTRATORE*/
+    FOREIGN KEY (email_utente) REFERENCES UTENTE(email) ON DELETE CASCADE,
+    FOREIGN KEY (email_utente_amm) REFERENCES UTENTE_AMMINISTRATORE(email_utente_amm) ON DELETE CASCADE
 ) ENGINE "INNODB";
 
 CREATE TABLE COMMENTO (
@@ -55,8 +56,7 @@ CREATE TABLE RISPOSTA_COMMENTO (
     testo TEXT NOT NULL,
     PRIMARY KEY (id_commento, email_creatore),
     FOREIGN KEY (id_commento) REFERENCES COMMENTO(id) ON DELETE CASCADE,
-    FOREIGN KEY (email_creatore) REFERENCES UTENTE_CREATORE(email_utente) ON DELETE CASCADE
-    /* Valutare se fare chiave primaria composta con id commento e email creatore */ 
+    FOREIGN KEY (email_creatore) REFERENCES UTENTE_CREATORE(email_utente_creat) ON DELETE CASCADE
 );
 
 CREATE TABLE PROGETTO (
@@ -67,7 +67,7 @@ CREATE TABLE PROGETTO (
     budget FLOAT NOT NULL CHECK (budget > 0),
     data_limite DATE NOT NULL,
     stato ENUM('aperto', 'chiuso') NOT NULL DEFAULT 'aperto',
-    FOREIGN KEY (email_creatore) REFERENCES UTENTE_CREATORE(email_utente) ON DELETE CASCADE
+    FOREIGN KEY (email_creatore) REFERENCES UTENTE_CREATORE(email_utente_creat) ON DELETE CASCADE
 ) ENGINE "INNODB";
 
 CREATE TABLE FOTO_PROGETTO (
@@ -145,7 +145,7 @@ CREATE TABLE CANDIDATURA (
     email_utente VARCHAR(255) NOT NULL,
     /* nome_progetto VARCHAR(255) NOT NULL, */
     nome_profilo VARCHAR(255) NOT NULL,
-    accettata BOOLEAN DEFAULT FALSE,
+    esito BOOLEAN DEFAULT FALSE,
     FOREIGN KEY (email_utente) REFERENCES UTENTE(email) ON DELETE CASCADE,
     /* FOREIGN KEY (nome_progetto) REFERENCES PROGETTO(nome) ON DELETE CASCADE,*/
     FOREIGN KEY (nome_profilo) REFERENCES PROFILO(nome) ON DELETE CASCADE
@@ -167,6 +167,106 @@ JOIN SKILL_RICHIESTE SP ON C.nome_profilo = SP.nome_profilo
 WHERE SC.competenza = SP.competenza AND SC.livello >= SP.livello;
 
 
+-- Verifico il vincolo della budget: 
+/*
+Quando la somma totale degli importi dei finanziamenti supera il budget del progetto il progetto cambia il suo stato in chiuso.  
+*/
+DELIMITER //
+CREATE TRIGGER verifica_budget_superato
+AFTER INSERT ON FINANZIAMENTO
+FOR EACH ROW
+BEGIN
+    DECLARE totale DECIMAL(10,2);
+    DECLARE budget DECIMAL(10,2);
+    
+    -- Calcola la somma totale dei finanziamenti per il progetto
+    SELECT SUM(importo) INTO totale FROM FINANZIAMENTO WHERE nome_progetto = NEW.nome_progetto;
+    
+    -- Ottiene il budget del progetto
+    SELECT budget INTO budget FROM PROGETTO WHERE nome = NEW.nome_progetto;
+    
+    -- Se i finanziamenti superano il budget, chiude il progetto
+    IF totale >= budget THEN
+        UPDATE PROGETTO SET stato = 'chiuso' WHERE nome = NEW.nome_progetto;
+    END IF;
+END //
+DELIMITER ;
+
+-- Verifico il vincolo della data limite: 
+/*
+Quando il progetto resta aperto oltre la data limite cambia il suo stato in chiuso.  
+*/
+DELIMITER //
+CREATE EVENT chiudi_progetti_scaduti
+ON SCHEDULE EVERY 1 DAY
+DO
+BEGIN
+    UPDATE PROGETTO
+    SET stato = 'chiuso'
+    WHERE stato = 'aperto' AND data_limite < CURDATE();
+END //
+DELIMITER ;
+
+
+/* Vincoli sull'implementazione */
+
+
+-- TRIGGER 3: Aggiorna affidabilità di un creatore quando riceve un finanziamento
+DELIMITER //
+CREATE TRIGGER aggiorna_affidabilita_finanziamento
+AFTER INSERT ON FINANZIAMENTO
+FOR EACH ROW
+BEGIN
+    DECLARE progetti_finanziati INT;
+    DECLARE totale_progetti INT;
+    
+    -- Numero di progetti dell'utente creatore finanziati almeno una volta
+    SELECT COUNT(DISTINCT nome_progetto) INTO progetti_finanziati
+    FROM FINANZIAMENTO
+    WHERE nome_progetto IN (
+        SELECT nome FROM PROGETTO WHERE email_creatore = (SELECT email_creatore FROM PROGETTO WHERE nome = NEW.nome_progetto)
+    );
+    
+    -- Numero totale di progetti creati dall'utente
+    SELECT COUNT(*) INTO totale_progetti FROM PROGETTO WHERE email_creatore = (SELECT email_creatore FROM PROGETTO WHERE nome = NEW.nome_progetto);
+    
+    -- Aggiorna affidabilità
+    IF totale_progetti > 0 THEN
+        UPDATE UTENTE_CREATORE
+        SET affidabilita = (progetti_finanziati / totale_progetti) * 100
+        WHERE email_utente = (SELECT email_creatore FROM PROGETTO WHERE nome = NEW.nome_progetto);
+    END IF;
+END //
+DELIMITER ;
+
+-- TRIGGER 4: Incrementa il numero di progetti per un creatore
+DELIMITER //
+CREATE TRIGGER incrementa_nr_progetti
+AFTER INSERT ON PROGETTO
+FOR EACH ROW
+BEGIN
+    UPDATE UTENTE_CREATORE
+    SET nr_progetti = nr_progetti + 1
+    WHERE email_utente = NEW.email_creatore;
+END //
+DELIMITER ;
+
+
+
+/* DA CHIARIRE LA PARTE SULL USO DI PROCEDURE  */
+-- Popolamento dati per test
+INSERT INTO UTENTE (email, nickname, password, nome, cognome, anno_nascita, luogo_nascita) VALUES
+('test1@example.com', 'testuser1', 'pass123', 'Mario', 'Rossi', 1990, 'Roma'),
+('test2@example.com', 'testuser2', 'pass123', 'Luca', 'Bianchi', 1985, 'Milano');
+
+INSERT INTO UTENTE_CREATORE (email_utente, nr_progetti, affidabilita) VALUES
+('test1@example.com', 0, 0);
+
+INSERT INTO PROGETTO (nome, descrizione, data_inserimento, email_creatore, budget, data_limite, stato) VALUES
+('Progetto1', 'Descrizione del progetto 1', CURDATE(), 'test1@example.com', 5000, DATE_ADD(CURDATE(), INTERVAL 7 DAY), 'aperto');
+
+INSERT INTO FINANZIAMENTO (data_finanziamento, importo, email_utente, nome_progetto, codice_reward) VALUES
+(CURDATE(), 2000, 'test2@example.com', 'Progetto1', 1);
 
 
 
