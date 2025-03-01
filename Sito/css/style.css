@@ -1,0 +1,245 @@
+/* Stili personalizzati per BoStarter */
+
+:root {
+    --primary-color: #2BDE73; /* Verde Kickstarter-like */
+    --secondary-color: #0D0D0D; /* Nero */
+    --background-color: #F5F5F5; /* Grigio chiaro */
+    --text-color: #333333; /* Testo scuro */
+    --footer-gradient: linear-gradient(135deg, #1E1E1E, #0D0D0D); /* Gradiente per il footer */
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    color: var(--text-color);
+    background-color: var(--background-color);
+    padding-top: 56px; /* Spazio per la navbar fissa */
+}
+
+/* Navbar */
+.navbar {
+    background-color: var(--secondary-color) !important;
+}
+
+.navbar-brand img {
+    height: 40px;
+}
+
+.nav-link {
+    color: white !important;
+    font-weight: bold;
+}
+
+.nav-link:hover {
+    color: var(--primary-color) !important;
+}
+
+/* Hero Section */
+.hero-section {
+    background-color: var(--secondary-color);
+    padding: 100px 0;
+    background-image: url('https://via.placeholder.com/1500x800.png?text=BoStarter+Hero');
+    background-size: cover;
+    background-position: center;
+}
+
+.hero-section h1 {
+    font-size: 3.5rem;
+    font-weight: bold;
+}
+
+.hero-section .btn {
+    margin: 10px;
+}
+
+/* Progetti in Evidenza */
+.featured-projects {
+    background-color: white;
+    padding: 60px 0;
+}
+
+.featured-projects h2 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 40px;
+}
+
+.card {
+    border: none;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-10px);
+}
+
+.card-img-top {
+    height: 200px;
+    object-fit: cover;
+}
+
+.card-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.card-text {
+    font-size: 1rem;
+    color: #666;
+}
+
+.progress {
+    height: 25px;
+    border-radius: 12px;
+}
+
+.progress-bar {
+    font-weight: bold;
+}
+
+/* Footer Migliorato */
+.footer {
+    background: var(--footer-gradient);
+    padding: 80px 0 40px;
+}
+
+.footer-heading {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    color: var(--primary-color);
+}
+
+.footer-text {
+    font-size: 0.9rem;
+    color: #ccc;
+}
+
+.footer-links {
+    list-style: none;
+    padding-left: 0;
+}
+
+.footer-links li {
+    margin-bottom: 10px;
+}
+
+.footer-links a {
+    color: #ccc;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.footer-links a:hover {
+    color: var(--primary-color);
+}
+
+.footer-contacts {
+    list-style: none;
+    padding-left: 0;
+}
+
+.footer-contacts li {
+    margin-bottom: 10px;
+    color: #ccc;
+}
+
+.footer-contacts i {
+    color: var(--primary-color);
+    margin-right: 10px;
+}
+
+.social-icons {
+    display: flex;
+    gap: 15px;
+}
+
+.social-icon {
+    color: #ccc;
+    font-size: 1.5rem;
+    transition: color 0.3s;
+}
+
+.social-icon:hover {
+    color: var(--primary-color);
+}
+
+.footer-divider {
+    border-color: rgba(255, 255, 255, 0.1);
+    margin: 40px 0;
+}
+
+.footer-copy {
+    font-size: 0.9rem;
+    color: #ccc;
+}
+
+
+/* Stili per le pagine di autenticazione */
+.auth-page {
+    background-color: var(--background-color);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.auth-container {
+    width: 100%;
+    max-width: 400px;
+    padding: 20px;
+    margin-top: 80px; /* Spazio per la navbar fissa */
+}
+
+.auth-card {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.auth-card h2 {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--secondary-color);
+    margin-bottom: 1.5rem;
+}
+
+.auth-card .form-label {
+    font-weight: bold;
+    color: var(--secondary-color);
+}
+
+.auth-card .form-control {
+    border-radius: 5px;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    margin-bottom: 1rem;
+}
+
+.auth-card .form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 5px rgba(43, 222, 115, 0.5);
+}
+
+.auth-card .btn-primary {
+    background-color: var(--primary-color);
+    border: none;
+    padding: 0.75rem;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.auth-card .btn-primary:hover {
+    background-color: #24b85f;
+}
+
+.auth-link {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.auth-link:hover {
+    text-decoration: underline;
+}
