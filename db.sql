@@ -17,15 +17,15 @@ CREATE TABLE UTENTE (
 CREATE TABLE UTENTE_AMMINISTRATORE(
 	email_utente_amm VARCHAR(255) PRIMARY KEY,
     codice_sicurezza VARCHAR(50) NOT NULL,
-    FOREIGN KEY (email_utente) REFERENCES UTENTE(email) ON DELETE CASCADE
+    FOREIGN KEY (email_utente_amm) REFERENCES UTENTE(email) ON DELETE CASCADE
 
 ) ENGINE "INNODB";
 
 CREATE TABLE UTENTE_CREATORE(
 	email_utente_creat VARCHAR(255) PRIMARY KEY,
     nr_progetti INT DEFAULT 0,
-    affidabilita FLOAT CHECK (livello BETWEEN 0 AND 10), /* Valutare se enum "Buono", ecc */
-    FOREIGN KEY (email_utente) REFERENCES UTENTE(email) ON DELETE CASCADE
+    affidabilita FLOAT CHECK (affidabilita BETWEEN 0 AND 10), /* Valutare se enum "Buono", ecc */
+    FOREIGN KEY (email_utente_creat) REFERENCES UTENTE(email) ON DELETE CASCADE
 ) ENGINE "INNODB";
 
 
@@ -34,9 +34,20 @@ CREATE TABLE SKILL_CURRICULUM(
     livello INT CHECK (livello BETWEEN 0 AND 5),
     email_utente VARCHAR(255),
     email_utente_amm VARCHAR(255),
-    PRIMARY KEY (competenza, livello),
+    PRIMARY KEY (email_utente, competenza),
     FOREIGN KEY (email_utente) REFERENCES UTENTE(email) ON DELETE CASCADE,
     FOREIGN KEY (email_utente_amm) REFERENCES UTENTE_AMMINISTRATORE(email_utente_amm) ON DELETE CASCADE
+) ENGINE "INNODB";
+
+CREATE TABLE PROGETTO (
+    nome VARCHAR(255) PRIMARY KEY,
+    descrizione TEXT NOT NULL,
+    data_inserimento DATE NOT NULL,
+    email_creatore VARCHAR(255) NOT NULL,
+    budget FLOAT NOT NULL CHECK (budget > 0),
+    data_limite DATE NOT NULL,
+    stato ENUM('aperto', 'chiuso') NOT NULL DEFAULT 'aperto',
+    FOREIGN KEY (email_creatore) REFERENCES UTENTE_CREATORE(email_utente_creat) ON DELETE CASCADE
 ) ENGINE "INNODB";
 
 CREATE TABLE COMMENTO (
@@ -59,16 +70,7 @@ CREATE TABLE RISPOSTA_COMMENTO (
     FOREIGN KEY (email_creatore) REFERENCES UTENTE_CREATORE(email_utente_creat) ON DELETE CASCADE
 );
 
-CREATE TABLE PROGETTO (
-    nome VARCHAR(255) PRIMARY KEY,
-    descrizione TEXT NOT NULL,
-    data_inserimento DATE NOT NULL,
-    email_creatore VARCHAR(255) NOT NULL,
-    budget FLOAT NOT NULL CHECK (budget > 0),
-    data_limite DATE NOT NULL,
-    stato ENUM('aperto', 'chiuso') NOT NULL DEFAULT 'aperto',
-    FOREIGN KEY (email_creatore) REFERENCES UTENTE_CREATORE(email_utente_creat) ON DELETE CASCADE
-) ENGINE "INNODB";
+
 
 CREATE TABLE FOTO_PROGETTO (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -119,11 +121,11 @@ CREATE TABLE PROFILO (
 ) ENGINE "INNODB";
 
 CREATE TABLE SKILL_RICHIESTE (
-    nome_profilo VARCHAR(255),
+    id_profilo INT,
     competenza VARCHAR(100),
     livello INT CHECK (livello BETWEEN 0 AND 5),
-    PRIMARY KEY (competenza, livello),
-    FOREIGN KEY (nome_profilo) REFERENCES PROFILO(nome) ON DELETE CASCADE
+    PRIMARY KEY (id_profilo, competenza),
+    FOREIGN KEY (id_profilo) REFERENCES PROFILO(id) ON DELETE CASCADE
 ) ENGINE "INNODB";
 
 CREATE TABLE FINANZIAMENTO (
@@ -144,12 +146,16 @@ CREATE TABLE CANDIDATURA (
     id INT AUTO_INCREMENT PRIMARY KEY,
     email_utente VARCHAR(255) NOT NULL,
     /* nome_progetto VARCHAR(255) NOT NULL, */
-    nome_profilo VARCHAR(255) NOT NULL,
+    id_profilo INT NOT NULL,
     esito BOOLEAN DEFAULT FALSE,
     FOREIGN KEY (email_utente) REFERENCES UTENTE(email) ON DELETE CASCADE,
     /* FOREIGN KEY (nome_progetto) REFERENCES PROGETTO(nome) ON DELETE CASCADE,*/
-    FOREIGN KEY (nome_profilo) REFERENCES PROFILO(nome) ON DELETE CASCADE
+    FOREIGN KEY (id_profilo) REFERENCES PROFILO(id) ON DELETE CASCADE
 );
+
+
+/* ------------------------------------ */
+/* BUSINESS RULES E VINCOLI SULL'IMPLEMENTAZIONE */
 
 
 -- Verifico il vincolo della candidatura: 
@@ -160,11 +166,13 @@ al valore richiesto.
 */
 
 CREATE VIEW Candidature_Valide AS
-SELECT C.email_utente, C.nome_progetto, C.nome_profilo
+SELECT C.email_utente, C.id_profilo, SP.competenza
 FROM CANDIDATURA C
 JOIN SKILL_CURRICULUM SC ON C.email_utente = SC.email_utente
-JOIN SKILL_RICHIESTE SP ON C.nome_profilo = SP.nome_profilo
+JOIN SKILL_RICHIESTE SP ON C.id_profilo = SP.id_profilo
 WHERE SC.competenza = SP.competenza AND SC.livello >= SP.livello;
+
+
 
 
 -- Verifico il vincolo della budget: 
@@ -206,9 +214,6 @@ BEGIN
     WHERE stato = 'aperto' AND data_limite < CURDATE();
 END //
 DELIMITER ;
-
-
-/* Vincoli sull'implementazione */
 
 
 -- TRIGGER 3: Aggiorna affidabilità di un creatore quando riceve un finanziamento
@@ -253,21 +258,24 @@ DELIMITER ;
 
 
 
-/* DA CHIARIRE LA PARTE SULL USO DI PROCEDURE  */
 -- Popolamento dati per test
 INSERT INTO UTENTE (email, nickname, password, nome, cognome, anno_nascita, luogo_nascita) VALUES
 ('test1@example.com', 'testuser1', 'pass123', 'Mario', 'Rossi', 1990, 'Roma'),
 ('test2@example.com', 'testuser2', 'pass123', 'Luca', 'Bianchi', 1985, 'Milano');
 
-INSERT INTO UTENTE_CREATORE (email_utente, nr_progetti, affidabilita) VALUES
+INSERT INTO UTENTE_CREATORE (email_utente_creat, nr_progetti, affidabilita) VALUES
 ('test1@example.com', 0, 0);
+
+/*
+
+PROBLEMA QUI CON INSERT
 
 INSERT INTO PROGETTO (nome, descrizione, data_inserimento, email_creatore, budget, data_limite, stato) VALUES
 ('Progetto1', 'Descrizione del progetto 1', CURDATE(), 'test1@example.com', 5000, DATE_ADD(CURDATE(), INTERVAL 7 DAY), 'aperto');
 
 INSERT INTO FINANZIAMENTO (data_finanziamento, importo, email_utente, nome_progetto, codice_reward) VALUES
 (CURDATE(), 2000, 'test2@example.com', 'Progetto1', 1);
-
+*/
 
 
 /* COLLEGAMENTO CON MONGO DB 
@@ -277,6 +285,10 @@ log MongoDB ogni volta che viene eseguita un’operazione
 importante.
 */
 
+/* 
+OPERAZIONI CHE RIGUARDANO TUTTI GLI UTENTI
+Autenticazione/registrazione sulla piattaforma
+*/ 
 DELIMITER //
 CREATE TRIGGER log_nuovo_utente
 AFTER INSERT ON UTENTE
@@ -286,15 +298,38 @@ BEGIN
 END;
 // DELIMITER ;
 
+/* 
+OPERAZIONI CHE RIGUARDANO TUTTI GLI UTENTI
+Inserimento delle proprie skill di curriculum
+*/ 
 DELIMITER //
-CREATE TRIGGER log_nuovo_progetto
-AFTER INSERT ON PROGETTO
+CREATE TRIGGER log_inserimento_skill
+AFTER INSERT ON SKILL_CURRICULUM
 FOR EACH ROW
 BEGIN
-    CALL InserisciLogEvento('Nuovo Progetto', NEW.email_creatore, CONCAT('L\'utente ha creato il progetto ', NEW.nome, '.'));
+    CALL InserisciLogEvento('Inserimento Skill', NEW.email_utente, 
+        CONCAT('L\'utente ha aggiunto la skill ', NEW.competenza, ' con livello ', NEW.livello, '.'));
 END;
 // DELIMITER ;
 
+/* 
+OPERAZIONI CHE RIGUARDANO TUTTI GLI UTENTI
+Visualizzazione dei progetti disponibili
+*/ 
+DELIMITER //
+CREATE PROCEDURE Log_Visualizzazione_Progetti(
+    IN p_email_utente VARCHAR(255)
+)
+BEGIN
+    CALL InserisciLogEvento('Visualizzazione Progetti', p_email_utente, 
+        'L\'utente ha visualizzato la lista dei progetti disponibili.');
+END;
+// DELIMITER ;
+
+/* 
+OPERAZIONI CHE RIGUARDANO TUTTI GLI UTENTI
+Finanziamento di un progetto
+*/ 
 DELIMITER //
 CREATE TRIGGER log_finanziamento
 AFTER INSERT ON FINANZIAMENTO
@@ -305,20 +340,146 @@ BEGIN
 END;
 // DELIMITER ;
 
+/* 
+OPERAZIONI CHE RIGUARDANO TUTTI GLI UTENTI
+Scelta della reward dopo un finanziamento
+*/ 
 DELIMITER //
-CREATE PROCEDURE InserisciLogEvento(
-    IN p_evento VARCHAR(255),
-    IN p_email_utente VARCHAR(255),
-    IN p_descrizione TEXT
-)
+CREATE TRIGGER log_scelta_reward
+AFTER INSERT ON FINANZIAMENTO
+FOR EACH ROW
 BEGIN
-    -- Simuliamo l'inserimento in MongoDB usando una connessione esterna
-    INSERT INTO LOG_EVENTI (evento, email_utente, data, descrizione)
-    VALUES (p_evento, p_email_utente, NOW(), p_descrizione);
+    CALL InserisciLogEvento('Scelta Reward', NEW.email_utente, 
+        CONCAT('L\'utente ha scelto la reward con codice ', NEW.codice_reward, ' per il progetto ', NEW.nome_progetto, '.'));
 END;
 // DELIMITER ;
 
+/* 
+OPERAZIONI CHE RIGUARDANO TUTTI GLI UTENTI
+Inserimento di un commento su un progetto
+*/ 
+DELIMITER //
+CREATE TRIGGER log_nuovo_commento
+AFTER INSERT ON COMMENTO
+FOR EACH ROW
+BEGIN
+    CALL InserisciLogEvento('Nuovo Commento', NEW.email_utente, 
+        CONCAT('L\'utente ha commentato il progetto ', NEW.nome_progetto, '.'));
+END;
+// DELIMITER ;
 
+/* 
+OPERAZIONI CHE RIGUARDANO TUTTI GLI UTENTI
+Inserimento di una candidatura per un profilo software
+*/ 
+DELIMITER //
+CREATE TRIGGER log_nuova_candidatura
+AFTER INSERT ON CANDIDATURA
+FOR EACH ROW
+BEGIN
+    CALL InserisciLogEvento('Nuova Candidatura', NEW.email_utente, 
+        CONCAT('L\'utente si è candidato per il profilo ', NEW.id_profilo, '.'));
+END;
+// DELIMITER ;
+
+/* 
+OPERAZIONI CHE RIGUARDANO GLI AMMINISTRATORI
+Inserimento di una nuova stringa nella lista delle competenze
+*/ 
+DELIMITER //
+CREATE TRIGGER log_nuova_skill
+AFTER INSERT ON SKILL_CURRICULUM
+FOR EACH ROW
+BEGIN
+    CALL InserisciLogEvento('Nuova Skill', NEW.email_utente_amm, 
+        CONCAT('L\'amministratore ha aggiunto la competenza ', NEW.competenza, '.'));
+END;
+// DELIMITER ;
+
+/* 
+OPERAZIONI CHE RIGUARDANO GLI AMMINISTRATORI
+Autenticazione con codice di sicurezza
+*/ 
+DELIMITER //
+CREATE PROCEDURE Log_Autenticazione_Amministratore(
+    IN p_email_utente VARCHAR(255)
+)
+BEGIN
+    CALL InserisciLogEvento('Autenticazione Amministratore', p_email_utente, 
+        'L\'amministratore ha effettuato l\'accesso con codice di sicurezza.');
+END;
+// DELIMITER ;
+
+/* 
+OPERAZIONI CHE RIGUARDANO GLI UTENTI CREATORI
+Inserimento di un nuovo progetto
+*/ 
+DELIMITER //
+CREATE TRIGGER log_nuovo_progetto
+AFTER INSERT ON PROGETTO
+FOR EACH ROW
+BEGIN
+    CALL InserisciLogEvento('Nuovo Progetto', NEW.email_creatore, CONCAT('L\'utente ha creato il progetto ', NEW.nome, '.'));
+END;
+// DELIMITER ;
+
+/* 
+OPERAZIONI CHE RIGUARDANO GLI UTENTI CREATORI
+Inserimento di una reward per un progetto
+*/ 
+DELIMITER //
+CREATE TRIGGER log_nuova_reward
+AFTER INSERT ON REWARD
+FOR EACH ROW
+BEGIN
+    CALL InserisciLogEvento('Nuova Reward', (SELECT email_creatore FROM PROGETTO WHERE nome = NEW.nome_progetto), 
+        CONCAT('L\'utente ha aggiunto una reward per il progetto ', NEW.nome_progetto, '.'));
+END;
+// DELIMITER ;
+
+/* 
+OPERAZIONI CHE RIGUARDANO GLI UTENTI CREATORI
+Inserimento di una risposta ad un commento
+*/ 
+DELIMITER //
+CREATE TRIGGER log_risposta_commento
+AFTER INSERT ON RISPOSTA_COMMENTO
+FOR EACH ROW
+BEGIN
+    CALL InserisciLogEvento('Risposta a Commento', NEW.email_creatore, 
+        CONCAT('L\'utente ha risposto a un commento con ID ', NEW.id_commento, '.'));
+END;
+// DELIMITER ;
+
+/* 
+OPERAZIONI CHE RIGUARDANO GLI UTENTI CREATORI
+Inserimento di un profilo per un progetto software
+*/ 
+DELIMITER //
+CREATE TRIGGER log_nuovo_profilo
+AFTER INSERT ON PROFILO
+FOR EACH ROW
+BEGIN
+    CALL InserisciLogEvento('Nuovo Profilo', (SELECT email_creatore FROM PROGETTO_SOFTWARE WHERE nome_progetto = NEW.nome_software), 
+        CONCAT('L\'utente ha creato il profilo ', NEW.nome, ' per il progetto software ', NEW.nome_software, '.'));
+END;
+// DELIMITER ;
+
+/* 
+OPERAZIONI CHE RIGUARDANO GLI UTENTI CREATORI
+Accettazione o rifiuto di una candidatura
+*/ 
+DELIMITER //
+CREATE TRIGGER log_accettazione_candidatura
+AFTER UPDATE ON CANDIDATURA
+FOR EACH ROW
+BEGIN
+    CALL InserisciLogEvento('Gestione Candidatura', 
+        (SELECT email_creatore FROM PROGETTO_SOFTWARE WHERE nome_progetto = 
+            (SELECT nome_progetto FROM PROFILO WHERE nome = NEW.id_profilo)), 
+        CONCAT('L\'utente ha ', IF(NEW.esito, 'accettato', 'rifiutato'), ' la candidatura di ', NEW.email_utente, ' per il profilo ', NEW.id_profilo, '.'));
+END;
+// DELIMITER ;
 
 
 
@@ -330,7 +491,7 @@ Classifica utenti creatori per affidabilità
 CREATE VIEW ClassificaCreatori AS
 SELECT nickname, affidabilita
 FROM UTENTE_CREATORE UC
-JOIN UTENTE U ON UC.email_utente = U.email
+JOIN UTENTE U ON UC.email_utente_creat = U.email
 ORDER BY affidabilita DESC
 LIMIT 3;
 
