@@ -1,14 +1,8 @@
 <?php
-// Configurazione della connessione al database
-$host = 'localhost'; // Cambia con il tuo host se necessario
-$dbname = 'BOSTARTER';
-$username = 'root'; // Cambia con il tuo utente MySQL
-$password = ''; // Inserisci la tua password MySQL
+
 
 try {
-    // Connessione al database con PDO
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    require_once 'session.php'; // Include la connessione al database
 
     // Controllo se il form è stato inviato
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -45,6 +39,9 @@ try {
         ]);
 
         echo "Registrazione completata con successo!";
+        header("Location: login.html");
+        exit();
+
     }
 } catch (PDOException $e) {
     echo "Errore di connessione al database: " . $e->getMessage();

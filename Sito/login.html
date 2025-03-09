@@ -25,14 +25,14 @@
                 <h2>Accedi a BoStarter</h2>
                 <p>Benvenuto! Inserisci le tue credenziali per accedere.</p>
             </div>
-            <form>
+            <form action="login.php" method="POST">
                 <div class="mb-3">
                     <label for="email" class="form-label">Email</label>
-                    <input type="email" class="form-control" id="email" placeholder="Inserisci la tua email" required>
+                    <input type="email" class="form-control" id="email"  name="email" placeholder="Inserisci la tua email" required>
                 </div>
                 <div class="mb-3">
                     <label for="password" class="form-label">Password</label>
-                    <input type="password" class="form-control" id="password" placeholder="Inserisci la tua password" required>
+                    <input type="password" class="form-control" id="password" name="password" placeholder="Inserisci la tua password" required>
                 </div>
                 <button type="submit" class="btn btn-primary w-100">Accedi</button>
             </form>

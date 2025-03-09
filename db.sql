@@ -154,6 +154,33 @@ CREATE TABLE CANDIDATURA (
 );
 
 
+
+/* ------------------------------------ */
+/* PRIMA DEI TRIGGER */
+
+
+
+DELIMITER //
+CREATE PROCEDURE InserisciLogEvento(
+    IN p_evento VARCHAR(255),
+    IN p_email_utente VARCHAR(255),
+    IN p_descrizione TEXT
+)
+BEGIN
+    -- Creazione della tabella di log se non esiste
+CREATE TABLE IF NOT EXISTS LOG_EVENTI (
+                                          id INT AUTO_INCREMENT PRIMARY KEY,
+                                          evento VARCHAR(255) NOT NULL,
+    email_utente VARCHAR(255) NOT NULL,
+    data TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    descrizione TEXT NOT NULL
+    );
+
+-- Inserimento del log
+INSERT INTO LOG_EVENTI (evento, email_utente, descrizione)
+VALUES (p_evento, p_email_utente, p_descrizione);
+END //
+DELIMITER ;
 /* ------------------------------------ */
 /* BUSINESS RULES E VINCOLI SULL'IMPLEMENTAZIONE */
 
