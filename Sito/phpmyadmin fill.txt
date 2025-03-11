@@ -1,0 +1,189 @@
+Comandi Rapidi 
+
+Link: 
+http://localhost:8888/GitHub/BoStarter/Sito/index.html
+
+
+Per popolare phpmyadmin: 
+
+
+DROP DATABASE IF EXISTS BOSTARTER;
+CREATE DATABASE IF NOT EXISTS BOSTARTER;
+USE BOSTARTER;
+
+
+CREATE TABLE UTENTE (
+    email VARCHAR(255) PRIMARY KEY,
+    nickname VARCHAR(50) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    nome VARCHAR(50) NOT NULL,
+    cognome VARCHAR(50) NOT NULL,
+    anno_nascita YEAR NOT NULL,
+    luogo_nascita VARCHAR(100) NOT NULL
+) ENGINE "INNODB";
+
+
+CREATE TABLE UTENTE_AMMINISTRATORE(
+    email_utente_amm VARCHAR(255) PRIMARY KEY,
+    codice_sicurezza VARCHAR(50) NOT NULL,
+    FOREIGN KEY (email_utente_amm) REFERENCES UTENTE(email) ON DELETE CASCADE
+
+) ENGINE "INNODB";
+
+CREATE TABLE UTENTE_CREATORE(
+    email_utente_creat VARCHAR(255) PRIMARY KEY,
+    nr_progetti INT DEFAULT 0,
+    affidabilita FLOAT CHECK (affidabilita BETWEEN 0 AND 10), /* Valutare se enum "Buono", ecc */
+    FOREIGN KEY (email_utente_creat) REFERENCES UTENTE(email) ON DELETE CASCADE
+) ENGINE "INNODB";
+
+
+CREATE TABLE SKILL_CURRICULUM(
+    competenza VARCHAR(100),
+    livello INT CHECK (livello BETWEEN 0 AND 5),
+    email_utente VARCHAR(255),
+    email_utente_amm VARCHAR(255),
+    PRIMARY KEY (email_utente, competenza),
+    FOREIGN KEY (email_utente) REFERENCES UTENTE(email) ON DELETE CASCADE,
+    FOREIGN KEY (email_utente_amm) REFERENCES UTENTE_AMMINISTRATORE(email_utente_amm) ON DELETE CASCADE
+) ENGINE "INNODB";
+
+CREATE TABLE PROGETTO (
+    nome VARCHAR(255) PRIMARY KEY,
+    descrizione TEXT NOT NULL,
+    data_inserimento DATE NOT NULL,
+    email_creatore VARCHAR(255) NOT NULL,
+    budget FLOAT NOT NULL CHECK (budget > 0),
+    data_limite DATE NOT NULL,
+    stato ENUM('aperto', 'chiuso') NOT NULL DEFAULT 'aperto',
+    FOREIGN KEY (email_creatore) REFERENCES UTENTE_CREATORE(email_utente_creat) ON DELETE CASCADE
+) ENGINE "INNODB";
+
+CREATE TABLE COMMENTO (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    email_utente VARCHAR(255) NOT NULL,
+    nome_progetto VARCHAR(255) NOT NULL,
+    data_commento DATE NOT NULL,
+    testo TEXT NOT NULL,
+    FOREIGN KEY (email_utente) REFERENCES UTENTE(email) ON DELETE CASCADE,
+    FOREIGN KEY (nome_progetto) REFERENCES PROGETTO(nome) ON DELETE CASCADE
+) ENGINE "INNODB";
+
+CREATE TABLE RISPOSTA_COMMENTO (
+    id_commento INT,
+    email_creatore VARCHAR(255),
+    data_risposta DATE NOT NULL,
+    testo TEXT NOT NULL,
+    PRIMARY KEY (id_commento, email_creatore),
+    FOREIGN KEY (id_commento) REFERENCES COMMENTO(id) ON DELETE CASCADE,
+    FOREIGN KEY (email_creatore) REFERENCES UTENTE_CREATORE(email_utente_creat) ON DELETE CASCADE
+);
+
+
+
+CREATE TABLE FOTO_PROGETTO (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nome_progetto VARCHAR(255) NOT NULL,
+    foto_url TEXT NOT NULL,
+    FOREIGN KEY (nome_progetto) REFERENCES PROGETTO(nome) ON DELETE CASCADE
+) ENGINE "INNODB";
+
+CREATE TABLE REWARD (
+    codice INT AUTO_INCREMENT PRIMARY KEY,
+    nome_progetto VARCHAR(255) NOT NULL,
+    descrizione TEXT NOT NULL,
+    foto_url TEXT NOT NULL,
+    FOREIGN KEY (nome_progetto) REFERENCES PROGETTO(nome) ON DELETE CASCADE
+) ENGINE "INNODB";
+
+CREATE TABLE PROGETTO_HARDWARE (
+    nome_progetto VARCHAR(255) PRIMARY KEY,
+    FOREIGN KEY (nome_progetto) REFERENCES PROGETTO(nome) ON DELETE CASCADE
+) ENGINE "INNODB";
+
+CREATE TABLE COMPONENTE (
+    nome VARCHAR(255) PRIMARY KEY,
+    descrizione TEXT NOT NULL,
+    prezzo FLOAT NOT NULL CHECK (prezzo > 0),
+    quantita INT NOT NULL CHECK (quantita > 0)
+) ENGINE "INNODB";
+
+CREATE TABLE FORMATO (
+    nome_componente VARCHAR(255),
+    nome_hardware VARCHAR(255),
+    PRIMARY KEY (nome_componente, nome_hardware),
+    FOREIGN KEY (nome_hardware) REFERENCES PROGETTO_HARDWARE(nome_progetto) ON DELETE CASCADE,
+    FOREIGN KEY (nome_componente) REFERENCES COMPONENTE(nome) ON DELETE CASCADE
+) ENGINE "INNODB";
+
+CREATE TABLE PROGETTO_SOFTWARE (
+    nome_progetto VARCHAR(255) PRIMARY KEY,
+    FOREIGN KEY (nome_progetto) REFERENCES PROGETTO(nome) ON DELETE CASCADE
+) ENGINE "INNODB";
+
+
+CREATE TABLE PROFILO (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(255),
+    nome_software VARCHAR(255),
+    FOREIGN KEY (nome_software) REFERENCES PROGETTO_SOFTWARE(nome_progetto) ON DELETE CASCADE
+) ENGINE "INNODB";
+
+CREATE TABLE SKILL_RICHIESTE (
+    id_profilo INT,
+    competenza VARCHAR(100),
+    livello INT CHECK (livello BETWEEN 0 AND 5),
+    PRIMARY KEY (id_profilo, competenza),
+    FOREIGN KEY (id_profilo) REFERENCES PROFILO(id) ON DELETE CASCADE
+) ENGINE "INNODB";
+
+CREATE TABLE FINANZIAMENTO (
+    id INT AUTO_INCREMENT,
+    data_finanziamento DATE,
+    importo FLOAT NOT NULL CHECK (importo > 0),
+    email_utente VARCHAR(255) NOT NULL,
+    nome_progetto VARCHAR(255) NOT NULL,
+    codice_reward INT NOT NULL,
+    PRIMARY KEY (id, data_finanziamento),
+    FOREIGN KEY (email_utente) REFERENCES UTENTE(email) ON DELETE CASCADE,
+    FOREIGN KEY (nome_progetto) REFERENCES PROGETTO(nome) ON DELETE CASCADE,
+    FOREIGN KEY (codice_reward) REFERENCES REWARD(codice) ON DELETE CASCADE
+) ENGINE "INNODB";
+
+
+CREATE TABLE CANDIDATURA (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    email_utente VARCHAR(255) NOT NULL,
+    /* nome_progetto VARCHAR(255) NOT NULL, */
+    id_profilo INT NOT NULL,
+    esito BOOLEAN DEFAULT FALSE,
+    FOREIGN KEY (email_utente) REFERENCES UTENTE(email) ON DELETE CASCADE,
+    /* FOREIGN KEY (nome_progetto) REFERENCES PROGETTO(nome) ON DELETE CASCADE,*/
+    FOREIGN KEY (id_profilo) REFERENCES PROFILO(id) ON DELETE CASCADE
+);
+
+
+
+
+Per popolare utenti e progetti:
+
+
+INSERT INTO UTENTE (email, nickname, password, nome, cognome, anno_nascita, luogo_nascita) VALUES
+('test1@example.com', 'testuser1', 'password1', 'Mario', 'Rossi', 1990, 'Roma'),
+('test2@example.com', 'testuser2', 'password2', 'Luca', 'Bianchi', 1985, 'Milano'),
+('test3@example.com', 'testuser3', 'password3', 'Giulia', 'Verdi', 1992, 'Napoli');
+
+
+INSERT INTO UTENTE_CREATORE (email_utente_creat, nr_progetti, affidabilita) VALUES
+('test1@example.com', 0, 7.5),
+('test2@example.com', 0, 8.0),
+('test3@example.com', 0, 6.5);
+
+INSERT INTO PROGETTO (nome, descrizione, data_inserimento, email_creatore, budget, data_limite, stato) 
+VALUES 
+('Smart Home AI', 'Un sistema di intelligenza artificiale per la gestione delle case smart.', CURDATE(), 'test1@example.com', 15000, DATE_ADD(CURDATE(), INTERVAL 30 DAY), 'aperto'),
+('EcoCar', 'Un’auto elettrica ecologica con materiali sostenibili.', CURDATE(), 'test2@example.com', 25000, DATE_ADD(CURDATE(), INTERVAL 45 DAY), 'aperto'),
+('VR Learning', 'Una piattaforma di apprendimento in realtà virtuale per scuole e università.', CURDATE(), 'test3@example.com', 20000, DATE_ADD(CURDATE(), INTERVAL 60 DAY), 'aperto');
+
+
+
