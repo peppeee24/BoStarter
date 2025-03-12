@@ -23,7 +23,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $_SESSION['email'] = $user['email']; // Salva l'utente nella sessione
         header("Location: dashboard.html"); // Reindirizza alla dashboard
         echo "Login completata con successo!";
-        header("Location: index.html");
+        header("Location: index.php");
         exit();
     } else {
         echo "Credenziali non valide.";

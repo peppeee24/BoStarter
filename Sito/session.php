@@ -1,5 +1,7 @@
 <?php
-session_start(); // Avvia la sessione per la gestione degli utenti
+if (session_status() === PHP_SESSION_NONE) {
+    session_start(); // Avvia la sessione solo se non è già attiva
+} // Avvia la sessione per la gestione degli utenti
 
 // Configurazione della connessione al database
 $host = 'localhost'; // Cambia se necessario

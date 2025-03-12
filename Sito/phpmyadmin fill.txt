@@ -171,19 +171,58 @@ Per popolare utenti e progetti:
 INSERT INTO UTENTE (email, nickname, password, nome, cognome, anno_nascita, luogo_nascita) VALUES
 ('test1@example.com', 'testuser1', 'password1', 'Mario', 'Rossi', 1990, 'Roma'),
 ('test2@example.com', 'testuser2', 'password2', 'Luca', 'Bianchi', 1985, 'Milano'),
+('fedesgambe@icloud.com', 'fedesgambe', '1234', 'Federico', 'Sgambelluri', 2003, 'Bologna'),
+('peppe24@gmail.com', 'peppeeee', '1234', 'Giuseppe', 'Cozza', 2003, 'Bologna'),
+('simonemagli@gmail.com', 'sama', '1234', 'Simone', 'Magli', 2003, 'Bologna'),
 ('test3@example.com', 'testuser3', 'password3', 'Giulia', 'Verdi', 1992, 'Napoli');
 
 
 INSERT INTO UTENTE_CREATORE (email_utente_creat, nr_progetti, affidabilita) VALUES
 ('test1@example.com', 0, 7.5),
 ('test2@example.com', 0, 8.0),
+('fedesgambe@icloud.com', 0, 8.0),
+('peppe24@gmail.com', 0, 8.0),
+('imonemagli@gmail.com', 0, 8.0),
 ('test3@example.com', 0, 6.5);
 
 INSERT INTO PROGETTO (nome, descrizione, data_inserimento, email_creatore, budget, data_limite, stato) 
 VALUES 
 ('Smart Home AI', 'Un sistema di intelligenza artificiale per la gestione delle case smart.', CURDATE(), 'test1@example.com', 15000, DATE_ADD(CURDATE(), INTERVAL 30 DAY), 'aperto'),
 ('EcoCar', 'Un’auto elettrica ecologica con materiali sostenibili.', CURDATE(), 'test2@example.com', 25000, DATE_ADD(CURDATE(), INTERVAL 45 DAY), 'aperto'),
-('VR Learning', 'Una piattaforma di apprendimento in realtà virtuale per scuole e università.', CURDATE(), 'test3@example.com', 20000, DATE_ADD(CURDATE(), INTERVAL 60 DAY), 'aperto');
+('VR Learning', 'Una piattaforma di apprendimento in realtà virtuale per scuole e università.', CURDATE(), 'test3@example.com', 20000, DATE_ADD(CURDATE(), INTERVAL 60 DAY), 'aperto'),
+('Mucca Silver', 'Una mucca di carta stagnola', CURDATE(), 'fedesgambe@icloud.com', 15000, DATE_ADD(CURDATE(), INTERVAL 30 DAY), 'aperto'),
+('Smart Park', 'Un parcehggio digitale per torvare sempre posto', CURDATE(), 'simonemagli@gmail.com', 25000, DATE_ADD(CURDATE(), INTERVAL 45 DAY), 'aperto'),
+('Flipper City', 'Gioca a flipper, ma la mappa è la tua città', CURDATE(), 'peppe24@gmail.com', 20000, DATE_ADD(CURDATE(), INTERVAL 60 DAY), 'aperto'),
+('Emilio 5.0', 'Il famosissimo Emilio, ma per adulti', CURDATE(), 'fedesgambe@icloud.com', 20000, DATE_ADD(CURDATE(), INTERVAL 60 DAY), 'aperto');
 
+
+
+Popolare foto
+
+
+INSERT INTO FOTO_PROGETTO (nome_progetto, foto_url) VALUES
+('EcoCar', 'images/progetto1.jpg'),
+('Smart Home AI', 'images/progetto2.jpg'),
+('VR Learning', 'images/progetto3.jpg'),
+('Mucca Silver', 'images/mucca.png'),
+('Smart Park', 'images/smartpark.png'),
+('Flipper City', 'images/flipper.png'),
+('Emilio 5.0', 'images/emilio.png');
+
+
+popolare rewards:
+
+INSERT INTO REWARD (nome_progetto, descrizione, foto_url) VALUES
+('EcoCar', 'Sticker esclusivo del progetto', 'images/reward1.png'),
+('EcoCar', 'T-shirt personalizzata del progetto', 'images/reward2.png'),
+('EcoCar', 'Accesso anticipato ai contenuti del progetto', 'images/reward3.png'),
+
+('Smart Home AI', 'Stampa digitale ad alta risoluzione', 'images/reward4.png'),
+('Smart Home AI', 'NFT esclusivo del progetto', 'images/reward5.png'),
+('Smart Home AI', 'Meet & Greet con l\'artista', 'images/reward6.png'),
+
+('VR Learning', 'Guida e-book su sostenibilità', 'images/reward7.png'),
+('VR Learning', 'Sconto su prodotti green', 'images/reward8.png'),
+('VR Learning', 'Nome inciso sul prodotto finale', 'images/reward9.png');
 
 
