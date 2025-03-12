@@ -34,4 +34,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     }
 }
+
+// TODO c'è un bug importante che spesso si ricarica la pagina mostrando un finto logo nell'header e non permette di fare il login perche dice credenziali errate anchje so sono gisite
 ?>
