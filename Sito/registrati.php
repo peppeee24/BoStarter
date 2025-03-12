@@ -47,5 +47,5 @@ try {
     echo "Errore di connessione al database: " . $e->getMessage();
 }
 
-// TODO trovato errore le passowrd non si criptano piu
+// TODO Se inserisic un utente da mysql la password non viene cripata e darà errore al login
 ?>
