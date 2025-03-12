@@ -46,4 +46,6 @@ try {
 } catch (PDOException $e) {
     echo "Errore di connessione al database: " . $e->getMessage();
 }
+
+// TODO trovato errore le passowrd non si criptano piu
 ?>
