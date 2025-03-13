@@ -1,12 +1,3 @@
-Comandi Rapidi 
-
-Link: 
-http://localhost:8888/GitHub/BoStarter/Sito/index.html
-
-
-Per popolare phpmyadmin: 
-
-
 DROP DATABASE IF EXISTS BOSTARTER;
 CREATE DATABASE IF NOT EXISTS BOSTARTER;
 USE BOSTARTER;
@@ -164,17 +155,13 @@ CREATE TABLE CANDIDATURA (
 
 
 
-
-Per popolare utenti e progetti:
-
-
 INSERT INTO UTENTE (email, nickname, password, nome, cognome, anno_nascita, luogo_nascita) VALUES
-('test1@example.com', 'testuser1', 'password1', 'Mario', 'Rossi', 1990, 'Roma'),
-('test2@example.com', 'testuser2', 'password2', 'Luca', 'Bianchi', 1985, 'Milano'),
-('fedesgambe@icloud.com', 'fedesgambe', '1234', 'Federico', 'Sgambelluri', 2003, 'Bologna'),
-('peppe24@gmail.com', 'peppeeee', '1234', 'Giuseppe', 'Cozza', 2003, 'Bologna'),
-('simonemagli@gmail.com', 'sama', '1234', 'Simone', 'Magli', 2003, 'Bologna'),
-('test3@example.com', 'testuser3', 'password3', 'Giulia', 'Verdi', 1992, 'Napoli');
+('test1@example.com', 'testuser1', '$2y$10$kAG8SXG2hVSiKwnkc4Ho1OhFzp8Iqgv7gsv/xx7XiFFGOKGAPn7g2', 'Mario', 'Rossi', 1990, 'Roma'),
+('test2@example.com', 'testuser2', '$2y$10$kAG8SXG2hVSiKwnkc4Ho1OhFzp8Iqgv7gsv/xx7XiFFGOKGAPn7g2', 'Luca', 'Bianchi', 1985, 'Milano'),
+('fedesgambe@icloud.com', 'fedesgambe', '$2y$10$kAG8SXG2hVSiKwnkc4Ho1OhFzp8Iqgv7gsv/xx7XiFFGOKGAPn7g2', 'Federico', 'Sgambelluri', 2003, 'Bologna'),
+('peppe24@gmail.com', 'peppeeee', '$2y$10$kAG8SXG2hVSiKwnkc4Ho1OhFzp8Iqgv7gsv/xx7XiFFGOKGAPn7g2', 'Giuseppe', 'Cozza', 2003, 'Bologna'),
+('simonemagli@gmail.com', 'sama', '$2y$10$kAG8SXG2hVSiKwnkc4Ho1OhFzp8Iqgv7gsv/xx7XiFFGOKGAPn7g2', 'Simone', 'Magli', 2003, 'Bologna'),
+('test3@example.com', 'testuser3', '$2y$10$kAG8SXG2hVSiKwnkc4Ho1OhFzp8Iqgv7gsv/xx7XiFFGOKGAPn7g2', 'Giulia', 'Verdi', 1992, 'Napoli');
 
 
 INSERT INTO UTENTE_CREATORE (email_utente_creat, nr_progetti, affidabilita) VALUES
@@ -196,10 +183,6 @@ VALUES
 ('Emilio 5.0', 'Il famosissimo Emilio, ma per adulti', CURDATE(), 'fedesgambe@icloud.com', 20000, DATE_ADD(CURDATE(), INTERVAL 60 DAY), 'aperto');
 
 
-
-Popolare foto
-
-
 INSERT INTO FOTO_PROGETTO (nome_progetto, foto_url) VALUES
 ('EcoCar', 'images/progetto1.jpg'),
 ('Smart Home AI', 'images/progetto2.jpg'),
@@ -209,8 +192,6 @@ INSERT INTO FOTO_PROGETTO (nome_progetto, foto_url) VALUES
 ('Flipper City', 'images/flipper.png'),
 ('Emilio 5.0', 'images/emilio.png');
 
-
-popolare rewards:
 
 INSERT INTO REWARD (nome_progetto, descrizione, foto_url) VALUES
 ('EcoCar', 'Sticker esclusivo del progetto', 'images/reward1.png'),
