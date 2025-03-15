@@ -11,6 +11,10 @@ $errore = '';
 
 try {
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        // Log dei dati ricevuti in POST
+        error_log("Inizio processo POST per creazione progetto.");
+        error_log("Dati POST: " . print_r($_POST, true));
+
         $nome_progetto = trim($_POST['nome']);
         $descrizione = trim($_POST['descrizione']);
         $budget = floatval($_POST['budget']);
@@ -18,11 +22,16 @@ try {
         $tipo_progetto = $_POST['tipo_progetto']; // 'hardware' o 'software'
         $componenti = $_POST['componenti'] ?? []; // Solo se hardware
 
+        // Log dei dati principali
+        error_log("Nome progetto: $nome_progetto, Descrizione: $descrizione, Budget: $budget, Data limite: $data_limite, Tipo: $tipo_progetto");
+        error_log("Componenti ricevuti: " . print_r($componenti, true));
+
         if (empty($nome_progetto) || empty($descrizione) || $budget <= 0 || empty($data_limite) || !in_array($tipo_progetto, ['hardware', 'software'])) {
             throw new Exception("Compila tutti i campi correttamente.");
         }
 
         $pdo->beginTransaction();
+        error_log("Transaction iniziata per progetto: $nome_progetto.");
 
         // Inserisci il progetto principale
         $stmt = $pdo->prepare("INSERT INTO PROGETTO (nome, descrizione, data_inserimento, email_creatore, budget, data_limite) 
@@ -34,20 +43,22 @@ try {
             'budget' => $budget,
             'data_limite' => $data_limite
         ]);
+        error_log("Progetto inserito in PROGETTO: $nome_progetto.");
 
         // Inserisci nella tabella specifica hardware/software
         if ($tipo_progetto == 'hardware') {
             $stmtHardware = $pdo->prepare("INSERT INTO PROGETTO_HARDWARE (nome_progetto) VALUES (:nome_progetto)");
             $stmtHardware->execute(['nome_progetto' => $nome_progetto]);
+            error_log("Progetto hardware inserito in PROGETTO_HARDWARE: $nome_progetto.");
 
             // Inserisci i componenti (se presenti)
             $stmtComponente = $pdo->prepare("INSERT INTO COMPONENTE (nome, descrizione, prezzo, quantita) 
                                              VALUES (:nome, :descrizione, :prezzo, :quantita)
                                              ON DUPLICATE KEY UPDATE descrizione = VALUES(descrizione), prezzo = VALUES(prezzo), quantita = VALUES(quantita)");
-
             $stmtFormato = $pdo->prepare("INSERT INTO FORMATO (nome_componente, nome_hardware) VALUES (:nome_componente, :nome_hardware)");
 
-            foreach ($componenti as $componente) {
+            foreach ($componenti as $index => $componente) {
+                error_log("Processando componente index $index: " . print_r($componente, true));
                 if (!empty($componente['nome']) && !empty($componente['descrizione']) && $componente['prezzo'] > 0 && $componente['quantita'] > 0) {
                     $stmtComponente->execute([
                         'nome' => $componente['nome'],
@@ -55,30 +66,33 @@ try {
                         'prezzo' => $componente['prezzo'],
                         'quantita' => $componente['quantita']
                     ]);
+                    error_log("Componente inserito/aggiornato: " . $componente['nome']);
                     $stmtFormato->execute([
                         'nome_componente' => $componente['nome'],
                         'nome_hardware' => $nome_progetto
                     ]);
+                    error_log("Formato associato: Componente " . $componente['nome'] . " a Hardware $nome_progetto.");
+                } else {
+                    error_log("Dati non validi per componente index $index: " . print_r($componente, true));
                 }
             }
         } else {
             $stmtSoftware = $pdo->prepare("INSERT INTO PROGETTO_SOFTWARE (nome_progetto) VALUES (:nome_progetto)");
             $stmtSoftware->execute(['nome_progetto' => $nome_progetto]);
+            error_log("Progetto software inserito in PROGETTO_SOFTWARE: $nome_progetto.");
         }
 
         $pdo->commit();
+        error_log("Transaction completata per progetto: $nome_progetto.");
         header("Location: index.php");
         exit();
     }
 } catch (Exception $e) {
     $pdo->rollBack();
     $errore = $e->getMessage();
+    error_log("Errore: " . $errore);
 }
-
-
-// TODO: Implementaer meglio il cricametno delle immagini, verificare perchè progetto hardware non funziona
 ?>
-
 <!DOCTYPE html>
 <html lang="it">
 <head>
@@ -109,7 +123,6 @@ try {
     </script>
 </head>
 <body>
-
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
     <div class="container">
@@ -125,7 +138,7 @@ try {
         <div class="alert alert-danger"><?php echo htmlspecialchars($errore); ?></div>
     <?php endif; ?>
 
-    <form action="" method="POST">
+    <form action="" method="POST" enctype="multipart/form-data">
         <div class="mb-3">
             <label class="form-label">Nome del Progetto</label>
             <input type="text" class="form-control" name="nome" required>
@@ -150,6 +163,7 @@ try {
         <div class="mb-3">
             <label class="form-label">Tipo di Progetto</label>
             <select class="form-select" name="tipo_progetto" id="tipo_progetto" onchange="mostraComponenti()" required>
+                <option value="select">Seleziona il tipo di progetto</option>
                 <option value="hardware">Hardware</option>
                 <option value="software">Software</option>
             </select>
