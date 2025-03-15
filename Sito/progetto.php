@@ -126,43 +126,6 @@ try {
 </nav>
 
 <div class="container mt-5 pt-4">
-    <!-- Badge tipo progetto -->
-    <div class="alert alert-info mb-4">
-        Tipo progetto:
-        <span class="badge bg-dark">
-            <?php echo strtoupper(htmlspecialchars($progetto['tipo_progetto'])) ?>
-        </span>
-    </div>
-
-
-
-    <!-- Sezione componenti hardware -->
-    <?php if ($progetto['tipo_progetto'] === 'hardware' && !empty($componenti)): ?>
-        <div class="mt-4">
-            <h4>Componenti Richiesti</h4>
-            <div class="row row-cols-1 row-cols-md-2 g-4">
-                <?php foreach ($componenti as $componente): ?>
-                    <div class="col">
-                        <div class="card h-100 shadow-sm">
-                            <div class="card-body">
-                                <h5 class="card-title"><?php echo htmlspecialchars($componente['nome']); ?></h5>
-                                <p class="card-text"><?php echo htmlspecialchars($componente['descrizione']); ?></p>
-                                <div class="d-flex justify-content-between">
-                                    <span class="text-muted">
-                                        Prezzo: €<?php echo number_format($componente['prezzo'], 2); ?>
-                                    </span>
-                                    <span class="text-muted">
-                                        Quantità: <?php echo htmlspecialchars($componente['quantita']); ?>
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                <?php endforeach; ?>
-            </div>
-        </div>
-    <?php endif; ?>
-
 
     <!-- Contenuto della Pagina -->
     <div class="container mt-5 pt-4">
@@ -184,6 +147,41 @@ try {
                 </div>
             <?php endforeach; ?>
         </div>
+
+        <!-- Badge tipo progetto -->
+        <div class="alert alert-info mb-4">
+            Tipo progetto:
+            <span class="badge bg-dark">
+            <?php echo strtoupper(htmlspecialchars($progetto['tipo_progetto'])) ?>
+        </span>
+        </div>
+
+        <!-- Sezione componenti hardware -->
+        <?php if ($progetto['tipo_progetto'] === 'hardware' && !empty($componenti)): ?>
+            <div class="mt-4">
+                <h4>Componenti Richiesti</h4>
+                <div class="row row-cols-1 row-cols-md-2 g-4">
+                    <?php foreach ($componenti as $componente): ?>
+                        <div class="col">
+                            <div class="card h-100 shadow-sm">
+                                <div class="card-body">
+                                    <h5 class="card-title"><?php echo htmlspecialchars($componente['nome']); ?></h5>
+                                    <p class="card-text"><?php echo htmlspecialchars($componente['descrizione']); ?></p>
+                                    <div class="d-flex justify-content-between">
+                                    <span class="text-muted">
+                                        Prezzo: €<?php echo number_format($componente['prezzo'], 2); ?>
+                                    </span>
+                                        <span class="text-muted">
+                                        Quantità: <?php echo htmlspecialchars($componente['quantita']); ?>
+                                    </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+        <?php endif; ?>
 
     <!-- Pulsanti di azione modificati -->
     <div class="mt-4">
