@@ -5,12 +5,18 @@ require_once 'session.php';
 $loggedIn = isset($_SESSION['email']);
 $userData = null;
 $nickname = '';
+$isCreator = false;
 
 if ($loggedIn) {
-    $stmt = $pdo->prepare("SELECT nickname FROM UTENTE WHERE email = :email");
+    // Verifica se l'utente è un creatore
+    $stmt = $pdo->prepare("SELECT U.nickname, C.email_utente_creat 
+                          FROM UTENTE U
+                          LEFT JOIN UTENTE_CREATORE C ON U.email = C.email_utente_creat 
+                          WHERE U.email = :email");
     $stmt->execute(['email' => $_SESSION['email']]);
     $userData = $stmt->fetch(PDO::FETCH_ASSOC);
     $nickname = $userData ? htmlspecialchars($userData['nickname']) : 'Profilo';
+    $isCreator = !empty($userData['email_utente_creat']);
 }
 
 // Numero di progetti per pagina
@@ -41,8 +47,6 @@ $stmt->bindValue(':limit', $progetti_per_pagina, PDO::PARAM_INT);
 $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
 $stmt->execute();
 $progetti = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-// TODO Capire criterio per oridnamento schede progetto nella home
 ?>
 
 <!DOCTYPE html>
@@ -60,7 +64,7 @@ $progetti = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
     <div class="container">
         <a class="navbar-brand" href="index.php">
-            <img src="https://via.placeholder.com/150x50.png?text=BoStarter" alt="BoStarter Logo" class="d-inline-block align-text-top">
+            <img src="images/logo.png" alt="BoStarter Logo" class="d-inline-block align-text-top">
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -69,8 +73,10 @@ $progetti = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item"><a class="nav-link active" href="index.php">Home</a></li>
                 <li class="nav-item"><a class="nav-link" href="#progetti">Progetti</a></li>
-                <?php if ($loggedIn): ?>
+                <?php if ($loggedIn && $isCreator): ?>
                     <li class="nav-item"><a class="nav-link" href="crea_progetto.php">Crea un Progetto</a></li>
+                <?php endif; ?>
+                <?php if ($loggedIn): ?>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <?php echo $nickname; ?>
@@ -97,7 +103,7 @@ $progetti = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <h1 class="display-4 fw-bold">Benvenuto su BoStarter</h1>
         <p class="lead">Dai vita alle tue idee con il supporto della community.</p>
         <a href="#progetti" class="btn btn-primary btn-lg">Scopri i Progetti</a>
-        <?php if ($loggedIn): ?>
+        <?php if ($loggedIn && $isCreator): ?>
             <a href="crea_progetto.php" class="btn btn-outline-light btn-lg">Crea un Progetto</a>
         <?php endif; ?>
     </div>
@@ -152,7 +158,6 @@ $progetti = $stmt->fetchAll(PDO::FETCH_ASSOC);
     </div>
 </section>
 
-<!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

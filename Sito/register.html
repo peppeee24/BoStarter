@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="it">
 <head>
@@ -9,7 +11,6 @@
 </head>
 <body class="auth-page">
 
-<!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
     <div class="container">
         <a class="navbar-brand" href="#">
@@ -18,12 +19,14 @@
     </div>
 </nav>
 
-<!-- Registration Form -->
 <section class="auth-container">
     <div class="auth-card">
         <div class="auth-header">
             <h2>Registrati su BoStarter</h2>
             <p>Crea un account per iniziare a supportare progetti incredibili.</p>
+            <?php if (!empty($errorMessage)): ?>
+            <div class="alert alert-danger"><?= $errorMessage ?></div>
+            <?php endif; ?>
         </div>
         <form action="registrati.php" method="POST">
             <div class="mb-3">
@@ -58,6 +61,37 @@
                 <label for="birth-place" class="form-label">Luogo di Nascita</label>
                 <input type="text" class="form-control" id="birth-place" name="birth-place" placeholder="Inserisci il tuo luogo di nascita" required>
             </div>
+
+            <!-- Nuovi campi per il tipo utente -->
+            <div class="mb-3">
+                <label class="form-label">Tipo Utente</label>
+                <div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="user_type" id="userTypeNormal" value="normal" checked>
+                        <label class="form-check-label" for="userTypeNormal">
+                            Utente Normale
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="user_type" id="userTypeCreator" value="creator">
+                        <label class="form-check-label" for="userTypeCreator">
+                            Creatore
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="user_type" id="userTypeAdmin" value="admin">
+                        <label class="form-check-label" for="userTypeAdmin">
+                            Amministratore
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-3" id="securityCodeField" style="display: none;">
+                <label for="security_code" class="form-label">Codice di Sicurezza</label>
+                <input type="text" class="form-control" id="security_code" name="security_code" placeholder="Inserisci il codice di sicurezza">
+            </div>
+
             <button type="submit" class="btn btn-primary w-100">Registrati</button>
         </form>
         <div class="auth-footer">
@@ -66,14 +100,30 @@
     </div>
 </section>
 
-<!-- Footer -->
 <footer class="footer text-white py-4">
     <div class="container text-center">
         <p class="footer-copy">&copy; 2023 BoStarter. Tutti i diritti riservati.</p>
     </div>
 </footer>
 
-<!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const userTypeAdmin = document.getElementById('userTypeAdmin');
+        const securityCodeField = document.getElementById('securityCodeField');
+
+        function toggleSecurityCode() {
+            const isAdmin = document.querySelector('input[name="user_type"]:checked').value === 'admin';
+            securityCodeField.style.display = isAdmin ? 'block' : 'none';
+            document.getElementById('security_code').toggleAttribute('required', isAdmin);
+        }
+
+        document.querySelectorAll('input[name="user_type"]').forEach(radio => {
+            radio.addEventListener('change', toggleSecurityCode);
+        });
+
+        toggleSecurityCode();
+    });
+</script>
 </body>
 </html>
