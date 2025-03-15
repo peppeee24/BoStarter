@@ -28,7 +28,7 @@ CREATE TABLE UTENTE_CREATORE(
     FOREIGN KEY (email_utente_creat) REFERENCES UTENTE(email) ON DELETE CASCADE
 ) ENGINE "INNODB";
 
-
+/*
 CREATE TABLE SKILL_CURRICULUM(
     competenza VARCHAR(100),
     livello INT CHECK (livello BETWEEN 0 AND 5),
@@ -38,6 +38,30 @@ CREATE TABLE SKILL_CURRICULUM(
     FOREIGN KEY (email_utente) REFERENCES UTENTE(email) ON DELETE CASCADE,
     FOREIGN KEY (email_utente_amm) REFERENCES UTENTE_AMMINISTRATORE(email_utente_amm) ON DELETE CASCADE
 ) ENGINE "INNODB";
+ */
+
+CREATE TABLE SKILL(
+    competenza VARCHAR(100),
+    livello INT CHECK (livello BETWEEN 0 AND 5),
+    email_utente_amm VARCHAR(255),
+    PRIMARY KEY (competenza, livello),
+    FOREIGN KEY (email_utente_amm) REFERENCES UTENTE_AMMINISTRATORE(email_utente_amm) ON DELETE CASCADE
+) ENGINE "INNODB";
+
+
+
+CREATE TABLE INDICA(
+    competenza VARCHAR(100),
+    livello INT CHECK (livello BETWEEN 0 AND 5),
+    email_utente VARCHAR(255),
+    PRIMARY KEY (email_utente, competenza, livello),
+    FOREIGN KEY (email_utente) REFERENCES UTENTE(email) ON DELETE CASCADE,
+    FOREIGN KEY (competenza) REFERENCES SKILL(competenza) ON DELETE CASCADE,
+    FOREIGN KEY (livello) REFERENCES SKILL(livello) ON DELETE CASCADE
+) ENGINE "INNODB";
+
+
+
 
 CREATE TABLE PROGETTO (
     nome VARCHAR(255) PRIMARY KEY,
@@ -119,12 +143,25 @@ CREATE TABLE PROFILO (
     FOREIGN KEY (nome_software) REFERENCES PROGETTO_SOFTWARE(nome_progetto) ON DELETE CASCADE
 ) ENGINE "INNODB";
 
+/*
 CREATE TABLE SKILL_RICHIESTE (
     id_profilo INT,
     competenza VARCHAR(100),
     livello INT CHECK (livello BETWEEN 0 AND 5),
     PRIMARY KEY (id_profilo, competenza),
     FOREIGN KEY (id_profilo) REFERENCES PROFILO(id) ON DELETE CASCADE
+) ENGINE "INNODB";
+
+ */
+
+CREATE TABLE INDICA(
+    competenza VARCHAR(100),
+    livello INT CHECK (livello BETWEEN 0 AND 5),
+    id_profilo INT,
+    PRIMARY KEY (id_profilo, competenza, livello),
+    FOREIGN KEY (id_profilo) REFERENCES PROFILO(id) ON DELETE CASCAD,
+    FOREIGN KEY (competenza) REFERENCES SKILL(competenza) ON DELETE CASCADE,
+    FOREIGN KEY (livello) REFERENCES SKILL(livello) ON DELETE CASCADE
 ) ENGINE "INNODB";
 
 CREATE TABLE FINANZIAMENTO (
