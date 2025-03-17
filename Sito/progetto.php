@@ -1,4 +1,5 @@
 <?php
+session_start();
 require 'session.php'; // Connessione al database
 
 if (!isset($_GET['nome_progetto'])) {
@@ -10,7 +11,7 @@ $loggedIn = isset($_SESSION['email']);
 $email_utente = $loggedIn ? $_SESSION['email'] : null;
 
 try {
-    // Recupera i dettagli del progetto e il tipo
+    // Recupera i dettagli del progetto e tipo
     $stmt = $pdo->prepare("
         SELECT P.*, 
             COALESCE(
@@ -28,6 +29,14 @@ try {
         die("Errore: Il progetto non esiste.");
     }
 
+    // Verifica se la data di scadenza è precedente alla data odierna e aggiorna lo stato a "chiuso"
+    $data_limite = strtotime($progetto['data_limite']);
+    if ($data_limite < time()) {
+        // Aggiorna lo stato del progetto a "chiuso"
+        $stmtUpdate = $pdo->prepare("UPDATE PROGETTO SET stato = 'chiuso' WHERE nome = :nome");
+        $stmtUpdate->execute(['nome' => $nome_progetto]);
+    }
+
     // Recupera componenti solo per hardware
     $componenti = [];
     if ($progetto['tipo_progetto'] === 'hardware') {
@@ -41,7 +50,19 @@ try {
         $componenti = $stmtComponenti->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // Recupera immagini e altri dati...
+    // Recupera le skill necessarie per i progetti software
+    $skills_richieste = [];
+    if ($progetto['tipo_progetto'] === 'software') {
+        $stmtSkills = $pdo->prepare("
+            SELECT competenza, livello
+            FROM COMPRENDE
+            WHERE id_profilo IN (SELECT id FROM PROFILO WHERE nome_software = :nome)
+        ");
+        $stmtSkills->execute(['nome' => $nome_progetto]);
+        $skills_richieste = $stmtSkills->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    // Recupera immagini e altri dati
     $stmtImg = $pdo->prepare("SELECT foto_url FROM FOTO_PROGETTO WHERE nome_progetto = :nome");
     $stmtImg->execute(['nome' => $nome_progetto]);
     $immagini = $stmtImg->fetchAll(PDO::FETCH_ASSOC);
@@ -50,7 +71,7 @@ try {
     $stmtFinanziamenti->execute(['nome' => $nome_progetto]);
     $totale_finanziato = $stmtFinanziamenti->fetch(PDO::FETCH_ASSOC)['totale_finanziato'] ?? 0;
 
-    $budget_raggiunto = $totale_finanziato >= $progetto['budget'] || strtotime($progetto['data_limite']) < time();
+    $budget_raggiunto = $totale_finanziato >= $progetto['budget'];
     $progetto_chiuso = $progetto['stato'] === 'chiuso';
 
     $stmtCommenti = $pdo->prepare("
@@ -102,7 +123,6 @@ try {
         }
     }
 
-
 } catch (Exception $e) {
     echo "<p style='color: red; text-align: center;'>Errore: " . htmlspecialchars($e->getMessage()) . "</p>";
 }
@@ -115,7 +135,6 @@ try {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo htmlspecialchars($progetto['nome']); ?> - BoStarter</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
@@ -127,63 +146,81 @@ try {
 
 <div class="container mt-5 pt-4">
 
-    <!-- Contenuto della Pagina -->
-    <div class="container mt-5 pt-4">
-        <h1 class="mt-4"><?php echo htmlspecialchars($progetto['nome']); ?></h1>
-        <p class="text-muted">Creato da: <strong><?php echo htmlspecialchars($progetto['email_creatore']); ?></strong></p>
-        <p class="text-muted">Creato il: <?php echo date("d-m-Y", strtotime($progetto['data_inserimento'])); ?></p>
-        <p><?php echo nl2br(htmlspecialchars($progetto['descrizione'])); ?></p>
+    <h1><?php echo htmlspecialchars($progetto['nome']); ?></h1>
 
-        <h4>Budget richiesto: €<?php echo number_format($progetto['budget'], 2); ?></h4>
-        <p><strong>Importo finanziato:</strong> €<?php echo number_format($totale_finanziato, 2); ?></p>
-        <p><strong>Stato:</strong> <span class="badge <?php echo $progetto_chiuso ? 'bg-danger' : 'bg-success'; ?>">
-        <?php echo $progetto_chiuso ? 'Chiuso' : 'Aperto'; ?>
+    <p class="text-muted">Creato da: <strong><?php echo htmlspecialchars($progetto['email_creatore']); ?></strong></p>
+    <p class="text-muted">Creato il: <?php echo date("d-m-Y", strtotime($progetto['data_inserimento'])); ?></p>
+    <p class="text-muted">Data di Chiusura: <?php echo date("d-m-Y", strtotime($progetto['data_limite'])); ?></p>
+
+
+    <p><?php echo nl2br(htmlspecialchars($progetto['descrizione'])); ?></p>
+
+    <h4>Budget richiesto: €<?php echo number_format($progetto['budget'], 2); ?></h4>
+    <p><strong>Importo finanziato:</strong> €<?php echo number_format($totale_finanziato, 2); ?></p>
+    <p><strong>Stato:</strong> <span class="badge <?php echo $progetto_chiuso ? 'bg-danger' : 'bg-success'; ?>">
+    <?php echo $progetto_chiuso ? 'Chiuso' : 'Aperto'; ?>
     </span></p>
-        <!-- Galleria immagini -->
-        <div class="row">
-            <?php foreach ($immagini as $img): ?>
-                <div class="col-md-4 mb-3">
-                    <img src="<?php echo htmlspecialchars($img['foto_url']); ?>" class="img-fluid rounded" alt="Immagine progetto">
-                </div>
-            <?php endforeach; ?>
-        </div>
 
-        <!-- Badge tipo progetto -->
-        <div class="alert alert-info mb-4">
-            Tipo progetto:
-            <span class="badge bg-dark">
-            <?php echo strtoupper(htmlspecialchars($progetto['tipo_progetto'])) ?>
-        </span>
-        </div>
+    <!-- Galleria immagini -->
+    <div class="row">
+        <?php foreach ($immagini as $img): ?>
+            <div class="col-md-4 mb-3">
+                <img src="<?php echo htmlspecialchars($img['foto_url']); ?>" class="img-fluid rounded" alt="Immagine progetto">
+            </div>
+        <?php endforeach; ?>
+    </div>
 
-        <!-- Sezione componenti hardware -->
-        <?php if ($progetto['tipo_progetto'] === 'hardware' && !empty($componenti)): ?>
-            <div class="mt-4">
-                <h4>Componenti Richiesti</h4>
-                <div class="row row-cols-1 row-cols-md-2 g-4">
-                    <?php foreach ($componenti as $componente): ?>
-                        <div class="col">
-                            <div class="card h-100 shadow-sm">
-                                <div class="card-body">
-                                    <h5 class="card-title"><?php echo htmlspecialchars($componente['nome']); ?></h5>
-                                    <p class="card-text"><?php echo htmlspecialchars($componente['descrizione']); ?></p>
-                                    <div class="d-flex justify-content-between">
+    <!-- Badge tipo progetto -->
+    <div class="alert alert-info mb-4">
+        Tipo progetto:
+        <span class="badge bg-dark">
+        <?php echo strtoupper(htmlspecialchars($progetto['tipo_progetto'])) ?>
+    </span>
+    </div>
+
+    <!-- Sezione skill necessarie per il progetto software -->
+    <?php if ($progetto['tipo_progetto'] === 'software' && !empty($skills_richieste)): ?>
+        <div class="mt-4">
+            <h4>Skill Necessarie</h4>
+            <ul class="list-group">
+                <?php foreach ($skills_richieste as $skill): ?>
+                    <li class="list-group-item">
+                        <strong><?php echo htmlspecialchars($skill['competenza']); ?></strong>
+                        - Livello richiesto: <?php echo $skill['livello']; ?>
+                    </li>
+                <?php endforeach; ?>
+            </ul>
+        </div>
+    <?php endif; ?>
+
+    <!-- Sezione componenti hardware -->
+    <?php if ($progetto['tipo_progetto'] === 'hardware' && !empty($componenti)): ?>
+        <div class="mt-4">
+            <h4>Componenti Richiesti</h4>
+            <div class="row row-cols-1 row-cols-md-2 g-4">
+                <?php foreach ($componenti as $componente): ?>
+                    <div class="col">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-body">
+                                <h5 class="card-title"><?php echo htmlspecialchars($componente['nome']); ?></h5>
+                                <p class="card-text"><?php echo htmlspecialchars($componente['descrizione']); ?></p>
+                                <div class="d-flex justify-content-between">
                                     <span class="text-muted">
                                         Prezzo: €<?php echo number_format($componente['prezzo'], 2); ?>
                                     </span>
-                                        <span class="text-muted">
+                                    <span class="text-muted">
                                         Quantità: <?php echo htmlspecialchars($componente['quantita']); ?>
                                     </span>
-                                    </div>
                                 </div>
                             </div>
                         </div>
-                    <?php endforeach; ?>
-                </div>
+                    </div>
+                <?php endforeach; ?>
             </div>
-        <?php endif; ?>
+        </div>
+    <?php endif; ?>
 
-    <!-- Pulsanti di azione modificati -->
+    <!-- Pulsanti di azione -->
     <div class="mt-4">
         <?php if ($loggedIn && !$budget_raggiunto && !$progetto_chiuso): ?>
             <a href="finanzia.php?nome_progetto=<?php echo urlencode($progetto['nome']); ?>"
@@ -212,33 +249,31 @@ try {
         <?php endif; ?>
     </div>
 
+    <!-- Sezione Commenti -->
+    <div class="mt-5">
+        <h3>Commenti</h3>
+        <?php if ($loggedIn): ?>
+            <form action="" method="POST" class="mb-4">
+                <textarea class="form-control" name="nuovo_commento" rows="3" required></textarea>
+                <button type="submit" class="btn btn-primary mt-2">Invia Commento</button>
+            </form>
+        <?php else: ?>
+            <p><a href="login.html">Accedi</a> per lasciare un commento.</p>
+        <?php endif; ?>
 
-        <!-- Sezione Commenti -->
-        <div class="mt-5">
-            <h3>Commenti</h3>
-            <?php if ($loggedIn): ?>
-                <form action="" method="POST" class="mb-4">
-                    <textarea class="form-control" name="nuovo_commento" rows="3" required></textarea>
-                    <button type="submit" class="btn btn-primary mt-2">Invia Commento</button>
-                </form>
-            <?php else: ?>
-                <p><a href="login.html">Accedi</a> per lasciare un commento.</p>
-            <?php endif; ?>
-
-            <?php foreach ($commenti as $commento): ?>
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <strong><?php echo htmlspecialchars($commento['email_utente']); ?></strong>
-                        <p><?php echo nl2br(htmlspecialchars($commento['testo'])); ?></p>
-                        <?php if ($commento['risposta']): ?>
-                            <div class="alert alert-secondary mt-2">
-                                <strong>Risposta:</strong> <?php echo nl2br(htmlspecialchars($commento['risposta'])); ?>
-                            </div>
-                        <?php endif; ?>
-                    </div>
+        <?php foreach ($commenti as $commento): ?>
+            <div class="card mb-3">
+                <div class="card-body">
+                    <strong><?php echo htmlspecialchars($commento['email_utente']); ?></strong>
+                    <p><?php echo nl2br(htmlspecialchars($commento['testo'])); ?></p>
+                    <?php if ($commento['risposta']): ?>
+                        <div class="alert alert-secondary mt-2">
+                            <strong>Risposta:</strong> <?php echo nl2br(htmlspecialchars($commento['risposta'])); ?>
+                        </div>
+                    <?php endif; ?>
                 </div>
-            <?php endforeach; ?>
-        </div>
+            </div>
+        <?php endforeach; ?>
     </div>
 
 </div>
