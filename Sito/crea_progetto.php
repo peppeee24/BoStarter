@@ -32,6 +32,7 @@ try {
         $tipo_progetto = $_POST['tipo_progetto'];
         $componenti = $_POST['componenti'] ?? [];
         $profili = $_POST['profili'] ?? [];
+        $rewards = $_POST['rewards'] ?? [];
 
         if (empty($nome_progetto) || strlen($nome_progetto) > 255 ||
             empty($descrizione) ||
@@ -136,6 +137,61 @@ try {
             }
         }
 
+        // Gestione rewards
+        if (!empty($rewards)) {
+            $stmtReward = $pdo->prepare("INSERT INTO REWARD 
+                (nome_progetto, descrizione, foto_url) 
+                VALUES (?, ?, ?)");
+
+            // Cartella per le immagini dei reward
+            $uploadRewardDir = 'uploads/progetti/' . $nome_progetto . '/rewards/';
+            if (!file_exists($uploadRewardDir)) {
+                mkdir($uploadRewardDir, 0755, true);
+            }
+
+            foreach ($rewards as $rewardKey => $reward) {
+                if (!empty($reward['descrizione'])) {
+                    $foto_url = ''; // Valore predefinito se non c'è immagine
+
+                    // Gestione immagine del reward
+                    if (!empty($_FILES['reward_foto']['name'][$rewardKey]) &&
+                        $_FILES['reward_foto']['error'][$rewardKey] === UPLOAD_ERR_OK) {
+
+                        $tmpName = $_FILES['reward_foto']['tmp_name'][$rewardKey];
+
+                        // Validazione dell'immagine
+                        $finfo = new finfo(FILEINFO_MIME_TYPE);
+                        $mime = $finfo->file($tmpName);
+                        $allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+
+                        if (in_array($mime, $allowedTypes) &&
+                            $_FILES['reward_foto']['size'][$rewardKey] <= 5242880) { // 5MB
+
+                            $ext = [
+                                'image/jpeg' => 'jpg',
+                                'image/png' => 'png',
+                                'image/webp' => 'webp'
+                            ][$mime] ?? 'bin';
+
+                            $filename = uniqid('reward_') . '.' . $ext;
+                            $path = $uploadRewardDir . $filename;
+
+                            if (move_uploaded_file($tmpName, $path)) {
+                                $foto_url = $path;
+                            }
+                        }
+                    }
+
+                    // Inserimento del reward
+                    $stmtReward->execute([
+                        $nome_progetto,
+                        $reward['descrizione'],
+                        $foto_url
+                    ]);
+                }
+            }
+        }
+
         // Gestione immagini
         if (!empty($_FILES['foto']['name'][0])) {
             $uploadDir = 'uploads/progetti/' . $nome_progetto . '/';
@@ -206,7 +262,7 @@ try {
             border: 2px solid #ddd;
             border-radius: 5px;
         }
-        .componente-box, .profilo-box {
+        .componente-box, .profilo-box, .reward-box {
             background: #f8f9fa;
             padding: 15px;
             margin-bottom: 15px;
@@ -319,6 +375,35 @@ try {
             container.insertAdjacentHTML('beforeend', html);
         }
 
+        function aggiungiReward() {
+            const container = document.getElementById('reward-container');
+            const index = Date.now();
+
+            const html = `
+                <div class="reward-box">
+                    <div class="row g-3">
+                        <div class="col-md-8">
+                            <label class="form-label">Descrizione *</label>
+                            <textarea name="rewards[${index}][descrizione]" class="form-control" rows="3" required></textarea>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Immagine</label>
+                            <input type="file" class="form-control" name="reward_foto[${index}]"
+                                   accept="image/jpeg, image/png, image/webp"
+                                   onchange="mostraAnteprimaReward(this, ${index})">
+                            <div id="anteprima-reward-${index}" class="mt-2"></div>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="button" class="btn btn-danger"
+                                    onclick="this.closest('.reward-box').remove()">Rimuovi</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            container.insertAdjacentHTML('beforeend', html);
+        }
+
         function toggleSkillLevel(checkbox, profiloIndex, skillName) {
             const levelSelect = document.getElementById(`level_${skillName}_${profiloIndex}`);
             if (checkbox.checked) {
@@ -348,6 +433,23 @@ try {
                 };
                 reader.readAsDataURL(file);
             });
+        }
+
+        // Anteprima immagini reward
+        function mostraAnteprimaReward(input, index) {
+            const container = document.getElementById(`anteprima-reward-${index}`);
+            container.innerHTML = '';
+
+            if (input.files && input.files[0] && input.files[0].type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.classList.add('preview-img');
+                    container.appendChild(img);
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
         }
 
         // Conversione virgole in punti per decimali
@@ -409,6 +511,16 @@ try {
                    onchange="mostraAnteprima(this)">
             <div id="anteprima-imgs" class="mt-2"></div>
         </div>
+
+        <!-- Sezione reward -->
+        <div class="mb-4">
+            <label class="form-label">Premi per il Progetto</label>
+            <div id="reward-container"></div>
+            <button type="button" class="btn btn-secondary mt-2" onclick="aggiungiReward()">
+                + Aggiungi Reward
+            </button>
+        </div>
+
 
         <!-- Sezione tipo progetto -->
         <div class="mb-4">

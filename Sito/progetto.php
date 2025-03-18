@@ -1,5 +1,7 @@
 <?php
 session_start();
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 require 'session.php'; // Connessione al database
 
 if (!isset($_GET['nome_progetto'])) {
@@ -123,22 +125,26 @@ try {
     }
 
     // Gestione dell'inserimento di una risposta a un commento (solo per il creatore del progetto)
-    if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['risposta_commento']) && isset($_POST['id_commento']) && $email_utente === $progetto['email_creatore']) {
+    if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['risposta_commento']) && isset($_POST['id_commento']) && $loggedIn && $email_utente === $progetto['email_creatore']) {
         $testo_risposta = trim($_POST['risposta_commento']);
         $id_commento = intval($_POST['id_commento']);
 
         if (!empty($testo_risposta)) {
-            $stmtInserisciRisposta = $pdo->prepare("
-                INSERT INTO RISPOSTA_COMMENTO (id_commento, email_creatore, data_risposta, testo)
-                VALUES (:id_commento, :email_creatore, CURDATE(), :testo)
-            ");
-            $stmtInserisciRisposta->execute([
-                'id_commento' => $id_commento,
-                'email_creatore' => $email_utente,
-                'testo' => $testo_risposta
-            ]);
-            header("Location: progetto.php?nome_progetto=" . urlencode($nome_progetto));
-            exit();
+            try {
+                $stmtInserisciRisposta = $pdo->prepare("
+                    INSERT INTO RISPOSTA_COMMENTO (id_commento, email_creatore, data_risposta, testo)
+                    VALUES (:id_commento, :email_creatore, CURDATE(), :testo)
+                ");
+                $stmtInserisciRisposta->execute([
+                    'id_commento' => $id_commento,
+                    'email_creatore' => $email_utente,
+                    'testo' => $testo_risposta
+                ]);
+                header("Location: progetto.php?nome_progetto=" . urlencode($nome_progetto));
+                exit();
+            } catch (PDOException $e) {
+                echo "<p style='color: red; text-align: center;'>Errore nell'inserimento della risposta: " . htmlspecialchars($e->getMessage()) . "</p>";
+            }
         }
     }
 
@@ -283,26 +289,48 @@ try {
         <h3>Commenti</h3>
         <?php if ($loggedIn): ?>
             <form action="" method="POST" class="mb-4">
-                <textarea class="form-control" name="nuovo_commento" rows="3" required></textarea>
+                <textarea class="form-control" name="nuovo_commento" rows="3" required placeholder="Inserisci il tuo commento..."></textarea>
                 <button type="submit" class="btn btn-primary mt-2">Invia Commento</button>
             </form>
         <?php else: ?>
             <p><a href="login.html">Accedi</a> per lasciare un commento.</p>
         <?php endif; ?>
 
-        <?php foreach ($commenti as $commento): ?>
-            <div class="card mb-3">
-                <div class="card-body">
-                    <strong><?php echo htmlspecialchars($commento['email_utente']); ?></strong>
-                    <p><?php echo nl2br(htmlspecialchars($commento['testo'])); ?></p>
-                    <?php if ($commento['risposta']): ?>
-                        <div class="alert alert-secondary mt-2">
-                            <strong>Risposta:</strong> <?php echo nl2br(htmlspecialchars($commento['risposta'])); ?>
+        <?php if (empty($commenti)): ?>
+            <div class="alert alert-info">Nessun commento presente. Sii il primo a commentare!</div>
+        <?php else: ?>
+            <?php foreach ($commenti as $commento): ?>
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <strong><?php echo htmlspecialchars($commento['email_utente']); ?></strong>
+                            <small class="text-muted"><?php echo date("d-m-Y", strtotime($commento['data_commento'])); ?></small>
                         </div>
-                    <?php endif; ?>
+                        <p class="mt-2"><?php echo nl2br(htmlspecialchars($commento['testo'])); ?></p>
+
+                        <?php if ($commento['risposta']): ?>
+                            <div class="alert alert-light mt-3">
+                                <div class="d-flex justify-content-between">
+                                    <strong>Risposta del creatore:</strong>
+                                    <small class="text-muted"><?php echo date("d-m-Y", strtotime($commento['data_risposta'])); ?></small>
+                                </div>
+                                <p class="mt-1"><?php echo nl2br(htmlspecialchars($commento['risposta'])); ?></p>
+                            </div>
+                        <?php elseif ($loggedIn && $email_utente === $progetto['email_creatore']): ?>
+                            <!-- Form di risposta visibile solo al creatore del progetto -->
+                            <form action="" method="POST" class="mt-3">
+                                <input type="hidden" name="id_commento" value="<?php echo $commento['id']; ?>">
+                                <div class="form-group">
+                                    <label for="risposta_<?php echo $commento['id']; ?>">Rispondi a questo commento:</label>
+                                    <textarea class="form-control" id="risposta_<?php echo $commento['id']; ?>" name="risposta_commento" rows="2" required></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-outline-primary btn-sm mt-2">Invia risposta</button>
+                            </form>
+                        <?php endif; ?>
+                    </div>
                 </div>
-            </div>
-        <?php endforeach; ?>
+            <?php endforeach; ?>
+        <?php endif; ?>
     </div>
 
 </div>
