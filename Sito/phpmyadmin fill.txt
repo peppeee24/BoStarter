@@ -161,6 +161,7 @@ INSERT INTO UTENTE (email, nickname, password, nome, cognome, anno_nascita, luog
 ('fedesgambe@icloud.com', 'fedesgambe', '$2y$10$kAG8SXG2hVSiKwnkc4Ho1OhFzp8Iqgv7gsv/xx7XiFFGOKGAPn7g2', 'Federico', 'Sgambelluri', 2003, 'Bologna'),
 ('peppe24@gmail.com', 'peppeeee', '$2y$10$kAG8SXG2hVSiKwnkc4Ho1OhFzp8Iqgv7gsv/xx7XiFFGOKGAPn7g2', 'Giuseppe', 'Cozza', 2003, 'Bologna'),
 ('simonemagli@gmail.com', 'sama', '$2y$10$kAG8SXG2hVSiKwnkc4Ho1OhFzp8Iqgv7gsv/xx7XiFFGOKGAPn7g2', 'Simone', 'Magli', 2003, 'Bologna'),
+('mirko@gmail.com', 'Mirko', '$2y$10$kAG8SXG2hVSiKwnkc4Ho1OhFzp8Iqgv7gsv/xx7XiFFGOKGAPn7g2', 'Mirko', 'Rossi', 1980, 'Roma'),
 ('test3@example.com', 'testuser3', '$2y$10$kAG8SXG2hVSiKwnkc4Ho1OhFzp8Iqgv7gsv/xx7XiFFGOKGAPn7g2', 'Giulia', 'Verdi', 1992, 'Napoli');
 
 
@@ -168,9 +169,12 @@ INSERT INTO UTENTE_CREATORE (email_utente_creat, nr_progetti, affidabilita) VALU
 ('test1@example.com', 0, 7.5),
 ('test2@example.com', 0, 8.0),
 ('fedesgambe@icloud.com', 0, 8.0),
-('peppe24@gmail.com', 0, 8.0),
-('imonemagli@gmail.com', 0, 8.0),
+('simonemagli@gmail.com', 0, 8.0),
 ('test3@example.com', 0, 6.5);
+
+INSERT INTO UTENTE_AMMINISTRATORE (email_utente_amm, codice_sicurezza)
+VALUES ('peppe24@gmail.com', '12345');
+
 
 INSERT INTO PROGETTO (nome, descrizione, data_inserimento, email_creatore, budget, data_limite, stato) 
 VALUES 
@@ -179,7 +183,7 @@ VALUES
 ('VR Learning', 'Una piattaforma di apprendimento in realtà virtuale per scuole e università.', CURDATE(), 'test3@example.com', 20000, DATE_ADD(CURDATE(), INTERVAL 60 DAY), 'aperto'),
 ('Mucca Silver', 'Una mucca di carta stagnola', CURDATE(), 'fedesgambe@icloud.com', 15000, DATE_ADD(CURDATE(), INTERVAL 30 DAY), 'aperto'),
 ('Smart Park', 'Un parcehggio digitale per torvare sempre posto', CURDATE(), 'simonemagli@gmail.com', 25000, DATE_ADD(CURDATE(), INTERVAL 45 DAY), 'aperto'),
-('Flipper City', 'Gioca a flipper, ma la mappa è la tua città', CURDATE(), 'peppe24@gmail.com', 20000, DATE_ADD(CURDATE(), INTERVAL 60 DAY), 'aperto'),
+('Flipper City', 'Gioca a flipper, ma la mappa è la tua città', CURDATE(), 'fedesgambe@icloud.com', 20000, DATE_ADD(CURDATE(), INTERVAL 60 DAY), 'aperto'),
 ('Emilio 5.0', 'Il famosissimo Emilio, ma per adulti', CURDATE(), 'fedesgambe@icloud.com', 20000, DATE_ADD(CURDATE(), INTERVAL 60 DAY), 'aperto');
 
 
@@ -204,6 +208,95 @@ INSERT INTO REWARD (nome_progetto, descrizione, foto_url) VALUES
 
 ('VR Learning', 'Guida e-book su sostenibilità', 'images/reward7.png'),
 ('VR Learning', 'Sconto su prodotti green', 'images/reward8.png'),
-('VR Learning', 'Nome inciso sul prodotto finale', 'images/reward9.png');
+('VR Learning', 'Nome inciso sul prodotto finale', 'images/reward9.png'),
+
+('Mucca Silver', 'Sticker in edizione limitata a tema mucca', 'images/reward10.png'),
+('Mucca Silver', 'Miniatura in carta stagnola firmata dal team', 'images/reward11.png'),
+('Mucca Silver', 'Accesso esclusivo al backstage di creazione', 'images/reward12.png'),
+
+('Smart Park', 'Priorità di parcheggio in strutture convenzionate', 'images/reward13.png'),
+('Smart Park', 'T-shirt ufficiale del progetto con logo', 'images/reward14.png'),
+('Smart Park', 'App premium con funzioni avanzate di parcheggio', 'images/reward15.png'),
+
+('Flipper City', 'Spilla da collezione con design del flipper', 'images/reward16.png'),
+('Flipper City', 'Tavola da gioco personalizzata con la mappa della città', 'images/reward17.png'),
+('Flipper City', 'Accesso anticipato alla versione beta del gioco', 'images/reward18.png'),
+
+('Emilio 5.0', 'Poster firmato dal creatore', 'images/reward19.png'),
+('Emilio 5.0', 'Contenuti extra e dietro le quinte', 'images/reward20.png'),
+('Emilio 5.0', 'Incontro virtuale con il team di sviluppo', 'images/reward21.png');
+
+
+
+INSERT INTO PROGETTO_HARDWARE (nome_progetto) VALUES
+('Emilio 5.0'),
+('Mucca Silver'),
+('Smart Home AI'),
+('EcoCar'),
+('Smart Park');
+
+INSERT INTO PROGETTO_SOFTWARE (nome_progetto) VALUES
+('Flipper City'),
+('VR Learning');
+
+
+
+INSERT INTO SKILL (competenza, livello, email_utente_amm) VALUES
+('Analisi 1', 1, 'peppe24@gmail.com'),
+('Analisi 1', 2, 'peppe24@gmail.com'),
+('Analisi 1', 3, 'peppe24@gmail.com'),
+('Basi di Dati', 5, 'peppe24@gmail.com'),
+('Basi di Dati', 4, 'peppe24@gmail.com'),
+('Basi di Dati', 3, 'peppe24@gmail.com'),
+('Basi di Dati', 2, 'peppe24@gmail.com'),
+('Chimica dei materiali', 2, 'peppe24@gmail.com'),
+('Chimica dei materiali', 3, 'peppe24@gmail.com'),
+('Chimica dei materiali', 4, 'peppe24@gmail.com'),
+('Chimica dei materiali', 1, 'peppe24@gmail.com'),
+('Chimica dei materiali', 5, 'peppe24@gmail.com'),
+('Elettronica di base', 5, 'peppe24@gmail.com'),
+('Elettronica di base', 4, 'peppe24@gmail.com'),
+('Elettronica di base', 3, 'peppe24@gmail.com'),
+('Elettronica di base', 2, 'peppe24@gmail.com'),
+('Elettronica di base', 1, 'peppe24@gmail.com'),
+('Python', 1, 'peppe24@gmail.com'),
+('Python', 2, 'peppe24@gmail.com'),
+('Python', 3, 'peppe24@gmail.com'),
+('Python', 4, 'peppe24@gmail.com'),
+('Python', 5, 'peppe24@gmail.com'),
+('PHP, HTML, CSS, Javascript', 1, 'peppe24@gmail.com'),
+('PHP, HTML, CSS, Javascript', 2, 'peppe24@gmail.com'),
+('PHP, HTML, CSS, Javascript', 3, 'peppe24@gmail.com'),
+('PHP, HTML, CSS, Javascript', 4, 'peppe24@gmail.com'),
+('PHP, HTML, CSS, Javascript', 5, 'peppe24@gmail.com'),
+('Google Maps', 1, 'peppe24@gmail.com'),
+('Google Map', 2, 'peppe24@gmail.com'),
+('Google Map', 3, 'peppe24@gmail.com'),
+('Google Map', 4, 'peppe24@gmail.com'),
+('Google Map', 5, 'peppe24@gmail.com'),
+('Fisica delle sfere', 5, 'peppe24@gmail.com'),
+('Fisica delle sfere', 4, 'peppe24@gmail.com'),
+('Fisica delle sfere', 1, 'peppe24@gmail.com'),
+('Fisica delle sfere', 2, 'peppe24@gmail.com'),
+('Fisica delle sfere', 3, 'peppe24@gmail.com');
+
+
+INSERT INTO PROFILO (id, nome, nome_software) VALUES
+(1, 'Fisico', 'Flipper City'),
+(3, 'Programmatore', 'Flipper City'),
+(2, 'Ingegnere IT', 'Flipper City');
+
+INSERT INTO INDICA (competenza, livello, email_utente) VALUES
+('Fisica delle sfere', 3, 'fedesgambe@icloud.com'),
+('Google Maps', 3, 'fedesgambe@icloud.com'),
+('Java', 5, 'fedesgambe@icloud.com');
+
+INSERT INTO CANDIDATURA (id, email_utente, id_profilo, esito) VALUES
+(4, 'fedesgambe@icloud.com', 1, -1),
+(5, 'fedesgambe@icloud.com', 2, 1);
+
+
+
+
 
 

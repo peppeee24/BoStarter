@@ -62,6 +62,7 @@ try {
     $user_skills = $stmtUserSkills->fetchAll(PDO::FETCH_ASSOC);
 
     // Confronta le skill dell'utente con quelle richieste per partecipare
+    $missing_skills = array();
     $can_participate = true;
     foreach ($skills_richieste as $skill) {
         $found = false;
@@ -73,13 +74,12 @@ try {
         }
         if (!$found) {
             $can_participate = false;
-            break;
+            $missing_skills[] = $skill;
         }
     }
 
-    // Se l'utente ha tutte le skill necessarie, permetti di partecipare
+    // Se l'utente ha tutte le skill necessarie, inserisce la candidatura, altrimenti genera il messaggio con le skill mancanti
     if ($can_participate) {
-        // Inserisci la candidatura
         $stmtCandidatura = $pdo->prepare("
             INSERT INTO CANDIDATURA (email_utente, id_profilo, esito) 
             SELECT :email, id, FALSE FROM PROFILO WHERE nome_software = :nome_progetto
@@ -90,7 +90,11 @@ try {
         ]);
         $errore = "Candidatura inviata con successo!";
     } else {
-        $errore = "Non hai le skill necessarie per partecipare a questo progetto.";
+        $missing_list = [];
+        foreach ($missing_skills as $ms) {
+            $missing_list[] = $ms['competenza'] . " (livello " . $ms['livello'] . ")";
+        }
+        $errore = "Non hai le seguenti skill necessarie per partecipare a questo progetto: " . implode(", ", $missing_list) . ".";
     }
 
 } catch (PDOException $e) {

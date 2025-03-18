@@ -10,6 +10,16 @@ if (!isset($_SESSION['email'])) {
 $email_creatore = $_SESSION['email'];
 $errore = '';
 
+// Ottieni tutte le skill disponibili (raggruppo per nome per evitare duplicati)
+$skill_disponibili = [];
+try {
+    $stmtSkill = $pdo->prepare("SELECT DISTINCT competenza FROM SKILL ORDER BY competenza");
+    $stmtSkill->execute();
+    $skill_disponibili = $stmtSkill->fetchAll(PDO::FETCH_COLUMN);
+} catch (PDOException $e) {
+    error_log("Errore nel caricamento delle skill: " . $e->getMessage());
+}
+
 try {
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         error_log("Inizio processo POST per creazione progetto.");
@@ -21,8 +31,7 @@ try {
         $data_limite = $_POST['data_limite'];
         $tipo_progetto = $_POST['tipo_progetto'];
         $componenti = $_POST['componenti'] ?? [];
-        $skills_richieste = $_POST['skills_richieste'] ?? [];
-        $profili_selezionati = $_POST['profili_selezionati'] ?? [];
+        $profili = $_POST['profili'] ?? [];
 
         if (empty($nome_progetto) || strlen($nome_progetto) > 255 ||
             empty($descrizione) ||
@@ -84,22 +93,45 @@ try {
             $pdo->prepare("INSERT INTO PROGETTO_SOFTWARE (nome_progetto) VALUES (?)")
                 ->execute([$nome_progetto]);
 
-            // Gestione profili e skill per progetto software
-            foreach ($profili_selezionati as $profilo_id) {
-                // Inserisci il profilo associato al progetto
-                $stmtProfilo = $pdo->prepare("INSERT INTO PROFILO (nome_software) 
-                    VALUES (?)");
-                $stmtProfilo->execute([$nome_progetto]);
+            // Gestione profili per progetti software
+            if (!empty($profili)) {
+                $stmtProfilo = $pdo->prepare("INSERT INTO PROFILO 
+                    (nome, nome_software) 
+                    VALUES (?, ?)");
 
-                // Recupera l'ID del profilo appena inserito
-                $profilo_id = $pdo->lastInsertId();
+                $stmtComprende = $pdo->prepare("INSERT INTO COMPRENDE
+                    (competenza, livello, id_profilo)
+                    VALUES (?, ?, ?)");
 
-                // Inserisci le competenze per il profilo
-                foreach ($skills_richieste as $competenza => $livello) {
-                    $stmtComprede = $pdo->prepare("INSERT INTO COMPRENDE 
-                        (competenza, livello, id_profilo) 
-                        VALUES (?, ?, ?)");
-                    $stmtComprede->execute([$competenza, $livello, $profilo_id]);
+                foreach ($profili as $profilo) {
+                    if (!empty($profilo['nome'])) {
+                        // Inserisci il profilo
+                        $stmtProfilo->execute([
+                            $profilo['nome'],
+                            $nome_progetto
+                        ]);
+
+                        // Ottieni l'ID del profilo appena inserito
+                        $id_profilo = $pdo->lastInsertId();
+
+                        // Gestisci le skill associate al profilo
+                        if (!empty($profilo['skills'])) {
+                            foreach ($profilo['skills'] as $competenza => $livello) {
+                                // Verifica se la competenza e il livello esistono nella tabella SKILL
+                                $stmtVerifica = $pdo->prepare("SELECT COUNT(*) FROM SKILL WHERE competenza = ? AND livello = ?");
+                                $stmtVerifica->execute([$competenza, $livello]);
+                                $esiste = $stmtVerifica->fetchColumn();
+
+                                if ($esiste && $livello >= 1 && $livello <= 5) {
+                                    $stmtComprende->execute([
+                                        $competenza,
+                                        $livello,
+                                        $id_profilo
+                                    ]);
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -174,19 +206,26 @@ try {
             border: 2px solid #ddd;
             border-radius: 5px;
         }
-        .componente-box {
+        .componente-box, .profilo-box {
             background: #f8f9fa;
             padding: 15px;
             margin-bottom: 15px;
             border-radius: 5px;
         }
+        .skill-item {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        .skill-item:last-child {
+            border-bottom: none;
+        }
     </style>
     <script>
-        // Funzioni per gestione componenti
-        function mostraComponenti() {
+        // Funzioni per gestione componenti e profili
+        function mostraComponentiOProfili() {
             const tipo = document.getElementById('tipo_progetto').value;
             document.getElementById('componenti-section').style.display = tipo === 'hardware' ? 'block' : 'none';
-            document.getElementById('skills-section').style.display = tipo === 'software' ? 'block' : 'none';
+            document.getElementById('profili-section').style.display = tipo === 'software' ? 'block' : 'none';
         }
 
         function aggiungiComponente() {
@@ -223,6 +262,75 @@ try {
             container.insertAdjacentHTML('beforeend', html);
         }
 
+        function aggiungiProfilo() {
+            const container = document.getElementById('profili-container');
+            const index = Date.now();
+
+            const html = `
+                <div class="profilo-box">
+                    <div class="row mb-3">
+                        <div class="col-md-8">
+                            <label class="form-label">Nome Profilo *</label>
+                            <input type="text" name="profili[${index}][nome]"
+                                   class="form-control" placeholder="Nome del profilo richiesto" required>
+                        </div>
+                        <div class="col-md-4 text-end d-flex align-items-end">
+                            <button type="button" class="btn btn-danger"
+                                    onclick="this.closest('.profilo-box').remove()">Rimuovi Profilo</button>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <h6>Competenze richieste:</h6>
+                        <div class="skill-list">
+                            <?php foreach ($skill_disponibili as $competenza): ?>
+                            <div class="skill-item">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox"
+                                                   id="skill_<?= htmlspecialchars($competenza) ?>_<?= $index ?>"
+                                                   onchange="toggleSkillLevel(this, '${index}', '<?= htmlspecialchars($competenza) ?>')">
+                                            <label class="form-check-label" for="skill_<?= htmlspecialchars($competenza) ?>_<?= $index ?>">
+                                                <?= htmlspecialchars($competenza) ?>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <select class="form-select"
+                                                id="level_<?= htmlspecialchars($competenza) ?>_${index}"
+                                                name="profili[${index}][skills][<?= htmlspecialchars($competenza) ?>]"
+                                                disabled>
+                                            <option value="">Seleziona livello</option>
+                                            <option value="1">1 - Base</option>
+                                            <option value="2">2 - Elementare</option>
+                                            <option value="3">3 - Intermedio</option>
+                                            <option value="4">4 - Avanzato</option>
+                                            <option value="5">5 - Esperto</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            container.insertAdjacentHTML('beforeend', html);
+        }
+
+        function toggleSkillLevel(checkbox, profiloIndex, skillName) {
+            const levelSelect = document.getElementById(`level_${skillName}_${profiloIndex}`);
+            if (checkbox.checked) {
+                levelSelect.disabled = false;
+                levelSelect.required = true;
+            } else {
+                levelSelect.disabled = true;
+                levelSelect.required = false;
+                levelSelect.value = "";
+            }
+        }
+
         // Anteprima immagini
         function mostraAnteprima(input) {
             const container = document.getElementById('anteprima-imgs');
@@ -243,11 +351,13 @@ try {
         }
 
         // Conversione virgole in punti per decimali
-        document.querySelector('form').addEventListener('submit', function(e) {
-            document.querySelectorAll('input[type="number"]').forEach(input => {
-                if (input.step === '0.01') {
-                    input.value = input.value.replace(',', '.');
-                }
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelector('form').addEventListener('submit', function(e) {
+                document.querySelectorAll('input[type="number"]').forEach(input => {
+                    if (input.step === '0.01') {
+                        input.value = input.value.replace(',', '.');
+                    }
+                });
             });
         });
     </script>
@@ -304,7 +414,7 @@ try {
         <div class="mb-4">
             <label class="form-label">Tipo Progetto *</label>
             <select name="tipo_progetto" id="tipo_progetto"
-                    class="form-select" onchange="mostraComponenti()" required>
+                    class="form-select" onchange="mostraComponentiOProfili()" required>
                 <option value="">Seleziona...</option>
                 <option value="hardware">Hardware</option>
                 <option value="software">Software</option>
@@ -323,46 +433,15 @@ try {
             </div>
         </div>
 
-        <!-- Sezione profili e skill software -->
-        <div id="skills-section" style="display: none;">
+        <!-- Sezione profili software -->
+        <div id="profili-section" style="display: none;">
             <div class="mb-4">
-                <h5>Profili e Skill Necessarie</h5>
-                <?php
-                // Recupera i profili disponibili
-                $stmtProfili = $pdo->prepare("SELECT id, nome FROM PROFILO");
-                $stmtProfili->execute();
-                $profili = $stmtProfili->fetchAll(PDO::FETCH_ASSOC);
-
-                foreach ($profili as $profilo):
-                    ?>
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" name="profili_selezionati[]"
-                               value="<?= htmlspecialchars($profilo['id']); ?>">
-                        <label class="form-check-label">
-                            <?= htmlspecialchars($profilo['nome']); ?>
-                        </label>
-                        <div class="mt-2">
-                            <label>Seleziona le skill:</label>
-                            <div>
-                                <?php
-                                // Recupera le skill per ciascun profilo
-                                $stmtSkills = $pdo->prepare("SELECT competenza FROM COMPRENDE 
-                                    WHERE id_profilo = ?");
-                                $stmtSkills->execute([$profilo['id']]);
-                                $skills = $stmtSkills->fetchAll(PDO::FETCH_ASSOC);
-
-                                foreach ($skills as $skill):
-                                    ?>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="skills_richieste[<?= htmlspecialchars($skill['competenza']); ?>]" value="0">
-                                        <label class="form-check-label"><?= htmlspecialchars($skill['competenza']); ?></label>
-                                        <input type="number" class="form-control mt-2" name="skills_richieste[<?= htmlspecialchars($skill['competenza']); ?>]" min="0" max="5" step="1" placeholder="Livello (0-5)" required>
-                                    </div>
-                                <?php endforeach; ?>
-                            </div>
-                        </div>
-                    </div>
-                <?php endforeach; ?>
+                <h5>Profili Richiesti</h5>
+                <div id="profili-container"></div>
+                <button type="button" class="btn btn-secondary mt-2"
+                        onclick="aggiungiProfilo()">
+                    + Aggiungi Profilo
+                </button>
             </div>
         </div>
 

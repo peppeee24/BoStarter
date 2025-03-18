@@ -7,6 +7,34 @@ if (!isset($_SESSION['email'])) {
     exit();
 }
 
+// Gestione azioni su candidature ricevute (accetta/rifiuta)
+if (isset($_GET['action']) && isset($_GET['candidatura_id'])) {
+    $action = $_GET['action'];
+    $candidatura_id = $_GET['candidatura_id'];
+
+    // Verifica che la candidatura appartenga a un progetto software creato dall'utente loggato
+    $stmtCheck = $pdo->prepare("
+        SELECT C.id
+        FROM CANDIDATURA C
+        JOIN PROFILO PF ON C.id_profilo = PF.id
+        JOIN PROGETTO_SOFTWARE PS ON PF.nome_software = PS.nome_progetto
+        JOIN PROGETTO pr ON PS.nome_progetto = pr.nome
+        WHERE C.id = :cid AND pr.email_creatore = :email
+    ");
+    $stmtCheck->execute(['cid' => $candidatura_id, 'email' => $_SESSION['email']]);
+    if ($stmtCheck->fetch(PDO::FETCH_ASSOC)) {
+        if ($action === 'accept') {
+            $stmtUpdate = $pdo->prepare("UPDATE CANDIDATURA SET esito = 1 WHERE id = :cid");
+            $stmtUpdate->execute(['cid' => $candidatura_id]);
+        } elseif ($action === 'reject') {
+            $stmtUpdate = $pdo->prepare("UPDATE CANDIDATURA SET esito = -1 WHERE id = :cid");
+            $stmtUpdate->execute(['cid' => $candidatura_id]);
+        }
+        header("Location: profilo.php");
+        exit();
+    }
+}
+
 // Recupera dati utente
 $sql = "SELECT u.*, 
         CASE 
@@ -18,7 +46,6 @@ $sql = "SELECT u.*,
         LEFT JOIN UTENTE_AMMINISTRATORE a ON u.email = a.email_utente_amm
         LEFT JOIN UTENTE_CREATORE c ON u.email = c.email_utente_creat
         WHERE u.email = :email";
-
 $stmt = $pdo->prepare($sql);
 $stmt->execute(['email' => $_SESSION['email']]);
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -32,15 +59,15 @@ if (!$user) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['competenze'])) {
     $pdo->beginTransaction();
     try {
-        // Rimuovi tutte le competenze esistenti
+        // Rimuove tutte le competenze esistenti per l'utente
         $deleteStmt = $pdo->prepare("DELETE FROM INDICA WHERE email_utente = ?");
         $deleteStmt->execute([$_SESSION['email']]);
 
-        // Inserisci le nuove competenze
+        // Inserisce le nuove competenze (solo se il livello selezionato è maggiore di 0)
         foreach ($_POST['competenze'] as $competenza => $livello) {
             if ($livello > 0) {
                 $insertStmt = $pdo->prepare("INSERT INTO INDICA (competenza, livello, email_utente) 
-                                           VALUES (?, ?, ?)");
+                                             VALUES (?, ?, ?)");
                 $insertStmt->execute([$competenza, $livello, $_SESSION['email']]);
             }
         }
@@ -60,7 +87,6 @@ $skillsQuery = $pdo->query("SELECT s.competenza, s.livello, i.livello AS selecte
                                AND s.livello = i.livello 
                                AND i.email_utente = '" . $_SESSION['email'] . "'
                            ORDER BY s.competenza, s.livello");
-
 $competenze = [];
 foreach ($skillsQuery as $row) {
     $competenze[$row['competenza']]['livelli'][] = $row['livello'];
@@ -68,6 +94,29 @@ foreach ($skillsQuery as $row) {
         $competenze[$row['competenza']]['selected'] = $row['selected_level'];
     }
 }
+
+// Recupera candidature ricevute (per progetti software creati dall'utente)
+$stmtReceived = $pdo->prepare("
+    SELECT C.id, C.email_utente AS candidato, C.esito, pr.nome AS project_name, PF.nome AS profile_name
+    FROM CANDIDATURA C
+    JOIN PROFILO PF ON C.id_profilo = PF.id
+    JOIN PROGETTO_SOFTWARE PS ON PF.nome_software = PS.nome_progetto
+    JOIN PROGETTO pr ON PS.nome_progetto = pr.nome
+    WHERE pr.email_creatore = :email
+");
+$stmtReceived->execute(['email' => $_SESSION['email']]);
+$receivedCandidatures = $stmtReceived->fetchAll(PDO::FETCH_ASSOC);
+
+// Recupera candidature inviate (dall'utente)
+$stmtSent = $pdo->prepare("
+    SELECT C.id, C.esito, PF.nome AS profile_name, PS.nome_progetto AS project_name
+    FROM CANDIDATURA C
+    JOIN PROFILO PF ON C.id_profilo = PF.id
+    JOIN PROGETTO_SOFTWARE PS ON PF.nome_software = PS.nome_progetto
+    WHERE C.email_utente = :email
+");
+$stmtSent->execute(['email' => $_SESSION['email']]);
+$sentCandidatures = $stmtSent->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
@@ -78,6 +127,11 @@ foreach ($skillsQuery as $row) {
     <title>Il Mio Profilo - BoStarter</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
+    <style>
+        .table-actions a {
+            margin-right: 5px;
+        }
+    </style>
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
@@ -90,10 +144,11 @@ foreach ($skillsQuery as $row) {
     <div class="card p-4 shadow-sm">
         <h2 class="mb-4">Il Mio Profilo</h2>
         <?php if (isset($error)): ?>
-            <div class="alert alert-danger"><?= $error ?></div>
+            <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
         <?php endif; ?>
 
         <div class="row">
+            <!-- Informazioni dell'utente -->
             <div class="col-md-6">
                 <p><strong>Nome:</strong> <?= htmlspecialchars($user['nome'] . ' ' . $user['cognome']) ?></p>
                 <p><strong>Email:</strong> <?= htmlspecialchars($user['email']) ?></p>
@@ -102,12 +157,12 @@ foreach ($skillsQuery as $row) {
                 <p><strong>Anno di Nascita:</strong> <?= htmlspecialchars($user['anno_nascita']) ?></p>
                 <p><strong>Luogo di Nascita:</strong> <?= htmlspecialchars($user['luogo_nascita']) ?></p>
                 <a href="logout.php" class="btn btn-danger">Logout</a>
-
                 <?php if ($user['tipo_utente'] === 'Amministratore'): ?>
                     <a href="admin_login.php" class="btn btn-warning mt-3">Gestione Competenze</a>
                 <?php endif; ?>
             </div>
 
+            <!-- Form per salvare le competenze -->
             <div class="col-md-6">
                 <form method="POST">
                     <h4>Le tue Competenze</h4>
@@ -117,7 +172,7 @@ foreach ($skillsQuery as $row) {
                             <select name="competenze[<?= htmlspecialchars($competenza) ?>]" class="form-select">
                                 <option value="0">Nessun livello</option>
                                 <?php foreach ($dati['livelli'] as $livello): ?>
-                                    <option value="<?= $livello ?>" <?= ($dati['selected'] ?? 0) == $livello ? 'selected' : '' ?>>
+                                    <option value="<?= $livello ?>" <?= (isset($dati['selected']) && $dati['selected'] == $livello) ? 'selected' : '' ?>>
                                         Livello <?= $livello ?>
                                     </option>
                                 <?php endforeach; ?>
@@ -128,6 +183,96 @@ foreach ($skillsQuery as $row) {
                 </form>
             </div>
         </div>
+
+        <!-- Sezione: Candidature Ricevute (per progetti software creati dall'utente) -->
+        <div class="mt-5">
+            <h4>Candidature Ricevute</h4>
+            <?php if (count($receivedCandidatures) > 0): ?>
+                <table class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Candidato</th>
+                        <th>Progetto</th>
+                        <th>Profilo</th>
+                        <th>Esito</th>
+                        <th>Azioni</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <?php foreach ($receivedCandidatures as $cand): ?>
+                        <tr>
+                            <td><?= htmlspecialchars($cand['id']) ?></td>
+                            <td><?= htmlspecialchars($cand['candidato']) ?></td>
+                            <td><?= htmlspecialchars($cand['project_name']) ?></td>
+                            <td><?= htmlspecialchars($cand['profile_name']) ?></td>
+                            <td>
+                                <?php
+                                if ($cand['esito'] == 1) {
+                                    echo "Accettato";
+                                } elseif ($cand['esito'] == -1) {
+                                    echo "Rifiutato";
+                                } else {
+                                    echo "In attesa";
+                                }
+                                ?>
+                            </td>
+                            <td class="table-actions">
+                                <?php if ($cand['esito'] == 0): ?>
+                                    <a href="profilo.php?action=accept&candidatura_id=<?= $cand['id'] ?>" class="btn btn-success btn-sm">Accetta</a>
+                                    <a href="profilo.php?action=reject&candidatura_id=<?= $cand['id'] ?>" class="btn btn-danger btn-sm">Rifiuta</a>
+                                <?php else: ?>
+                                    Nessuna azione
+                                <?php endif; ?>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                    </tbody>
+                </table>
+            <?php else: ?>
+                <p>Nessuna candidatura ricevuta.</p>
+            <?php endif; ?>
+        </div>
+
+        <!-- Sezione: Candidature Inviate dall'utente -->
+        <div class="mt-5">
+            <h4>Candidature Inviate</h4>
+            <?php if (count($sentCandidatures) > 0): ?>
+                <table class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Progetto</th>
+                        <th>Profilo</th>
+                        <th>Esito</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <?php foreach ($sentCandidatures as $cand): ?>
+                        <tr>
+                            <td><?= htmlspecialchars($cand['id']) ?></td>
+                            <td><?= htmlspecialchars($cand['project_name']) ?></td>
+                            <td><?= htmlspecialchars($cand['profile_name']) ?></td>
+                            <td>
+                                <?php
+                                if ($cand['esito'] == 1) {
+                                    echo "Accettato";
+                                } elseif ($cand['esito'] == -1) {
+                                    echo "Rifiutato";
+                                } else {
+                                    echo "In attesa";
+                                }
+                                ?>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                    </tbody>
+                </table>
+            <?php else: ?>
+                <p>Nessuna candidatura inviata.</p>
+            <?php endif; ?>
+        </div>
+
     </div>
 </section>
 

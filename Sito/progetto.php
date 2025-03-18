@@ -11,7 +11,7 @@ $loggedIn = isset($_SESSION['email']);
 $email_utente = $loggedIn ? $_SESSION['email'] : null;
 
 try {
-    // Recupera i dettagli del progetto e tipo
+    // Recupera i dettagli del progetto e il suo tipo
     $stmt = $pdo->prepare("
         SELECT P.*, 
             COALESCE(
@@ -29,15 +29,14 @@ try {
         die("Errore: Il progetto non esiste.");
     }
 
-    // Verifica se la data di scadenza è precedente alla data odierna e aggiorna lo stato a "chiuso"
+    // Verifica se la data di scadenza è passata e, in tal caso, aggiorna lo stato a "chiuso"
     $data_limite = strtotime($progetto['data_limite']);
     if ($data_limite < time()) {
-        // Aggiorna lo stato del progetto a "chiuso"
         $stmtUpdate = $pdo->prepare("UPDATE PROGETTO SET stato = 'chiuso' WHERE nome = :nome");
         $stmtUpdate->execute(['nome' => $nome_progetto]);
     }
 
-    // Recupera componenti solo per hardware
+    // Recupera componenti se il progetto è di tipo hardware
     $componenti = [];
     if ($progetto['tipo_progetto'] === 'hardware') {
         $stmtComponenti = $pdo->prepare("
@@ -50,19 +49,38 @@ try {
         $componenti = $stmtComponenti->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // Recupera le skill necessarie per i progetti software
-    $skills_richieste = [];
+    // Per i progetti software, recupera i profili necessari e per ciascuno le relative skill richieste
+    $profili = [];
     if ($progetto['tipo_progetto'] === 'software') {
-        $stmtSkills = $pdo->prepare("
-            SELECT competenza, livello
-            FROM COMPRENDE
-            WHERE id_profilo IN (SELECT id FROM PROFILO WHERE nome_software = :nome)
+        $stmtProfili = $pdo->prepare("
+            SELECT p.id, p.nome as nome_profilo, c.competenza, c.livello
+            FROM PROFILO p
+            LEFT JOIN COMPRENDE c ON p.id = c.id_profilo
+            WHERE p.nome_software = :nome
         ");
-        $stmtSkills->execute(['nome' => $nome_progetto]);
-        $skills_richieste = $stmtSkills->fetchAll(PDO::FETCH_ASSOC);
+        $stmtProfili->execute(['nome' => $nome_progetto]);
+        $profili_skills = $stmtProfili->fetchAll(PDO::FETCH_ASSOC);
+        foreach ($profili_skills as $row) {
+            $id = $row['id'];
+            if (!isset($profili[$id])) {
+                $profili[$id] = [
+                    'id' => $row['id'],
+                    'nome_profilo' => $row['nome_profilo'],
+                    'skills' => []
+                ];
+            }
+            if (!empty($row['competenza'])) {
+                $profili[$id]['skills'][] = [
+                    'competenza' => $row['competenza'],
+                    'livello' => $row['livello']
+                ];
+            }
+        }
+        // Riorganizza l'array dei profili per avere indici numerici consecutivi
+        $profili = array_values($profili);
     }
 
-    // Recupera immagini e altri dati
+    // Recupera immagini associate al progetto
     $stmtImg = $pdo->prepare("SELECT foto_url FROM FOTO_PROGETTO WHERE nome_progetto = :nome");
     $stmtImg->execute(['nome' => $nome_progetto]);
     $immagini = $stmtImg->fetchAll(PDO::FETCH_ASSOC);
@@ -74,6 +92,7 @@ try {
     $budget_raggiunto = $totale_finanziato >= $progetto['budget'];
     $progetto_chiuso = $progetto['stato'] === 'chiuso';
 
+    // Recupera commenti e, se presenti, le eventuali risposte
     $stmtCommenti = $pdo->prepare("
         SELECT C.id, C.email_utente, C.data_commento, C.testo, 
                R.testo AS risposta, R.data_risposta, R.email_creatore
@@ -85,7 +104,7 @@ try {
     $stmtCommenti->execute(['nome' => $nome_progetto]);
     $commenti = $stmtCommenti->fetchAll(PDO::FETCH_ASSOC);
 
-    // Se il form per inserire commenti è stato inviato
+    // Gestione dell'inserimento di un nuovo commento
     if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['nuovo_commento']) && $loggedIn) {
         $testo_commento = trim($_POST['nuovo_commento']);
         if (!empty($testo_commento)) {
@@ -103,7 +122,7 @@ try {
         }
     }
 
-    // Se il form per rispondere a un commento è stato inviato
+    // Gestione dell'inserimento di una risposta a un commento (solo per il creatore del progetto)
     if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['risposta_commento']) && isset($_POST['id_commento']) && $email_utente === $progetto['email_creatore']) {
         $testo_risposta = trim($_POST['risposta_commento']);
         $id_commento = intval($_POST['id_commento']);
@@ -152,7 +171,6 @@ try {
     <p class="text-muted">Creato il: <?php echo date("d-m-Y", strtotime($progetto['data_inserimento'])); ?></p>
     <p class="text-muted">Data di Chiusura: <?php echo date("d-m-Y", strtotime($progetto['data_limite'])); ?></p>
 
-
     <p><?php echo nl2br(htmlspecialchars($progetto['descrizione'])); ?></p>
 
     <h4>Budget richiesto: €<?php echo number_format($progetto['budget'], 2); ?></h4>
@@ -178,18 +196,29 @@ try {
     </span>
     </div>
 
-    <!-- Sezione skill necessarie per il progetto software -->
-    <?php if ($progetto['tipo_progetto'] === 'software' && !empty($skills_richieste)): ?>
+    <!-- Sezione per progetti software: Profili richiesti e relative skill -->
+    <?php if ($progetto['tipo_progetto'] === 'software' && !empty($profili)): ?>
         <div class="mt-4">
-            <h4>Skill Necessarie</h4>
-            <ul class="list-group">
-                <?php foreach ($skills_richieste as $skill): ?>
-                    <li class="list-group-item">
-                        <strong><?php echo htmlspecialchars($skill['competenza']); ?></strong>
-                        - Livello richiesto: <?php echo $skill['livello']; ?>
-                    </li>
-                <?php endforeach; ?>
-            </ul>
+            <h4>Profili Richiesti</h4>
+            <?php foreach ($profili as $profilo): ?>
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title"><?php echo htmlspecialchars($profilo['nome_profilo']); ?></h5>
+                        <?php if (!empty($profilo['skills'])): ?>
+                            <ul class="list-group">
+                                <?php foreach ($profilo['skills'] as $skill): ?>
+                                    <li class="list-group-item">
+                                        <strong><?php echo htmlspecialchars($skill['competenza']); ?></strong>
+                                        - Livello richiesto: <?php echo htmlspecialchars($skill['livello']); ?>
+                                    </li>
+                                <?php endforeach; ?>
+                            </ul>
+                        <?php else: ?>
+                            <p class="text-muted">Nessuna skill richiesta per questo profilo.</p>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            <?php endforeach; ?>
         </div>
     <?php endif; ?>
 
