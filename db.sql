@@ -318,7 +318,7 @@ END //
 DELIMITER ;
 
 
-
+/*
 -- Popolamento dati per test
 INSERT INTO UTENTE (email, nickname, password, nome, cognome, anno_nascita, luogo_nascita) VALUES
 ('test1@example.com', 'testuser1', 'pass123', 'Mario', 'Rossi', 1990, 'Roma'),
@@ -587,7 +587,6 @@ JOIN UTENTE U ON F.email_utente = U.email
 GROUP BY U.nickname
 ORDER BY totale_finanziato DESC
 LIMIT 3;
-
 
 
 
