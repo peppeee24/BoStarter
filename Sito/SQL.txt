@@ -206,7 +206,7 @@ INSERT INTO FOTO_PROGETTO (nome_progetto, foto_url) VALUES
 
 
 INSERT INTO REWARD (nome_progetto, descrizione, foto_url) VALUES
-('EcoCar', 'Sticker esclusivo del progetto', 'images/reward1.png'),
+('EcoCar', 'Sticker esclusivo del progetto', 'images/car.png'),
 ('EcoCar', 'T-shirt personalizzata del progetto', 'images/reward2.png'),
 ('EcoCar', 'Accesso anticipato ai contenuti del progetto', 'images/reward3.png'),
 
@@ -227,7 +227,7 @@ INSERT INTO REWARD (nome_progetto, descrizione, foto_url) VALUES
 ('Smart Park', 'App premium con funzioni avanzate di parcheggio', 'images/reward15.png'),
 
 ('Flipper City', 'Spilla da collezione con design del flipper', 'images/reward16.png'),
-('Flipper City', 'Tavola da gioco personalizzata con la mappa della città', 'images/reward17.png'),
+('Flipper City', 'Tavola da gioco personalizzata con la mappa della città', 'images/monopoli.png'),
 ('Flipper City', 'Accesso anticipato alla versione beta del gioco', 'images/reward18.png'),
 
 ('Emilio 5.0', 'Poster firmato dal creatore', 'images/reward19.png'),
@@ -304,6 +304,7 @@ INSERT INTO INDICA (competenza, livello, email_utente) VALUES
 ('Java', 5, 'fedesgambe@icloud.com'),
 ('Python', 5, 'simonemagli@gmail.com');
 
+/*
 INSERT INTO CANDIDATURA (id, email_utente, id_profilo, esito) VALUES
 (4,'fedesgambe@icloud.com', 1, -1),
 (5,'fedesgambe@icloud.com', 2, 1),
@@ -313,6 +314,7 @@ INSERT INTO CANDIDATURA (id, email_utente, id_profilo, esito) VALUES
 (11,'mirko@gmail.com', 1, 0),
 (12,'mirko@gmail.com', 2, 0);
 
+*/
 
 INSERT INTO COMPRENDE (competenza, livello, id_profilo) VALUES
 ('Basi di Dati', 2, 3),

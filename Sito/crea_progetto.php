@@ -144,7 +144,7 @@ try {
                 VALUES (?, ?, ?)");
 
             // Cartella per le immagini dei reward
-            $uploadRewardDir = 'uploads/progetti/' . $nome_progetto . '/rewards/';
+            $uploadRewardDir = 'images/uploads/progetti/' . $nome_progetto . '/rewards/';
             if (!file_exists($uploadRewardDir)) {
                 mkdir($uploadRewardDir, 0755, true);
             }
@@ -194,7 +194,8 @@ try {
 
         // Gestione immagini
         if (!empty($_FILES['foto']['name'][0])) {
-            $uploadDir = 'uploads/progetti/' . $nome_progetto . '/';
+            $uploadDir = 'images/uploads/progetti/' . $nome_progetto . '/';
+
             if (!file_exists($uploadDir)) {
                 mkdir($uploadDir, 0755, true);
             }
@@ -462,6 +463,24 @@ try {
                 });
             });
         });
+
+        // Validazione: almeno una reward deve essere presente
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.getElementById('form-progetto');
+            const rewardContainer = document.getElementById('reward-container');
+
+            form.addEventListener('submit', function (e) {
+                const rewardBoxes = rewardContainer.querySelectorAll('.reward-box');
+
+                if (rewardBoxes.length === 0) {
+                    e.preventDefault();
+                    alert("⚠️ Devi aggiungere almeno una reward per creare il progetto.");
+                    return false;
+                }
+            });
+        });
+
+
     </script>
 </head>
 <body>
@@ -478,7 +497,7 @@ try {
         <div class="alert alert-danger mb-4"><?= htmlspecialchars($errore) ?></div>
     <?php endif; ?>
 
-    <form method="POST" enctype="multipart/form-data">
+    <form method="POST" enctype="multipart/form-data" id="form-progetto">
         <!-- Sezione base -->
         <div class="mb-4">
             <label class="form-label">Nome Progetto *</label>

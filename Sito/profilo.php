@@ -117,6 +117,18 @@ $stmtSent = $pdo->prepare("
 ");
 $stmtSent->execute(['email' => $_SESSION['email']]);
 $sentCandidatures = $stmtSent->fetchAll(PDO::FETCH_ASSOC);
+
+// Recupera le reward ottenute dall'utente loggato
+$stmtRewardUtente = $pdo->prepare("
+    SELECT R.descrizione, R.foto_url, F.nome_progetto
+    FROM FINANZIAMENTO F
+    JOIN REWARD R ON F.codice_reward = R.codice
+    WHERE F.email_utente = :email
+");
+$stmtRewardUtente->execute(['email' => $_SESSION['email']]);
+$rewardConseguite = $stmtRewardUtente->fetchAll(PDO::FETCH_ASSOC);
+
+
 ?>
 
 <!DOCTYPE html>
@@ -270,6 +282,34 @@ $sentCandidatures = $stmtSent->fetchAll(PDO::FETCH_ASSOC);
                 </table>
             <?php else: ?>
                 <p>Nessuna candidatura inviata.</p>
+            <?php endif; ?>
+        </div>
+
+        <!-- Sezione: Reward Ottenute -->
+        <div class="mt-5">
+            <h4>🎁 Reward Ottenute</h4>
+            <?php if (!empty($rewardConseguite)): ?>
+                <div class="row">
+                    <?php foreach ($rewardConseguite as $reward): ?>
+                        <div class="col-md-4 mb-4">
+                            <div class="card h-100 shadow-sm">
+                                <?php if (!empty($reward['foto_url'])): ?>
+                                    <img src="<?= htmlspecialchars($reward['foto_url']) ?>" class="card-img-top" alt="Immagine Reward" style="object-fit: cover; height: 200px;">
+                                <?php else: ?>
+                                    <div class="bg-secondary text-white d-flex justify-content-center align-items-center" style="height: 200px;">
+                                        Nessuna immagine
+                                    </div>
+                                <?php endif; ?>
+                                <div class="card-body">
+                                    <h5 class="card-title"><?= htmlspecialchars($reward['descrizione']) ?></h5>
+                                    <p class="card-text text-muted">Progetto: <strong><?= htmlspecialchars($reward['nome_progetto']) ?></strong></p>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            <?php else: ?>
+                <p class="text-muted">Non hai ancora ottenuto reward.</p>
             <?php endif; ?>
         </div>
 
