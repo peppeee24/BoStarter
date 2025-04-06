@@ -1,6 +1,11 @@
-Mongo DB - Istruzioni 
+Andare su MAMP/conf/PHPphp8.3.1/Php.ini e aggiungere negli extensions (riga 679) e aggiungere:
+extension=fileinfo
 
-1) Installa 
+
+
+Mongo DB - Istruzioni
+
+1) Installa
 
 brew tap mongodb/brew
 brew install mongodb-community@7.0
@@ -15,4 +20,5 @@ npm install mysql2 mongodb
 3) Sempre nella cartella del progetto, eseguire il file js
 
 node script.js
+
 
