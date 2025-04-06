@@ -346,8 +346,8 @@ try {
                                         <div class="form-check">
                                             <input class="form-check-input" type="checkbox"
                                                    id="skill_<?= htmlspecialchars($competenza) ?>_<?= $index ?>"
-                                                   onchange="toggleSkillLevel(this, '${index}', '<?= htmlspecialchars($competenza) ?>')">
-                                            <label class="form-check-label" for="skill_<?= htmlspecialchars($competenza) ?>_<?= $index ?>">
+                                                   onchange="toggleSkillLevel(this, '${index}', '<?= htmlspecialchars($competenza) ?>')" >
+                                            <label class="form-check-label" for="skill_<?= htmlspecialchars($competenza) ?>_<?= $index ?>" >
                                                 <?= htmlspecialchars($competenza) ?>
                                             </label>
                                         </div>
@@ -356,7 +356,7 @@ try {
                                         <select class="form-select"
                                                 id="level_<?= htmlspecialchars($competenza) ?>_${index}"
                                                 name="profili[${index}][skills][<?= htmlspecialchars($competenza) ?>]"
-                                                disabled>
+                                                disabled required>
                                             <option value="">Seleziona livello</option>
                                             <option value="1">1 - Base</option>
                                             <option value="2">2 - Elementare</option>
@@ -391,7 +391,7 @@ try {
                             <label class="form-label">Immagine</label>
                             <input type="file" class="form-control" name="reward_foto[${index}]"
                                    accept="image/jpeg, image/png, image/webp"
-                                   onchange="mostraAnteprimaReward(this, ${index})">
+                                   onchange="mostraAnteprimaReward(this, ${index})" required>
                             <div id="anteprima-reward-${index}" class="mt-2"></div>
                         </div>
                         <div class="col-md-2">
@@ -468,16 +468,53 @@ try {
         document.addEventListener('DOMContentLoaded', function () {
             const form = document.getElementById('form-progetto');
             const rewardContainer = document.getElementById('reward-container');
+            const tipoSelect = document.getElementById('tipo_progetto');
+            const componentiContainer = document.getElementById('componenti-container');
+            const profiliContainer = document.getElementById('profili-container');
 
             form.addEventListener('submit', function (e) {
+                // ⚠️ Check almeno una reward
                 const rewardBoxes = rewardContainer.querySelectorAll('.reward-box');
-
                 if (rewardBoxes.length === 0) {
                     e.preventDefault();
                     alert("⚠️ Devi aggiungere almeno una reward per creare il progetto.");
                     return false;
                 }
+
+                // ⚠️ Se tipo = hardware, controlla che ci sia almeno un componente
+                if (tipoSelect.value === 'hardware') {
+                    const componentiBoxes = componentiContainer.querySelectorAll('.componente-box');
+                    if (componentiBoxes.length === 0) {
+                        e.preventDefault();
+                        alert("⚠️ Devi aggiungere almeno un componente hardware.");
+                        return false;
+                    }
+                }
+
+                // ⚠️ Se tipo = software, controlla che ci sia almeno un profilo
+                if (tipoSelect.value === 'software') {
+                    const profiliBoxes = profiliContainer.querySelectorAll('.profilo-box');
+                    if (profiliBoxes.length === 0) {
+                        e.preventDefault();
+                        alert("⚠️ Devi aggiungere almeno un profilo richiesto.");
+                        return false;
+                    }
+                }
             });
+
+            // Controllo dimensione immagini progetto
+            const immaginiProgettoInput = document.querySelector('input[name="foto[]"]');
+            const maxFileSize = 5 * 1024 * 1024; // 5MB
+
+            if (immaginiProgettoInput && immaginiProgettoInput.files.length > 0) {
+                for (let file of immaginiProgettoInput.files) {
+                    if (file.size > maxFileSize) {
+                        e.preventDefault();
+                        alert(`⚠️ L'immagine "${file.name}" del progetto supera il limite di 5 MB.`);
+                        return false;
+                    }
+                }
+            }
         });
 
 
@@ -527,7 +564,7 @@ try {
             <label class="form-label">Immagini del Progetto (max 5MB, jpg/png/webp)</label>
             <input type="file" class="form-control" name="foto[]" multiple
                    accept="image/jpeg, image/png, image/webp"
-                   onchange="mostraAnteprima(this)">
+                   onchange="mostraAnteprima(this)" required>
             <div id="anteprima-imgs" class="mt-2"></div>
         </div>
 

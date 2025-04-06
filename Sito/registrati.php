@@ -11,7 +11,7 @@ try {
         $anno_nascita = intval($_POST['birth-year']);
         $luogo_nascita = trim($_POST['birth-place']);
         $userType = $_POST['user_type'] ?? 'normal';
-        $securityCode = trim($_POST['security_code'] ?? '');
+        $securityCode = password_hash(trim($_POST['security_code']), PASSWORD_BCRYPT);
 
         // Verifica email esistente
         $checkEmail = $pdo->prepare("SELECT email FROM UTENTE WHERE email = :email");

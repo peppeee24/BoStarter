@@ -16,7 +16,7 @@ CREATE TABLE UTENTE (
 
 CREATE TABLE UTENTE_AMMINISTRATORE(
     email_utente_amm VARCHAR(255) PRIMARY KEY,
-    codice_sicurezza VARCHAR(50) NOT NULL,
+    codice_sicurezza VARCHAR(255) NOT NULL,
     FOREIGN KEY (email_utente_amm) REFERENCES UTENTE(email) ON DELETE CASCADE
 
 ) ENGINE "INNODB";
@@ -439,7 +439,7 @@ BEGIN
     -- Aggiornamento dell'affidabilità (scala 0-10)
     IF totale_progetti > 0 THEN
         UPDATE UTENTE_CREATORE
-        SET affidabilita = (progetti_finanziati / totale_progetti) * 10
+        SET affidabilita = ROUND((progetti_finanziati / totale_progetti) * 10, 2)
         WHERE email_utente_creat = (SELECT email_creatore FROM PROGETTO WHERE nome = NEW.nome_progetto);
     END IF;
 END //

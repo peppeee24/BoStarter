@@ -55,6 +55,14 @@ if (!$user) {
     exit();
 }
 
+// Se l'utente è un creatore, recupera numero progetti e affidabilità
+$extraDatiCreatore = null;
+if ($user && $user['tipo_utente'] === 'Creatore') {
+    $stmtCreatore = $pdo->prepare("SELECT nr_progetti, affidabilita FROM UTENTE_CREATORE WHERE email_utente_creat = :email");
+    $stmtCreatore->execute(['email' => $_SESSION['email']]);
+    $extraDatiCreatore = $stmtCreatore->fetch(PDO::FETCH_ASSOC);
+}
+
 // Gestione salvataggio competenze
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['competenze'])) {
     $pdo->beginTransaction();
@@ -166,6 +174,10 @@ $rewardConseguite = $stmtRewardUtente->fetchAll(PDO::FETCH_ASSOC);
                 <p><strong>Email:</strong> <?= htmlspecialchars($user['email']) ?></p>
                 <p><strong>Nickname:</strong> <?= htmlspecialchars($user['nickname']) ?></p>
                 <p><strong>Tipo Utente:</strong> <?= htmlspecialchars($user['tipo_utente']) ?></p>
+                <?php if ($user['tipo_utente'] === 'Creatore' && $extraDatiCreatore): ?>
+                    <p><strong>Numero di Progetti:</strong> <?= htmlspecialchars($extraDatiCreatore['nr_progetti']) ?></p>
+                    <p><strong>Affidabilità:</strong> <?= htmlspecialchars($extraDatiCreatore['affidabilita']) ?>/10</p>
+                <?php endif; ?>
                 <p><strong>Anno di Nascita:</strong> <?= htmlspecialchars($user['anno_nascita']) ?></p>
                 <p><strong>Luogo di Nascita:</strong> <?= htmlspecialchars($user['luogo_nascita']) ?></p>
                 <a href="logout.php" class="btn btn-danger">Logout</a>

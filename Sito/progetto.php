@@ -263,7 +263,7 @@ try {
                 Finanzia il Progetto
             </a>
 
-            <?php if ($progetto['tipo_progetto'] === 'software'): ?>
+            <?php if ($progetto['tipo_progetto'] === 'software' && $email_utente !== $progetto['email_creatore']): ?>
                 <a href="partecipa.php?nome_progetto=<?php echo urlencode($progetto['nome']); ?>"
                    class="btn btn-success">
                     Partecipa al Progetto

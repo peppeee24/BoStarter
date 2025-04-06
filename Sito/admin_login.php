@@ -8,12 +8,11 @@ $admin_email = $_SESSION['email'] ?? '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $security_code = $_POST['security_code'] ?? '';
 
-    // Verifica se l'utente è un amministratore e il codice è corretto
-    $stmt = $pdo->prepare("SELECT * FROM UTENTE_AMMINISTRATORE 
-                          WHERE email_utente_amm = :email AND codice_sicurezza = :code");
-    $stmt->execute(['email' => $admin_email, 'code' => $security_code]);
+    $stmt = $pdo->prepare("SELECT codice_sicurezza FROM UTENTE_AMMINISTRATORE WHERE email_utente_amm = :email");
+    $stmt->execute(['email' => $admin_email]);
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if ($stmt->rowCount() > 0) {
+    if ($user && password_verify($security_code, $user['codice_sicurezza'])) {
         $_SESSION['admin_logged'] = true;
         header("Location: manage_skills.php");
         exit();

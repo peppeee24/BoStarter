@@ -28,21 +28,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $error = "Errore nell'inserimento: " . $e->getMessage();
         }
     } elseif (isset($_POST['delete_skill'])) {
-        // Elimina tutti i livelli della competenza
         $competenza = $_POST['competenza'];
 
-        $stmt = $pdo->prepare("DELETE FROM SKILL 
-                             WHERE competenza = ? AND email_utente_amm = ?");
-        $stmt->execute([$competenza, $_SESSION['email']]);
+        // Recupera chi ha creato la competenza
+        $stmtCheck = $pdo->prepare("SELECT email_utente_amm FROM SKILL WHERE competenza = ? LIMIT 1");
+        $stmtCheck->execute([$competenza]);
+        $result = $stmtCheck->fetch(PDO::FETCH_ASSOC);
+
+        if ($result && $result['email_utente_amm'] === $_SESSION['email']) {
+            $stmt = $pdo->prepare("DELETE FROM SKILL WHERE competenza = ?");
+            $stmt->execute([$competenza]);
+        } else {
+            $error = "Non puoi eliminare una competenza creata da un altro amministratore.";
+        }
     }
 }
 
 // Recupera tutte le skills raggruppate
-$stmt = $pdo->prepare("SELECT competenza, GROUP_CONCAT(livello ORDER BY livello) AS livelli 
-                      FROM SKILL 
-                      WHERE email_utente_amm = ?
-                      GROUP BY competenza");
-$stmt->execute([$_SESSION['email']]);
+$stmt = $pdo->prepare("
+    SELECT competenza, email_utente_amm, GROUP_CONCAT(livello ORDER BY livello) AS livelli 
+    FROM SKILL 
+    -- WHERE email_utente_amm = ?
+    GROUP BY competenza, email_utente_amm
+");
+$stmt->execute();
+//$stmt->execute([$_SESSION['email']]);
 $skills = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
@@ -105,6 +115,7 @@ $skills = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <th>Competenza</th>
                 <th>Livelli Disponibili</th>
                 <th>Azioni</th>
+                <th>Creato da</th>
             </tr>
             </thead>
             <tbody>
@@ -121,13 +132,20 @@ $skills = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <?php endfor; ?>
                     </td>
                     <td>
-                        <form method="POST" style="display:inline;">
-                            <input type="hidden" name="competenza" value="<?= $skill['competenza'] ?>">
-                            <button type="submit" name="delete_skill" class="btn btn-danger btn-sm"
-                                    onclick="return confirm('Eliminare tutti i livelli per questa competenza?')">
-                                Elimina
-                            </button>
-                        </form>
+                        <?php if ($skill['email_utente_amm'] === $_SESSION['email']): ?>
+                            <form method="POST" style="display:inline;">
+                                <input type="hidden" name="competenza" value="<?= $skill['competenza'] ?>">
+                                <button type="submit" name="delete_skill" class="btn btn-danger btn-sm"
+                                        onclick="return confirm('Eliminare tutti i livelli per questa competenza?')">
+                                    Elimina
+                                </button>
+                            </form>
+                        <?php else: ?>
+                            <span class="text-muted">Non autorizzato</span>
+                        <?php endif; ?>
+                    </td>
+                    <td>
+                        <?= htmlspecialchars($skill['email_utente_amm']) ?>
                     </td>
                 </tr>
             <?php endforeach; ?>
