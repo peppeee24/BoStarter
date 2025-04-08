@@ -180,7 +180,7 @@ INSERT INTO UTENTE_CREATORE (email_utente_creat, nr_progetti, affidabilita) VALU
 ('test3@example.com', 0, 6.5);
 
 INSERT INTO UTENTE_AMMINISTRATORE (email_utente_amm, codice_sicurezza)
-VALUES ('peppe24@gmail.com', '12345');
+VALUES ('peppe24@gmail.com', '$2y$10$aFf/xsZRwAke8XG47X1HUOYTHH4hIdoHe0pTKEXlSuQw4Q9szA0Yu');
 
 
 INSERT INTO PROGETTO (nome, descrizione, data_inserimento, email_creatore, budget, data_limite, stato) 

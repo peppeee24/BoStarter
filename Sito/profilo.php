@@ -18,13 +18,13 @@ if (isset($_GET['action']) && isset($_GET['candidatura_id'])) {
 
     // Verifica che la candidatura appartenga a un progetto software creato dall'utente loggato
     $stmtCheck = $pdo->prepare("
-        SELECT C.id
-        FROM CANDIDATURA C
-        JOIN PROFILO PF ON C.id_profilo = PF.id
-        JOIN PROGETTO_SOFTWARE PS ON PF.nome_software = PS.nome_progetto
-        JOIN PROGETTO pr ON PS.nome_progetto = pr.nome
-        WHERE C.id = :cid AND pr.email_creatore = :email
-    ");
+    SELECT C.id
+    FROM CANDIDATURA C
+    JOIN PROFILO PF ON C.id_profilo = PF.id
+    JOIN PROGETTO_SOFTWARE PS ON PF.nome_software = PS.nome_progetto
+    JOIN PROGETTO pr ON PS.nome_progetto = pr.nome
+    WHERE C.id = :cid AND pr.email_creatore = :email
+");
     $stmtCheck->execute(['cid' => $candidatura_id, 'email' => $_SESSION['email']]);
     if ($stmtCheck->fetch(PDO::FETCH_ASSOC)) {
         if ($action === 'accept') {
@@ -93,18 +93,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['competenze'])) {
 }
 
 // Recupera tutte le competenze disponibili
-$skillsQuery = $pdo->query("SELECT s.competenza, s.livello, i.livello AS selected_level
+$skillsQuery = $pdo->query("SELECT s.competenza, i.livello AS selected_level
                            FROM SKILL s
                            LEFT JOIN INDICA i ON s.competenza = i.competenza 
-                               AND s.livello = i.livello 
                                AND i.email_utente = '" . $_SESSION['email'] . "'
-                           ORDER BY s.competenza, s.livello");
+                           ORDER BY s.competenza");
 $competenze = [];
 foreach ($skillsQuery as $row) {
-    $competenze[$row['competenza']]['livelli'][] = $row['livello'];
-    if ($row['selected_level'] !== null) {
-        $competenze[$row['competenza']]['selected'] = $row['selected_level'];
-    }
+    $competenze[$row['competenza']] = [
+        'livelli' => [1, 2, 3, 4, 5],
+        'selected' => $row['selected_level']
+    ];
 }
 
 // Recupera candidature ricevute (per progetti software creati dall'utente)
@@ -139,8 +138,6 @@ $stmtRewardUtente = $pdo->prepare("
 ");
 $stmtRewardUtente->execute(['email' => $_SESSION['email']]);
 $rewardConseguite = $stmtRewardUtente->fetchAll(PDO::FETCH_ASSOC);
-
-
 ?>
 
 <!DOCTYPE html>
@@ -199,11 +196,11 @@ $rewardConseguite = $stmtRewardUtente->fetchAll(PDO::FETCH_ASSOC);
                             <label class="form-label"><?= htmlspecialchars($competenza) ?></label>
                             <select name="competenze[<?= htmlspecialchars($competenza) ?>]" class="form-select">
                                 <option value="0">Nessun livello</option>
-                                <?php foreach ($dati['livelli'] as $livello): ?>
-                                    <option value="<?= $livello ?>" <?= (isset($dati['selected']) && $dati['selected'] == $livello) ? 'selected' : '' ?>>
-                                        Livello <?= $livello ?>
+                                <?php for ($i = 1; $i <= 5; $i++): ?>
+                                    <option value="<?= $i ?>" <?= (isset($dati['selected']) && $dati['selected'] == $i) ? 'selected' : '' ?>>
+                                        Livello <?= $i ?>
                                     </option>
-                                <?php endforeach; ?>
+                                <?php endfor; ?>
                             </select>
                         </div>
                     <?php endforeach; ?>

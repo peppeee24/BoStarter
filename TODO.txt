@@ -1,5 +1,6 @@
 TO DO IMPORTANTI
-- Sistemare tabella skill su MYSQL seguendo il nuovo schema ER
+- Fixare accettazione e rifiuto cadidature
+- Rivedere meccanismo candidature, tu selezioni il profilo a cui ti vuoi candidare, non che se automaticametne hai tutte le skill allora ti candidi a tutto
 - Sistemare documentazione: Verificare calcoli di costo operazioni - Aggiunger nuovo Er - Verificare Tabelle Business Rules e le altre
 - Finire documentazione
 - Creare Statistiche

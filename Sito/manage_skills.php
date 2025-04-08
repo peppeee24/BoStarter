@@ -11,17 +11,15 @@ if (!isset($_SESSION['admin_logged']) || !$_SESSION['admin_logged']) {
 // Gestione operazioni
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['add_skill'])) {
-        // Aggiungi nuova skill con tutti i livelli
+        // Aggiungi nuova skill senza livelli (solo competenza)
         $competenza = trim($_POST['competenza']);
 
         try {
             $pdo->beginTransaction();
-            // Inserisci tutti i livelli da 1 a 5
-            for ($i = 1; $i <= 5; $i++) {
-                $stmt = $pdo->prepare("INSERT INTO SKILL (competenza, livello, email_utente_amm) 
-                                      VALUES (?, ?, ?)");
-                $stmt->execute([$competenza, $i, $_SESSION['email']]);
-            }
+            // Inserisci la competenza (senza livello, come unica voce)
+            $stmt = $pdo->prepare("INSERT INTO SKILL (competenza, email_utente_amm) 
+                                  VALUES (?, ?)");
+            $stmt->execute([$competenza, $_SESSION['email']]);
             $pdo->commit();
         } catch (PDOException $e) {
             $pdo->rollBack();
@@ -36,8 +34,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $result = $stmtCheck->fetch(PDO::FETCH_ASSOC);
 
         if ($result && $result['email_utente_amm'] === $_SESSION['email']) {
-            $stmt = $pdo->prepare("DELETE FROM SKILL WHERE competenza = ?");
-            $stmt->execute([$competenza]);
+            try {
+                $pdo->beginTransaction();
+
+                // Elimina la competenza dalla tabella SKILL
+                $stmtDelete = $pdo->prepare("DELETE FROM SKILL WHERE competenza = ?");
+                $stmtDelete->execute([$competenza]);
+
+                // Se la competenza è associata a uno o più profili, elimina anche le associazioni nella tabella COMPRENDE
+                $stmtDeleteFromComprende = $pdo->prepare("DELETE FROM COMPRENDE WHERE competenza = ?");
+                $stmtDeleteFromComprende->execute([$competenza]);
+
+                $pdo->commit();
+            } catch (PDOException $e) {
+                $pdo->rollBack();
+                $error = "Errore nell'eliminazione: " . $e->getMessage();
+            }
         } else {
             $error = "Non puoi eliminare una competenza creata da un altro amministratore.";
         }
@@ -46,13 +58,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 // Recupera tutte le skills raggruppate
 $stmt = $pdo->prepare("
-    SELECT competenza, email_utente_amm, GROUP_CONCAT(livello ORDER BY livello) AS livelli 
-    FROM SKILL 
-    -- WHERE email_utente_amm = ?
+    SELECT competenza, email_utente_amm
+    FROM SKILL
     GROUP BY competenza, email_utente_amm
 ");
 $stmt->execute();
-//$stmt->execute([$_SESSION['email']]);
 $skills = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
@@ -119,16 +129,14 @@ $skills = $stmt->fetchAll(PDO::FETCH_ASSOC);
             </tr>
             </thead>
             <tbody>
-            <?php foreach ($skills as $skill):
-                $livelli_presenti = explode(',', $skill['livelli']);
-                ?>
+            <?php foreach ($skills as $skill): ?>
                 <tr>
                     <td><?= htmlspecialchars($skill['competenza']) ?></td>
                     <td>
                         <?php for ($i = 1; $i <= 5; $i++): ?>
-                            <span class="level-badge <?= in_array($i, $livelli_presenti) ? '' : 'missing-level' ?>">
-                                    <?= $i ?>
-                                </span>
+                            <span class="level-badge">
+                                <?= $i ?>
+                            </span>
                         <?php endfor; ?>
                     </td>
                     <td>

@@ -118,11 +118,12 @@ try {
                         // Gestisci le skill associate al profilo
                         if (!empty($profilo['skills'])) {
                             foreach ($profilo['skills'] as $competenza => $livello) {
-                                // Verifica se la competenza e il livello esistono nella tabella SKILL
-                                $stmtVerifica = $pdo->prepare("SELECT COUNT(*) FROM SKILL WHERE competenza = ? AND livello = ?");
-                                $stmtVerifica->execute([$competenza, $livello]);
+                                // Verifica se la competenza esiste
+                                $stmtVerifica = $pdo->prepare("SELECT COUNT(*) FROM SKILL WHERE competenza = ?");
+                                $stmtVerifica->execute([$competenza]);
                                 $esiste = $stmtVerifica->fetchColumn();
 
+                                // Se la competenza esiste, inseriscila nella tabella COMPRENDE
                                 if ($esiste && $livello >= 1 && $livello <= 5) {
                                     $stmtComprende->execute([
                                         $competenza,
