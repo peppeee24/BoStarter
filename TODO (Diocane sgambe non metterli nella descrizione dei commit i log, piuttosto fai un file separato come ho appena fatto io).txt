@@ -1,0 +1,15 @@
+TO DO IMPORTANTI
+- Sistemare tabella skill su MYSQL seguendo il nuovo schema ER
+- Sistemare documentazione: Verificare calcoli di costo operazioni - Aggiunger nuovo Er - Verificare Tabelle Business Rules e le altre
+- Finire documentazione
+- Creare Statistiche
+- Testare su Windows i log in MongoDB
+- Imporre quando si crea un progetto software l’aggiunta di skill al profilo richiesto
+- Capire funzionamento trigger
+- Commentare bene tutto codice
+- Rilegger testo e specifiche
+
+TO DO NON IMPORTANTI
+- Valutare se un admin può eliminare le skill inserite da  un altro admin
+- Ottimizzare style e script presenti all’interno di codice
+- Fixare: Se un utente si candida ad un poeto software in due posizioni e viene accettato in una e rifiutato nell’altra, e l’utente rimanda la richiesta, non viene gestita la risposta precedete e la candidatura alla cosa accettata viene riproposta
