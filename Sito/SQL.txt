@@ -11,7 +11,7 @@ CREATE TABLE UTENTE (
     cognome VARCHAR(50) NOT NULL,
     anno_nascita YEAR NOT NULL,
     luogo_nascita VARCHAR(100) NOT NULL
-) ENGINE "INNODB";
+) ENGINE="INNODB";
 
 
 CREATE TABLE UTENTE_AMMINISTRATORE(
@@ -19,29 +19,28 @@ CREATE TABLE UTENTE_AMMINISTRATORE(
     codice_sicurezza VARCHAR(255) NOT NULL,
     FOREIGN KEY (email_utente_amm) REFERENCES UTENTE(email) ON DELETE CASCADE
 
-) ENGINE "INNODB";
+) ENGINE="INNODB";
 
 CREATE TABLE UTENTE_CREATORE(
     email_utente_creat VARCHAR(255) PRIMARY KEY,
     nr_progetti INT DEFAULT 0,
     affidabilita FLOAT CHECK (affidabilita BETWEEN 0 AND 10), /* Valutare se enum "Buono", ecc */
     FOREIGN KEY (email_utente_creat) REFERENCES UTENTE(email) ON DELETE CASCADE
-) ENGINE "INNODB";
+) ENGINE="INNODB";
 
 
 CREATE TABLE SKILL(
     competenza VARCHAR(100),
-    livello INT CHECK (livello BETWEEN 0 AND 5),
     email_utente_amm VARCHAR(255),
-    PRIMARY KEY (competenza, livello),
+    PRIMARY KEY (competenza),
     FOREIGN KEY (email_utente_amm) REFERENCES UTENTE_AMMINISTRATORE(email_utente_amm) ON DELETE CASCADE
-) ENGINE "INNODB";
+) ENGINE="INNODB";
 
 CREATE TABLE INDICA(
     competenza VARCHAR(100),
     livello INT CHECK (livello BETWEEN 0 AND 5),
     email_utente VARCHAR(255),
-    PRIMARY KEY (competenza, livello),
+    PRIMARY KEY (competenza, email_utente),
     FOREIGN KEY (email_utente) REFERENCES UTENTE(email) ON DELETE CASCADE
 );
 
@@ -56,7 +55,7 @@ CREATE TABLE PROGETTO (
     data_limite DATE NOT NULL,
     stato ENUM('aperto', 'chiuso') NOT NULL DEFAULT 'aperto',
     FOREIGN KEY (email_creatore) REFERENCES UTENTE_CREATORE(email_utente_creat) ON DELETE CASCADE
-) ENGINE "INNODB";
+) ENGINE="INNODB";
 
 CREATE TABLE COMMENTO (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -66,7 +65,7 @@ CREATE TABLE COMMENTO (
     testo TEXT NOT NULL,
     FOREIGN KEY (email_utente) REFERENCES UTENTE(email) ON DELETE CASCADE,
     FOREIGN KEY (nome_progetto) REFERENCES PROGETTO(nome) ON DELETE CASCADE
-) ENGINE "INNODB";
+) ENGINE="INNODB";
 
 CREATE TABLE RISPOSTA_COMMENTO (
     id_commento INT,
@@ -85,7 +84,7 @@ CREATE TABLE FOTO_PROGETTO (
     nome_progetto VARCHAR(255) NOT NULL,
     foto_url TEXT NOT NULL,
     FOREIGN KEY (nome_progetto) REFERENCES PROGETTO(nome) ON DELETE CASCADE
-) ENGINE "INNODB";
+) ENGINE="INNODB";
 
 CREATE TABLE REWARD (
     codice INT AUTO_INCREMENT PRIMARY KEY,
@@ -93,19 +92,19 @@ CREATE TABLE REWARD (
     descrizione TEXT NOT NULL,
     foto_url TEXT NOT NULL,
     FOREIGN KEY (nome_progetto) REFERENCES PROGETTO(nome) ON DELETE CASCADE
-) ENGINE "INNODB";
+) ENGINE="INNODB";
 
 CREATE TABLE PROGETTO_HARDWARE (
     nome_progetto VARCHAR(255) PRIMARY KEY,
     FOREIGN KEY (nome_progetto) REFERENCES PROGETTO(nome) ON DELETE CASCADE
-) ENGINE "INNODB";
+) ENGINE="INNODB";
 
 CREATE TABLE COMPONENTE (
     nome VARCHAR(255) PRIMARY KEY,
     descrizione TEXT NOT NULL,
     prezzo FLOAT NOT NULL CHECK (prezzo > 0),
     quantita INT NOT NULL CHECK (quantita > 0)
-) ENGINE "INNODB";
+) ENGINE="INNODB";
 
 CREATE TABLE FORMATO (
     nome_componente VARCHAR(255),
@@ -113,12 +112,12 @@ CREATE TABLE FORMATO (
     PRIMARY KEY (nome_componente, nome_hardware),
     FOREIGN KEY (nome_hardware) REFERENCES PROGETTO_HARDWARE(nome_progetto) ON DELETE CASCADE,
     FOREIGN KEY (nome_componente) REFERENCES COMPONENTE(nome) ON DELETE CASCADE
-) ENGINE "INNODB";
+) ENGINE="INNODB";
 
 CREATE TABLE PROGETTO_SOFTWARE (
     nome_progetto VARCHAR(255) PRIMARY KEY,
     FOREIGN KEY (nome_progetto) REFERENCES PROGETTO(nome) ON DELETE CASCADE
-) ENGINE "INNODB";
+) ENGINE="INNODB";
 
 
 CREATE TABLE PROFILO (
@@ -126,13 +125,13 @@ CREATE TABLE PROFILO (
     nome VARCHAR(255),
     nome_software VARCHAR(255),
     FOREIGN KEY (nome_software) REFERENCES PROGETTO_SOFTWARE(nome_progetto) ON DELETE CASCADE
-) ENGINE "INNODB";
+) ENGINE="INNODB";
 
 CREATE TABLE COMPRENDE(
     competenza VARCHAR(100),
     livello INT CHECK (livello BETWEEN 0 AND 5),
     id_profilo INT,
-    PRIMARY KEY (competenza, livello),
+    PRIMARY KEY (competenza, id_profilo),
     FOREIGN KEY (id_profilo) REFERENCES PROFILO(id) ON DELETE CASCADE
 );
 
@@ -147,7 +146,7 @@ CREATE TABLE FINANZIAMENTO (
     FOREIGN KEY (email_utente) REFERENCES UTENTE(email) ON DELETE CASCADE,
     FOREIGN KEY (nome_progetto) REFERENCES PROGETTO(nome) ON DELETE CASCADE,
     FOREIGN KEY (codice_reward) REFERENCES REWARD(codice) ON DELETE CASCADE
-) ENGINE "INNODB";
+) ENGINE="INNODB";
 
 
 CREATE TABLE CANDIDATURA (
@@ -249,44 +248,15 @@ INSERT INTO PROGETTO_SOFTWARE (nome_progetto) VALUES
 
 
 
-INSERT INTO SKILL (competenza, livello, email_utente_amm) VALUES
-('Analisi 1', 1, 'peppe24@gmail.com'),
-('Analisi 1', 2, 'peppe24@gmail.com'),
-('Analisi 1', 3, 'peppe24@gmail.com'),
-('Basi di Dati', 5, 'peppe24@gmail.com'),
-('Basi di Dati', 4, 'peppe24@gmail.com'),
-('Basi di Dati', 3, 'peppe24@gmail.com'),
-('Basi di Dati', 2, 'peppe24@gmail.com'),
-('Chimica dei materiali', 2, 'peppe24@gmail.com'),
-('Chimica dei materiali', 3, 'peppe24@gmail.com'),
-('Chimica dei materiali', 4, 'peppe24@gmail.com'),
-('Chimica dei materiali', 1, 'peppe24@gmail.com'),
-('Chimica dei materiali', 5, 'peppe24@gmail.com'),
-('Elettronica di base', 5, 'peppe24@gmail.com'),
-('Elettronica di base', 4, 'peppe24@gmail.com'),
-('Elettronica di base', 3, 'peppe24@gmail.com'),
-('Elettronica di base', 2, 'peppe24@gmail.com'),
-('Elettronica di base', 1, 'peppe24@gmail.com'),
-('Python', 1, 'peppe24@gmail.com'),
-('Python', 2, 'peppe24@gmail.com'),
-('Python', 3, 'peppe24@gmail.com'),
-('Python', 4, 'peppe24@gmail.com'),
-('Python', 5, 'peppe24@gmail.com'),
-('PHP, HTML, CSS, Javascript', 1, 'peppe24@gmail.com'),
-('PHP, HTML, CSS, Javascript', 2, 'peppe24@gmail.com'),
-('PHP, HTML, CSS, Javascript', 3, 'peppe24@gmail.com'),
-('PHP, HTML, CSS, Javascript', 4, 'peppe24@gmail.com'),
-('PHP, HTML, CSS, Javascript', 5, 'peppe24@gmail.com'),
-('Google Maps', 1, 'peppe24@gmail.com'),
-('Google Maps', 2, 'peppe24@gmail.com'),
-('Google Maps', 3, 'peppe24@gmail.com'),
-('Google Maps', 4, 'peppe24@gmail.com'),
-('Google Maps', 5, 'peppe24@gmail.com'),
-('Fisica delle sfere', 5, 'peppe24@gmail.com'),
-('Fisica delle sfere', 4, 'peppe24@gmail.com'),
-('Fisica delle sfere', 1, 'peppe24@gmail.com'),
-('Fisica delle sfere', 2, 'peppe24@gmail.com'),
-('Fisica delle sfere', 3, 'peppe24@gmail.com');
+INSERT INTO SKILL (competenza, email_utente_amm) VALUES
+('Analisi 1', 'peppe24@gmail.com'),
+('Basi di Dati', 'peppe24@gmail.com'),
+('Chimica dei materiali', 'peppe24@gmail.com'),
+('Elettronica di base', 'peppe24@gmail.com'),
+('Python', 'peppe24@gmail.com'),
+('PHP, HTML, CSS, Javascript', 'peppe24@gmail.com'),
+('Google Maps', 'peppe24@gmail.com'),
+('Fisica delle sfere', 'peppe24@gmail.com');
 
 
 INSERT INTO PROFILO (id, nome, nome_software) VALUES
