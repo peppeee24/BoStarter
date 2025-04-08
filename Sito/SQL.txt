@@ -247,6 +247,60 @@ INSERT INTO PROGETTO_SOFTWARE (nome_progetto) VALUES
 ('VR Learning');
 
 
+-- Aggiungere i componenti alla tabella COMPONENTE
+INSERT INTO COMPONENTE (nome, descrizione, prezzo, quantita)
+VALUES
+('Scheda madre', 'Scheda madre per sistema di automazione domestica', 150.00, 10),
+('Batteria', 'Batteria per auto elettrica, lunga durata', 120.00, 15),
+('Sensore', 'Sensore di movimento per sistema di sorveglianza', 25.00, 50),
+('Fotocamera', 'Fotocamera di sicurezza con visione notturna', 80.00, 30),
+('Microcontrollore', 'Microcontrollore per automazione industriale', 50.00, 20),
+('Motore servo', 'Motore passo-passo per movimentazione automatica', 45.00, 25),
+('Motore passo-passo', 'Motore utilizzato per precisione nei movimenti automatizzati', 40.00, 10),
+('Modulo Wi-Fi', 'Modulo per connessione wireless a internet', 30.00, 50),
+('Display LCD', 'Display a cristalli liquidi per visualizzazione dati', 15.00, 30),
+('Sensore di temperatura', 'Sensore per rilevazione temperatura ambiente', 10.00, 100),
+('Modulo Bluetooth', 'Modulo per connessione Bluetooth', 20.00, 40),
+('Cavo di alimentazione', 'Cavo per alimentazione componenti elettronici', 5.00, 200);
+
+
+-- Associare i componenti ai progetti hardware nella tabella FORMATO
+INSERT INTO FORMATO (nome_componente, nome_hardware)
+VALUES
+-- Progetto Smart Home AI
+('Scheda madre', 'Smart Home AI'),
+('Batteria', 'Smart Home AI'),
+('Sensore', 'Smart Home AI'),
+('Fotocamera', 'Smart Home AI'),
+
+-- Progetto EcoCar
+('Batteria', 'EcoCar'),
+('Motore servo', 'EcoCar'),
+('Sensore', 'EcoCar'),
+
+-- Progetto Smart Park
+('Sensore', 'Smart Park'),
+('Fotocamera', 'Smart Park'),
+('Display LCD', 'Smart Park'),
+('Modulo Wi-Fi', 'Smart Park'),
+
+-- Progetto Mucca Silver
+('Scheda madre', 'Mucca Silver'),
+('Motore servo', 'Mucca Silver'),
+('Motore passo-passo', 'Mucca Silver'),
+('Display LCD', 'Mucca Silver'),
+
+-- Progetto Flipper City
+('Motore servo', 'Flipper City'),
+('Display LCD', 'Flipper City'),
+('Cavo di alimentazione', 'Flipper City'),
+
+-- Progetto Emilio 5.0
+('Microcontrollore', 'Emilio 5.0'),
+('Motore servo', 'Emilio 5.0'),
+('Modulo Wi-Fi', 'Emilio 5.0'),
+('Cavo di alimentazione', 'Emilio 5.0');
+
 
 INSERT INTO SKILL (competenza, email_utente_amm) VALUES
 ('Analisi 1', 'peppe24@gmail.com'),
