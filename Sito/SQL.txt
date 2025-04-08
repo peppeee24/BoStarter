@@ -254,7 +254,6 @@ INSERT INTO SKILL (competenza, email_utente_amm) VALUES
 ('Chimica dei materiali', 'peppe24@gmail.com'),
 ('Elettronica di base', 'peppe24@gmail.com'),
 ('Python', 'peppe24@gmail.com'),
-('PHP, HTML, CSS, Javascript', 'peppe24@gmail.com'),
 ('Google Maps', 'peppe24@gmail.com'),
 ('Fisica delle sfere', 'peppe24@gmail.com');
 
@@ -270,7 +269,6 @@ INSERT INTO INDICA (competenza, livello, email_utente) VALUES
 ('Fisica delle sfere', 5, 'mirko@gmail.com'),
 ('Google Maps', 3, 'fedesgambe@icloud.com'),
 ('Google Maps', 5, 'mirko@gmail.com'),
-('HTML, CSS, PHP, Javascript', 5, 'simonemagli@gmail.com'),
 ('Java', 5, 'fedesgambe@icloud.com'),
 ('Python', 5, 'simonemagli@gmail.com');
 
@@ -290,7 +288,6 @@ INSERT INTO COMPRENDE (competenza, livello, id_profilo) VALUES
 ('Basi di Dati', 2, 3),
 ('Fisica delle sfere', 1, 1),
 ('Google Maps', 3, 2),
-('HTML, CSS, PHP, Javascript', 5, 3),
 ('Java', 4, 2),
 ('Python', 5, 3);
 
