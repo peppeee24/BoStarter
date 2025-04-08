@@ -1,25 +1,30 @@
 <?php
 session_start();
-require 'session.php';
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
+require_once 'session.php'; // Connessione al database
+
+if (!isset($_SESSION['email'])) {
+    header("Location: login.html");
+    exit();
+}
+
+// Variabili iniziali
+$errore = '';
+$successo = '';
+
+// Recupera il nome del progetto
 if (!isset($_GET['nome_progetto'])) {
     die("Errore: Nessun progetto specificato.");
 }
 
 $nome_progetto = $_GET['nome_progetto'];
-$loggedIn = isset($_SESSION['email']);
-$email_utente = $loggedIn ? $_SESSION['email'] : null;
+$email_utente = $_SESSION['email'];
 
-$errore = '';
-
-// Verifica se l'utente è loggato
-if (!$loggedIn) {
-    header("Location: login.html");
-    exit();
-}
-
+// Recupera i dettagli del progetto
 try {
-    // Recupera i dettagli del progetto e tipo
     $stmt = $pdo->prepare("
         SELECT P.*, 
             COALESCE(
@@ -37,19 +42,35 @@ try {
         die("Errore: Il progetto non esiste.");
     }
 
-    // Verifica che il progetto sia di tipo software
+    // Verifica se il progetto è di tipo software
     if ($progetto['tipo_progetto'] !== 'software') {
         die("Errore: Il progetto non è un progetto software.");
     }
 
-    // Recupera le skill necessarie per il progetto software
-    $skills_richieste = [];
-    $stmtSkills = $pdo->prepare("
-        SELECT competenza, livello
-        FROM COMPRENDE
-        WHERE id_profilo IN (SELECT id FROM PROFILO WHERE nome_software = :nome)
+    // Recupera i profili disponibili per il progetto software
+    $stmtProfili = $pdo->prepare("
+        SELECT p.id, p.nome as nome_profilo
+        FROM PROFILO p
+        WHERE p.nome_software = :nome
     ");
-    $stmtSkills->execute(['nome' => $nome_progetto]);
+    $stmtProfili->execute(['nome' => $nome_progetto]);
+    $profili = $stmtProfili->fetchAll(PDO::FETCH_ASSOC);
+
+} catch (PDOException $e) {
+    $errore = "Errore nel recupero dei dati del progetto: " . $e->getMessage();
+}
+
+// Gestione della selezione del profilo e della candidatura
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['profilo'])) {
+    $id_profilo = $_POST['profilo'];
+
+    // Recupera le skill richieste per il profilo selezionato
+    $stmtSkills = $pdo->prepare("
+        SELECT c.competenza, c.livello
+        FROM COMPRENDE c
+        WHERE c.id_profilo = :id_profilo
+    ");
+    $stmtSkills->execute(['id_profilo' => $id_profilo]);
     $skills_richieste = $stmtSkills->fetchAll(PDO::FETCH_ASSOC);
 
     // Recupera le skill dell'utente
@@ -61,7 +82,7 @@ try {
     $stmtUserSkills->execute(['email' => $email_utente]);
     $user_skills = $stmtUserSkills->fetchAll(PDO::FETCH_ASSOC);
 
-    // Confronta le skill dell'utente con quelle richieste per partecipare
+    // Confronta le skill dell'utente con quelle richieste per il profilo
     $missing_skills = array();
     $can_participate = true;
     foreach ($skills_richieste as $skill) {
@@ -78,28 +99,29 @@ try {
         }
     }
 
-    // Se l'utente ha tutte le skill necessarie, inserisce la candidatura, altrimenti genera il messaggio con le skill mancanti
+    // Se l'utente ha tutte le skill necessarie, invia la candidatura
     if ($can_participate) {
-        $stmtCandidatura = $pdo->prepare("
-            INSERT INTO CANDIDATURA (email_utente, id_profilo, esito) 
-            SELECT :email, id, FALSE FROM PROFILO WHERE nome_software = :nome_progetto
-        ");
-        $stmtCandidatura->execute([
-            'email' => $email_utente,
-            'nome_progetto' => $nome_progetto
-        ]);
-        $errore = "Candidatura inviata con successo!";
+        try {
+            $stmtCandidatura = $pdo->prepare("
+                INSERT INTO CANDIDATURA (email_utente, id_profilo, esito) 
+                VALUES (:email_utente, :id_profilo, FALSE)
+            ");
+            $stmtCandidatura->execute([
+                'email_utente' => $email_utente,
+                'id_profilo' => $id_profilo
+            ]);
+            $successo = "Candidatura inviata con successo!";
+        } catch (PDOException $e) {
+            $errore = "Errore nell'invio della candidatura: " . $e->getMessage();
+        }
     } else {
+        // Elenco delle skill mancanti
         $missing_list = [];
         foreach ($missing_skills as $ms) {
             $missing_list[] = $ms['competenza'] . " (livello " . $ms['livello'] . ")";
         }
         $errore = "Non hai le seguenti skill necessarie per partecipare a questo progetto: " . implode(", ", $missing_list) . ".";
     }
-
-} catch (PDOException $e) {
-    $errore = "Errore database: " . $e->getMessage();
-    error_log($errore);
 }
 
 ?>
@@ -143,13 +165,32 @@ try {
         </div>
     <?php endif; ?>
 
-    <?php if ($can_participate): ?>
-        <p>Hai le skill necessarie per partecipare a questo progetto. La tua candidatura è stata inviata!</p>
-    <?php else: ?>
-        <p>Non hai le skill richieste per partecipare a questo progetto.</p>
+    <?php if ($successo): ?>
+        <div class="alert success-message">
+            <?php echo htmlspecialchars($successo); ?>
+        </div>
     <?php endif; ?>
 
-    <a href="index.php" class="btn btn-primary">Torna alla Home</a>
+    <!-- Se il progetto ha più profili -->
+    <?php if (!empty($profili)): ?>
+        <form method="POST">
+            <div class="mb-3">
+                <label class="form-label" for="profilo">Seleziona un Profilo</label>
+                <select name="profilo" id="profilo" class="form-select" required>
+                    <option value="">Seleziona un profilo</option>
+                    <?php foreach ($profili as $profilo): ?>
+                        <option value="<?= htmlspecialchars($profilo['id']); ?>"><?= htmlspecialchars($profilo['nome_profilo']); ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Invia la candidatura</button>
+        </form>
+    <?php else: ?>
+        <p>Non ci sono profili disponibili per la partecipazione a questo progetto.</p>
+    <?php endif; ?>
+
+    <a href="index.php" class="btn btn-primary mt-4">Torna alla Home</a>
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

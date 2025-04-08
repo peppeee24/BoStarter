@@ -11,33 +11,8 @@ if (!isset($_SESSION['email'])) {
     exit();
 }
 
-// Gestione azioni su candidature ricevute (accetta/rifiuta)
-if (isset($_GET['action']) && isset($_GET['candidatura_id'])) {
-    $action = $_GET['action'];
-    $candidatura_id = $_GET['candidatura_id'];
 
-    // Verifica che la candidatura appartenga a un progetto software creato dall'utente loggato
-    $stmtCheck = $pdo->prepare("
-    SELECT C.id
-    FROM CANDIDATURA C
-    JOIN PROFILO PF ON C.id_profilo = PF.id
-    JOIN PROGETTO_SOFTWARE PS ON PF.nome_software = PS.nome_progetto
-    JOIN PROGETTO pr ON PS.nome_progetto = pr.nome
-    WHERE C.id = :cid AND pr.email_creatore = :email
-");
-    $stmtCheck->execute(['cid' => $candidatura_id, 'email' => $_SESSION['email']]);
-    if ($stmtCheck->fetch(PDO::FETCH_ASSOC)) {
-        if ($action === 'accept') {
-            $stmtUpdate = $pdo->prepare("UPDATE CANDIDATURA SET esito = 1 WHERE id = :cid");
-            $stmtUpdate->execute(['cid' => $candidatura_id]);
-        } elseif ($action === 'reject') {
-            $stmtUpdate = $pdo->prepare("UPDATE CANDIDATURA SET esito = -1 WHERE id = :cid");
-            $stmtUpdate->execute(['cid' => $candidatura_id]);
-        }
-        header("Location: profilo.php");
-        exit();
-    }
-}
+
 
 // Recupera dati utente
 $sql = "SELECT u.*, 
@@ -92,6 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['competenze'])) {
     }
 }
 
+
 // Recupera tutte le competenze disponibili
 $skillsQuery = $pdo->query("SELECT s.competenza, i.livello AS selected_level
                            FROM SKILL s
@@ -101,7 +77,7 @@ $skillsQuery = $pdo->query("SELECT s.competenza, i.livello AS selected_level
 $competenze = [];
 foreach ($skillsQuery as $row) {
     $competenze[$row['competenza']] = [
-        'livelli' => [1, 2, 3, 4, 5],
+        'livelli' => [1, 2, 3, 4, 5], // Livelli fissi da 1 a 5
         'selected' => $row['selected_level']
     ];
 }
