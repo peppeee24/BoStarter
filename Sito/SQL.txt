@@ -494,7 +494,7 @@ BEGIN
         CONCAT('L\'utente ha commentato il progetto ', NEW.nome_progetto, '.'));
 END //
 DELIMITER ;
-
+nu
 /* Log inserimento candidatura per un profilo */
 DELIMITER //
 CREATE TRIGGER log_nuova_candidatura
@@ -587,8 +587,8 @@ AFTER UPDATE ON CANDIDATURA
 FOR EACH ROW
 BEGIN
     CALL InserisciLogEvento('Gestione Candidatura', 
-        (SELECT email_creatore FROM PROGETTO WHERE nome_progetto = 
-            (SELECT nome_progetto FROM PROFILO WHERE id = NEW.id_profilo)), 
+        (SELECT email_creatore FROM PROGETTO WHERE nome =
+            (SELECT nome_software FROM PROFILO WHERE id = NEW.id_profilo)),
         CONCAT('L\'utente ha ', IF(NEW.esito, 'accettato', 'rifiutato'), 
                ' la candidatura di ', NEW.email_utente, ' per il profilo ', NEW.id_profilo, '.'));
 END //

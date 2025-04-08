@@ -13,6 +13,32 @@ if (!isset($_SESSION['email'])) {
 
 
 
+if (isset($_GET['action']) && isset($_GET['candidatura_id'])) {
+    $action = $_GET['action'];
+    $candidatura_id = $_GET['candidatura_id'];
+
+    // Verifica che la candidatura appartenga a un progetto software creato dall'utente loggato
+    $stmtCheck = $pdo->prepare("
+    SELECT C.id
+    FROM CANDIDATURA C
+    JOIN PROFILO PF ON C.id_profilo = PF.id
+    JOIN PROGETTO_SOFTWARE PS ON PF.nome_software = PS.nome_progetto
+    JOIN PROGETTO pr ON PS.nome_progetto = pr.nome
+    WHERE C.id = :cid AND pr.email_creatore = :email
+");
+    $stmtCheck->execute(['cid' => $candidatura_id, 'email' => $_SESSION['email']]);
+    if ($stmtCheck->fetch(PDO::FETCH_ASSOC)) {
+        if ($action === 'accept') {
+            $stmtUpdate = $pdo->prepare("UPDATE CANDIDATURA SET esito = 1 WHERE id = :cid");
+            $stmtUpdate->execute(['cid' => $candidatura_id]);
+        } elseif ($action === 'reject') {
+            $stmtUpdate = $pdo->prepare("UPDATE CANDIDATURA SET esito = -1 WHERE id = :cid");
+            $stmtUpdate->execute(['cid' => $candidatura_id]);
+        }
+        header("Location: profilo.php");
+        exit();
+    }
+}
 
 // Recupera dati utente
 $sql = "SELECT u.*, 
@@ -210,9 +236,9 @@ $rewardConseguite = $stmtRewardUtente->fetchAll(PDO::FETCH_ASSOC);
                             <td>
                                 <?php
                                 if ($cand['esito'] == 1) {
-                                    echo "Accettato";
+                                    echo '<strong style="color: green;">Accettato</strong>';
                                 } elseif ($cand['esito'] == -1) {
-                                    echo "Rifiutato";
+                                    echo '<strong style="color: red;">Rifiutato</strong>';
                                 } else {
                                     echo "In attesa";
                                 }
@@ -257,9 +283,9 @@ $rewardConseguite = $stmtRewardUtente->fetchAll(PDO::FETCH_ASSOC);
                             <td>
                                 <?php
                                 if ($cand['esito'] == 1) {
-                                    echo "Accettato";
+                                    echo '<strong style="color: green;">Accettato</strong>';
                                 } elseif ($cand['esito'] == -1) {
-                                    echo "Rifiutato";
+                                    echo '<strong style="color: red;">Rifiutato</strong>';
                                 } else {
                                     echo "In attesa";
                                 }
