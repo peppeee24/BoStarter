@@ -3,10 +3,9 @@ TO DO IMPORTANTI
 - Testare nuovo sistema di candidature
 - Sistemare documentazione: Verificare calcoli di costo operazioni - Aggiunger nuovo Er - Verificare Tabelle Business Rules e le altre
 - Finire documentazione
-- Testare su Windows i log in MongoDB
-- Capire funzionamento trigger
+- Approfondire funzionamento trigger
 - Commentare bene tutto codice
-- Rilegger testo e specifiche
+- Rileggere testo e specifiche
 
 TO DO NON IMPORTANTI
 
