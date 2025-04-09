@@ -73,6 +73,7 @@ $progetti = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item"><a class="nav-link active" href="index.php">Home</a></li>
                 <li class="nav-item"><a class="nav-link" href="#progetti">Progetti</a></li>
+                <li class="nav-item"><a class="nav-link" href="statistiche.php">Statistiche</a></li>
                 <?php if ($loggedIn && $isCreator): ?>
                     <li class="nav-item"><a class="nav-link" href="crea_progetto.php">Crea un Progetto</a></li>
                 <?php endif; ?>

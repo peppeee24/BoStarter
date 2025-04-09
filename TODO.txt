@@ -1,5 +1,5 @@
 TO DO IMPORTANTI
-- Creare Statistiche !!!!
+- Testare statistiche
 - Testare nuovo sistema di candidature
 - Sistemare documentazione: Verificare calcoli di costo operazioni - Aggiunger nuovo Er - Verificare Tabelle Business Rules e le altre
 - Finire documentazione
