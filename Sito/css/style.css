@@ -243,3 +243,56 @@ body {
 .auth-link:hover {
     text-decoration: underline;
 }
+
+/* Stili personalizzati per le statistiche */
+
+/* Righe della tabella */
+.statistics-section ul.list-group li:nth-child(odd) {
+    background-color: #f9f9f9; /* Colore di sfondo alternato per le righe dispari */
+}
+
+.statistics-section ul.list-group li:nth-child(even) {
+    background-color: #e9ecef; /* Colore di sfondo alternato per le righe pari */
+}
+
+/* Aggiungi un po' di bordi e spessore per il testo */
+.statistics-section ul.list-group li {
+    border: 1px solid #ddd;
+    padding: 10px;
+    font-weight: normal;
+    transition: background-color 0.3s ease;
+}
+
+/* Cambia colore della riga al passaggio del mouse */
+.statistics-section ul.list-group li:hover {
+    background-color: #f1f1f1;
+    cursor: pointer;
+}
+
+/* Evidenziare i totali o i numeri rilevanti */
+.statistics-section ul.list-group li strong {
+    color: #007bff; /* Colore blu per il testo in grassetto (ad esempio per i numeri importanti) */
+}
+
+/* Titoli delle sezioni */
+.statistics-section h2 {
+    font-weight: bold;
+    color: #333;
+    border-bottom: 2px solid #007bff; /* Linea sotto il titolo per evidenziare la sezione */
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+/* Classifica Affidabilità: Colore rosso per gli utenti con bassa affidabilità */
+.statistics-section ul.list-group li.affidabilita-bassa {
+    color: red;
+    font-weight: bold;
+}
+
+/* Aggiungi un bordo colorato per le sezioni più importanti */
+.statistics-section .important-section {
+    border: 2px solid #dc3545; /* Rosso per le sezioni importanti */
+    padding: 15px;
+    background-color: #f8d7da; /* Rosso chiaro di sfondo */
+    border-radius: 5px;
+}
