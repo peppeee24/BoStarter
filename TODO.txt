@@ -1,4 +1,6 @@
 TO DO IMPORTANTI
+- Cambiare livello a 0-5
+- Fare ER Logico
 - Testare statistiche
 - Testare nuovo sistema di candidature
 - Sistemare documentazione: Verificare calcoli di costo operazioni - Aggiunger nuovo Er - Verificare Tabelle Business Rules e le altre
