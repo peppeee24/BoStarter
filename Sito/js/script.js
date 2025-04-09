@@ -9,7 +9,7 @@ const MYSQL_CONFIG = {
     user: 'root',
     password: 'root',
     database: 'BOSTARTER',
-    port: 8889 // Cambia se MAMP usa porta diversa
+    port: 3306 // Cambia se MAMP usa porta diversa
 };
 
 // Configurazione MongoDB
