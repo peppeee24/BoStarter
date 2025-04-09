@@ -290,11 +290,6 @@ VALUES
 ('Motore passo-passo', 'Mucca Silver'),
 ('Display LCD', 'Mucca Silver'),
 
--- Progetto Flipper City
-('Motore servo', 'Flipper City'),
-('Display LCD', 'Flipper City'),
-('Cavo di alimentazione', 'Flipper City'),
-
 -- Progetto Emilio 5.0
 ('Microcontrollore', 'Emilio 5.0'),
 ('Motore servo', 'Emilio 5.0'),
