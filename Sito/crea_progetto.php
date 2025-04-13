@@ -124,7 +124,7 @@ try {
                                 $esiste = $stmtVerifica->fetchColumn();
 
                                 // Se la competenza esiste, inseriscila nella tabella COMPRENDE
-                                if ($esiste && $livello >= 1 && $livello <= 5) {
+                                if ($esiste && $livello >= 0 && $livello <= 5) {
                                     $stmtComprende->execute([
                                         $competenza,
                                         $livello,
@@ -359,6 +359,7 @@ try {
                                                 name="profili[${index}][skills][<?= htmlspecialchars($competenza) ?>]"
                                                 disabled required>
                                             <option value="">Seleziona livello</option>
+                                            <option value="0">0 - Non richiesto</option>
                                             <option value="1">1 - Base</option>
                                             <option value="2">2 - Elementare</option>
                                             <option value="3">3 - Intermedio</option>

@@ -78,7 +78,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['competenze'])) {
 
         // Inserisce le nuove competenze (solo se il livello selezionato è maggiore di 0)
         foreach ($_POST['competenze'] as $competenza => $livello) {
-            if ($livello > 0) {
+            if ($livello >= 0) {
                 $insertStmt = $pdo->prepare("INSERT INTO INDICA (competenza, livello, email_utente) 
                                              VALUES (?, ?, ?)");
                 $insertStmt->execute([$competenza, $livello, $_SESSION['email']]);
@@ -103,7 +103,7 @@ $skillsQuery = $pdo->query("SELECT s.competenza, i.livello AS selected_level
 $competenze = [];
 foreach ($skillsQuery as $row) {
     $competenze[$row['competenza']] = [
-        'livelli' => [1, 2, 3, 4, 5], // Livelli fissi da 1 a 5
+        'livelli' => [0,1, 2, 3, 4, 5], // Livelli fissi da 0 a 5
         'selected' => $row['selected_level']
     ];
 }
@@ -197,8 +197,8 @@ $rewardConseguite = $stmtRewardUtente->fetchAll(PDO::FETCH_ASSOC);
                         <div class="mb-3">
                             <label class="form-label"><?= htmlspecialchars($competenza) ?></label>
                             <select name="competenze[<?= htmlspecialchars($competenza) ?>]" class="form-select">
-                                <option value="0">Nessun livello</option>
-                                <?php for ($i = 1; $i <= 5; $i++): ?>
+
+                                <?php for ($i = 0; $i <= 5; $i++): ?>
                                     <option value="<?= $i ?>" <?= (isset($dati['selected']) && $dati['selected'] == $i) ? 'selected' : '' ?>>
                                         Livello <?= $i ?>
                                     </option>

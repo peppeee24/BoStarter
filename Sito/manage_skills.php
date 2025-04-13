@@ -110,11 +110,11 @@ $skills = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 </div>
                 <div class="col-md-4">
                     <button type="submit" name="add_skill" class="btn btn-success">
-                        Crea Competenza (Livelli 1-5)
+                        Crea Competenza (Livelli 0-5)
                     </button>
                 </div>
             </div>
-            <small class="text-muted">Verranno creati automaticamente tutti i livelli da 1 a 5</small>
+            <small class="text-muted">Verranno creati automaticamente tutti i livelli da 0 a 5</small>
         </form>
 
         <!-- Lista skills -->
@@ -133,7 +133,7 @@ $skills = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <tr>
                     <td><?= htmlspecialchars($skill['competenza']) ?></td>
                     <td>
-                        <?php for ($i = 1; $i <= 5; $i++): ?>
+                        <?php for ($i = 0; $i <= 5; $i++): ?>
                             <span class="level-badge">
                                 <?= $i ?>
                             </span>

@@ -1,6 +1,5 @@
 TO DO IMPORTANTI
-- Cambiare livello a 0-5
-- Fare ER Logico
+- Imporre quando si crea un progetto software l’aggiunta di skill al profilo richiesto
 - Testare statistiche
 - Testare nuovo sistema di candidature
 - Sistemare documentazione: Verificare calcoli di costo operazioni - Aggiunger nuovo Er - Verificare Tabelle Business Rules e le altre
@@ -8,10 +7,8 @@ TO DO IMPORTANTI
 - Approfondire funzionamento trigger
 - Commentare bene tutto codice
 - Rileggere testo e specifiche
+- Fixare: Un utente non può candidarsi piu volte allo stesso progetto, nello steso ruolo se viene accettato, altrimenti candidature doppie
+
 
 TO DO NON IMPORTANTI
-
-- Fixare: Un utente non può candidarsi piu volte allo stesso progetto, nello steso ruolo se viene accettato, altrimenti candidature doppie
-- Imporre quando si crea un progetto software l’aggiunta di skill al profilo richiesto
-- Valutare se un admin può eliminare le skill inserite da un altro admin
 - Ottimizzare style e script presenti all’interno di codice
