@@ -11,6 +11,7 @@ TO DO IMPORTANTI
 - aggiungere icona sito nella pagina del profilo utente
 - immagine mancante in flipper city (Accesso anticipato alla versione beta del gioco)
 - fixxare la classifica sull 'affidabilita. funziona all;andare in su, ma non in giu
+- Testare chiusura di un progetto superata la data limite
 
 TO DO NON IMPORTANTI
 - Ottimizzare style e script presenti all’interno di codice
