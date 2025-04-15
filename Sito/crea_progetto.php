@@ -2,29 +2,35 @@
 session_start();
 require 'session.php';
 
+// Verifico se sono loggato, se non lo sono vengo reiderizzato alla pagine di login
 if (!isset($_SESSION['email'])) {
     header("Location: login.html");
     exit();
 }
 
+// Se sono loggato ottengo l'utente
 $email_creatore = $_SESSION['email'];
 $errore = '';
 
-// Ottieni tutte le skill disponibili (raggruppo per nome per evitare duplicati)
+// Verifico tutte le skill disponibili (raggruppo per nome per evitare duplicati)
 $skill_disponibili = [];
 try {
     $stmtSkill = $pdo->prepare("SELECT DISTINCT competenza FROM SKILL ORDER BY competenza");
     $stmtSkill->execute();
+
+    // Recupero l'output delal query selezionando la prima colonna
     $skill_disponibili = $stmtSkill->fetchAll(PDO::FETCH_COLUMN);
 } catch (PDOException $e) {
     error_log("Errore nel caricamento delle skill: " . $e->getMessage());
 }
 
+
+// Provo a creare il nuovo progetto
 try {
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         error_log("Inizio processo POST per creazione progetto.");
 
-        // Validazione dati base
+        // Validazione dati inseriti nel form
         $nome_progetto = trim($_POST['nome']);
         $descrizione = trim($_POST['descrizione']);
         $budget = floatval(str_replace(',', '.', $_POST['budget']));
@@ -34,6 +40,7 @@ try {
         $profili = $_POST['profili'] ?? [];
         $rewards = $_POST['rewards'] ?? [];
 
+        // Vincolo per obbligare l'utente a compilare correttamente alcune parti del form
         if (empty($nome_progetto) || strlen($nome_progetto) > 255 ||
             empty($descrizione) ||
             $budget <= 0 ||
@@ -42,9 +49,14 @@ try {
             throw new Exception("Dati del progetto non validi");
         }
 
+        // Inizio la transazione quindi le operazioni devono essere eseguite tutte con successo oppure nessuna
+        // Si fa riferimento a tutte le operazione di insert nelal tabella
+        // Lo facciamo per evitare di inserire informazioni parziali
+        // Questo blocco termina con $pdo->commit();
         $pdo->beginTransaction();
 
         // Inserimento progetto principale
+        // ??? sono dei segnaposto per i valori, servono per evitare di lasciare spazi buchi per SQL Injection
         $stmtProgetto = $pdo->prepare("INSERT INTO PROGETTO 
             (nome, descrizione, data_inserimento, email_creatore, budget, data_limite) 
             VALUES (?, ?, CURDATE(), ?, ?, ?)");

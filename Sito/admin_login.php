@@ -3,11 +3,15 @@ session_start();
 require_once 'session.php';
 
 $error = '';
+
+// Recupero l'email dell'utete se loggato
 $admin_email = $_SESSION['email'] ?? '';
 
+// Se la richiesta è di tipo post
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $security_code = $_POST['security_code'] ?? '';
 
+    // Ottengo il codice di sicurezza dell'amministratore per verificare la passowrd inserita e procedere con l'autenticazione
     $stmt = $pdo->prepare("SELECT codice_sicurezza FROM UTENTE_AMMINISTRATORE WHERE email_utente_amm = :email");
     $stmt->execute(['email' => $admin_email]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);

@@ -1,8 +1,6 @@
 TO DO IMPORTANTI
 - Imporre quando si crea un progetto software l’aggiunta di skill al profilo richiesto
-- Testare statistiche
 - Testare nuovo sistema di candidature
-- Sistemare documentazione: Verificare calcoli di costo operazioni - Aggiunger nuovo Er - Verificare Tabelle Business Rules e le altre
 - Finire documentazione
 - Approfondire funzionamento trigger
 - Commentare bene tutto codice
