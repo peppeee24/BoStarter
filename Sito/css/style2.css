@@ -1,0 +1,21 @@
+.preview-img {
+    max-width: 200px;
+    max-height: 200px;
+    object-fit: cover;
+    margin: 5px;
+    border: 2px solid #ddd;
+    border-radius: 5px;
+}
+.componente-box2, .profilo-box, .reward-box2 {
+    background: #f8f9fa;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+}
+.skill-item {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+}
+.skill-item:last-child {
+    border-bottom: none;
+}

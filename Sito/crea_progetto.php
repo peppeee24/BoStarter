@@ -118,24 +118,24 @@ try {
 
                 foreach ($profili as $profilo) {
                     if (!empty($profilo['nome'])) {
-                        // Inserisci il profilo
+                        // Inserisce il profilo
                         $stmtProfilo->execute([
                             $profilo['nome'],
                             $nome_progetto
                         ]);
 
-                        // Ottieni l'ID del profilo appena inserito
+                        // Ottengo l'ID del profilo appena inserito
                         $id_profilo = $pdo->lastInsertId();
 
-                        // Gestisci le skill associate al profilo
+                        // Gestisce le skill associate al profilo
                         if (!empty($profilo['skills'])) {
                             foreach ($profilo['skills'] as $competenza => $livello) {
-                                // Verifica se la competenza esiste
+                                // Verifico se la competenza esiste
                                 $stmtVerifica = $pdo->prepare("SELECT COUNT(*) FROM SKILL WHERE competenza = ?");
                                 $stmtVerifica->execute([$competenza]);
                                 $esiste = $stmtVerifica->fetchColumn();
 
-                                // Se la competenza esiste, inseriscila nella tabella COMPRENDE
+                                // Se la competenza esiste, viene inserita nella tabella COMPRENDE
                                 if ($esiste && $livello >= 0 && $livello <= 5) {
                                     $stmtComprende->execute([
                                         $competenza,
@@ -159,6 +159,7 @@ try {
             // Cartella per le immagini dei reward
             $uploadRewardDir = 'images/uploads/progetti/' . $nome_progetto . '/rewards/';
             if (!file_exists($uploadRewardDir)) {
+
                 mkdir($uploadRewardDir, 0755, true);
             }
 
@@ -244,6 +245,7 @@ try {
             }
         }
 
+        // Fine transazione
         $pdo->commit();
         header("Location: index.php");
         exit();
@@ -267,29 +269,8 @@ try {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Crea Progetto - BoStarter</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        .preview-img {
-            max-width: 200px;
-            max-height: 200px;
-            object-fit: cover;
-            margin: 5px;
-            border: 2px solid #ddd;
-            border-radius: 5px;
-        }
-        .componente-box, .profilo-box, .reward-box {
-            background: #f8f9fa;
-            padding: 15px;
-            margin-bottom: 15px;
-            border-radius: 5px;
-        }
-        .skill-item {
-            padding: 10px;
-            border-bottom: 1px solid #eee;
-        }
-        .skill-item:last-child {
-            border-bottom: none;
-        }
-    </style>
+    <link rel="stylesheet" href="css/style2.css">
+
     <script>
         // Funzioni per gestione componenti e profili
         function mostraComponentiOProfili() {
@@ -303,7 +284,7 @@ try {
             const index = Date.now();
 
             const html = `
-                <div class="componente-box">
+                <div class="componente-box2">
                     <div class="row g-3">
                         <div class="col-md-4">
                             <input type="text" name="componenti[${index}][nome]"
@@ -323,7 +304,7 @@ try {
                         </div>
                         <div class="col-md-2">
                             <button type="button" class="btn btn-danger"
-                                    onclick="this.closest('.componente-box').remove()">Rimuovi</button>
+                                    onclick="this.closest('.componente-box2').remove()">Rimuovi</button>
                         </div>
                     </div>
                 </div>
@@ -395,7 +376,7 @@ try {
             const index = Date.now();
 
             const html = `
-                <div class="reward-box">
+                <div class="reward-box2">
                     <div class="row g-3">
                         <div class="col-md-8">
                             <label class="form-label">Descrizione *</label>
@@ -410,7 +391,7 @@ try {
                         </div>
                         <div class="col-md-2">
                             <button type="button" class="btn btn-danger"
-                                    onclick="this.closest('.reward-box').remove()">Rimuovi</button>
+                                    onclick="this.closest('.reward-box2').remove()">Rimuovi</button>
                         </div>
                     </div>
                 </div>
@@ -488,7 +469,7 @@ try {
 
             form.addEventListener('submit', function (e) {
                 // ⚠️ Check almeno una reward
-                const rewardBoxes = rewardContainer.querySelectorAll('.reward-box');
+                const rewardBoxes = rewardContainer.querySelectorAll('.reward-box2');
                 if (rewardBoxes.length === 0) {
                     e.preventDefault();
                     alert("⚠️ Devi aggiungere almeno una reward per creare il progetto.");
@@ -497,7 +478,7 @@ try {
 
                 // ⚠️ Se tipo = hardware, controlla che ci sia almeno un componente
                 if (tipoSelect.value === 'hardware') {
-                    const componentiBoxes = componentiContainer.querySelectorAll('.componente-box');
+                    const componentiBoxes = componentiContainer.querySelectorAll('.componente-box2');
                     if (componentiBoxes.length === 0) {
                         e.preventDefault();
                         alert("⚠️ Devi aggiungere almeno un componente hardware.");
