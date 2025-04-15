@@ -105,21 +105,42 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['profilo'])) {
         }
     }
 
+
+
+
     // Se l'utente ha tutte le skill necessarie, invia la candidatura
     if ($can_participate) {
-        try {
-            $stmtCandidatura = $pdo->prepare("
-                INSERT INTO CANDIDATURA (email_utente, id_profilo, esito) 
-                VALUES (:email_utente, :id_profilo, FALSE)
-            ");
-            $stmtCandidatura->execute([
-                'email_utente' => $email_utente,
-                'id_profilo' => $id_profilo
-            ]);
-            $successo = "Candidatura inviata con successo!";
-        } catch (PDOException $e) {
-            $errore = "Errore nell'invio della candidatura: " . $e->getMessage();
+
+        // Controllo per evitare doppie candidature
+        $stmtCheckDuplicate = $pdo->prepare("
+    SELECT COUNT(*) FROM CANDIDATURA 
+    WHERE email_utente = :email_utente AND id_profilo = :id_profilo
+");
+        $stmtCheckDuplicate->execute([
+            'email_utente' => $email_utente,
+            'id_profilo' => $id_profilo
+        ]);
+        $candidatureCount = $stmtCheckDuplicate->fetchColumn();
+
+        if ($candidatureCount > 0) {
+            $errore = "Hai già inviato una candidatura per questo profilo.";
+        } else {
+            // Esegui l'inserimento se non ci sono duplicati
+            try {
+                $stmtCandidatura = $pdo->prepare("
+            INSERT INTO CANDIDATURA (email_utente, id_profilo, esito) 
+            VALUES (:email_utente, :id_profilo, FALSE)
+        ");
+                $stmtCandidatura->execute([
+                    'email_utente' => $email_utente,
+                    'id_profilo' => $id_profilo
+                ]);
+                $successo = "Candidatura inviata con successo!";
+            } catch (PDOException $e) {
+                $errore = "Errore nell'invio della candidatura: " . $e->getMessage();
+            }
         }
+
     } else {
         // Elenco delle skill mancanti
         $missing_list = [];
@@ -187,5 +208,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['profilo'])) {
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Footer -->
+<footer class="bg-dark text-white py-4 mt-5">
+    <div class="container text-center">
+        <p class="mb-1">&copy; <?php echo date('Y'); ?> BoStarter - Tutti i diritti riservati</p>
+        <p class="mb-0">
+            <a href="autore.html" class="text-white text-decoration-underline">Autori</a>
+
+        </p>
+    </div>
+</footer>
 </body>
 </html>
