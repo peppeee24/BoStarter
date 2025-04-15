@@ -8,7 +8,9 @@ $nickname = '';
 $isCreator = false;
 
 if ($loggedIn) {
-    // Verifica se l'utente è un creatore
+    // Verifica se l'utente è un creatore per fare comparire il pulsate per creare i progetti
+    // Successivamente verifico se l'utente è loggato o no per far compaire il nome o lign
+
     $stmt = $pdo->prepare("SELECT U.nickname, C.email_utente_creat 
                           FROM UTENTE U
                           LEFT JOIN UTENTE_CREATORE C ON U.email = C.email_utente_creat 
@@ -22,18 +24,18 @@ if ($loggedIn) {
 // Numero di progetti per pagina
 $progetti_per_pagina = 6;
 
-// Conta il numero totale di progetti
+// Conto il numero totale di progetti per gestire il conto della paginazione
 $stmt_count = $pdo->prepare("SELECT COUNT(*) AS totale FROM PROGETTO");
 $stmt_count->execute();
 $totale_progetti = $stmt_count->fetch(PDO::FETCH_ASSOC)['totale'];
 
-// Calcola il numero totale di pagine
+// Calcolo il numero totale di pagine
 $totale_pagine = ceil($totale_progetti / $progetti_per_pagina);
 
-// Ottieni il numero di pagina dalla query string (default: 1)
+// Ottengo il numero di pagina dalla query string (default: 1)
 $pagina_corrente = isset($_GET['pagina']) ? max(1, intval($_GET['pagina'])) : 1;
 
-// Calcola l'offset per SQL
+// Calcolo l'offset per SQL per saltare la visualizzazione dei prini n progetti in base alla paginazione
 $offset = ($pagina_corrente - 1) * $progetti_per_pagina;
 
 // Query per ottenere i progetti per la pagina corrente

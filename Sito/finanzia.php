@@ -1,11 +1,13 @@
 <?php
 require 'session.php';
 
+// Verifico l'account con cui solo loggato, se sono loggato (come sempre)
 if (!isset($_SESSION['email'])) {
     header("Location: login.html");
     exit();
 }
 
+// Verifico il progetto che voglio finanziare se selezionato
 if (!isset($_GET['nome_progetto'])) {
     die("Errore: Nessun progetto specificato.");
 }
@@ -14,7 +16,7 @@ $nome_progetto = $_GET['nome_progetto'];
 $email_utente = $_SESSION['email'];
 
 try {
-    // Recupera i dettagli del progetto
+    // Recupera i dettagli del progetto dal DB
     $stmt = $pdo->prepare("SELECT * FROM PROGETTO WHERE nome = :nome");
     $stmt->execute(['nome' => $nome_progetto]);
     $progetto = $stmt->fetch(PDO::FETCH_ASSOC);

@@ -19,3 +19,32 @@
 .skill-item:last-child {
     border-bottom: none;
 }
+
+.level-badge {
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    border-radius: 50%;
+    text-align: center;
+    margin: 2px;
+    background-color: #28a745;
+    color: white;
+}
+.missing-level {
+    background-color: #6c757d;
+    opacity: 0.5;
+}
+
+.success-message {
+    background-color: #28a745;
+    color: white;
+    padding: 15px;
+    border-radius: 5px;
+}
+.error-message {
+    background-color: #dc3545;
+    color: white;
+    padding: 15px;
+    border-radius: 5px;
+}

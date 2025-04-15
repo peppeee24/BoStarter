@@ -1,21 +1,27 @@
 <?php
 session_start();
+
+/*
+Codice utilizzato per il debug, altrimenti venvia fuori errore 500 senza info
+
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
+*/
 
-require_once 'session.php'; // Connessione al database
+// Connessione al database
+require_once 'session.php';
 
 if (!isset($_SESSION['email'])) {
     header("Location: login.html");
     exit();
 }
 
-// Variabili iniziali
+// Inizializzo le variabili con messaggio
 $errore = '';
 $successo = '';
 
-// Recupera il nome del progetto
+// Recupero il nome del progetto ceh voglio finanziare
 if (!isset($_GET['nome_progetto'])) {
     die("Errore: Nessun progetto specificato.");
 }
@@ -23,7 +29,7 @@ if (!isset($_GET['nome_progetto'])) {
 $nome_progetto = $_GET['nome_progetto'];
 $email_utente = $_SESSION['email'];
 
-// Recupera i dettagli del progetto
+// Recupero i dettagli del progetto
 try {
     $stmt = $pdo->prepare("
         SELECT P.*, 
@@ -42,12 +48,12 @@ try {
         die("Errore: Il progetto non esiste.");
     }
 
-    // Verifica se il progetto è di tipo software
+    // Verifico se il progetto è di tipo software
     if ($progetto['tipo_progetto'] !== 'software') {
         die("Errore: Il progetto non è un progetto software.");
     }
 
-    // Recupera i profili disponibili per il progetto software
+    // Recupero i profili disponibili per il progetto software
     $stmtProfili = $pdo->prepare("
         SELECT p.id, p.nome as nome_profilo
         FROM PROFILO p
@@ -60,7 +66,7 @@ try {
     $errore = "Errore nel recupero dei dati del progetto: " . $e->getMessage();
 }
 
-// Gestione della selezione del profilo e della candidatura
+// Selezione del profilo a cui ci si vuole candidare
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['profilo'])) {
     $id_profilo = $_POST['profilo'];
 
@@ -73,7 +79,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['profilo'])) {
     $stmtSkills->execute(['id_profilo' => $id_profilo]);
     $skills_richieste = $stmtSkills->fetchAll(PDO::FETCH_ASSOC);
 
-    // Recupera le skill dell'utente
+    // Recupera le skill dell'utente che si vuole candidare
     $stmtUserSkills = $pdo->prepare("
         SELECT competenza, livello
         FROM INDICA
@@ -82,7 +88,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['profilo'])) {
     $stmtUserSkills->execute(['email' => $email_utente]);
     $user_skills = $stmtUserSkills->fetchAll(PDO::FETCH_ASSOC);
 
-    // Confronta le skill dell'utente con quelle richieste per il profilo
+    // Confronto le skill dell'utente con quelle richieste per il profilo
     $missing_skills = array();
     $can_participate = true;
     foreach ($skills_richieste as $skill) {
@@ -133,20 +139,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['profilo'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Partecipa al Progetto - BoStarter</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        .success-message {
-            background-color: #28a745;
-            color: white;
-            padding: 15px;
-            border-radius: 5px;
-        }
-        .error-message {
-            background-color: #dc3545;
-            color: white;
-            padding: 15px;
-            border-radius: 5px;
-        }
-    </style>
+    <link rel="stylesheet" href="css/style2.css">
 </head>
 <body>
 

@@ -11,12 +11,13 @@ if (!isset($_SESSION['admin_logged']) || !$_SESSION['admin_logged']) {
 // Gestione operazioni
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['add_skill'])) {
-        // Aggiungi nuova skill senza livelli (solo competenza)
+        // Aggiungo nuova skill (competneza) leggendo dal form
+        // Non aggiungo il livello visto che è sempre da 0 a 5
         $competenza = trim($_POST['competenza']);
 
         try {
             $pdo->beginTransaction();
-            // Inserisci la competenza (senza livello, come unica voce)
+            // Faccio l'insert della competenza nel db
             $stmt = $pdo->prepare("INSERT INTO SKILL (competenza, email_utente_amm) 
                                   VALUES (?, ?)");
             $stmt->execute([$competenza, $_SESSION['email']]);
@@ -33,18 +34,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmtCheck->execute([$competenza]);
         $result = $stmtCheck->fetch(PDO::FETCH_ASSOC);
 
+        // Ottengo l'utent loggato per fare si che possa elimianre le competenze create
         if ($result && $result['email_utente_amm'] === $_SESSION['email']) {
             try {
+                // Inizia transazione, quindi queste operazione o vengono fatte tutte oppure nessuna
                 $pdo->beginTransaction();
 
-                // Elimina la competenza dalla tabella SKILL
+                // Elimino la competenza dalla tabella SKILL
                 $stmtDelete = $pdo->prepare("DELETE FROM SKILL WHERE competenza = ?");
                 $stmtDelete->execute([$competenza]);
 
-                // Se la competenza è associata a uno o più profili, elimina anche le associazioni nella tabella COMPRENDE
+                // Se la competenza è associata a uno o più profili, elimino anche le associazioni nella tabella COMPRENDE
                 $stmtDeleteFromComprende = $pdo->prepare("DELETE FROM COMPRENDE WHERE competenza = ?");
                 $stmtDeleteFromComprende->execute([$competenza]);
 
+                // Fine transazione
                 $pdo->commit();
             } catch (PDOException $e) {
                 $pdo->rollBack();
@@ -72,23 +76,9 @@ $skills = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <meta charset="UTF-8">
     <title>Gestione Competenze</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        .level-badge {
-            display: inline-block;
-            width: 30px;
-            height: 30px;
-            line-height: 30px;
-            border-radius: 50%;
-            text-align: center;
-            margin: 2px;
-            background-color: #28a745;
-            color: white;
-        }
-        .missing-level {
-            background-color: #6c757d;
-            opacity: 0.5;
-        }
-    </style>
+    <link rel="stylesheet" href="css/style2.css">
+
+
 </head>
 <body class="container mt-5">
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">

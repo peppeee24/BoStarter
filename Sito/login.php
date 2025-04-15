@@ -1,27 +1,32 @@
 <?php
-require_once 'session.php'; // Connessione al database
+
+// Connessione al database
+require_once 'session.php';
+
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Controlla se email e password sono settati prima di usarli
     $email = isset($_POST['email']) ? trim($_POST['email']) : '';
     $password = isset($_POST['password']) ? trim($_POST['password']) : '';
 
-    // Se uno dei campi è vuoto, mostra errore
+    // Se uno dei campi è vuoto, mostro errore
     if (empty($email) || empty($password)) {
         echo "Errore: Compila tutti i campi.";
         exit();
     }
 
 
-    // Verifica se l'utente esiste nel database
+    // Verifico se l'utente esiste nel database
     $stmt = $pdo->prepare("SELECT email, password FROM UTENTE WHERE email = :email");
     $stmt->execute(['email' => $email]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
     // Controllo password
     if ($user && password_verify($password, $user['password'])) {
-        $_SESSION['email'] = $user['email']; // Salva l'utente nella sessione
-        header("Location: dashboard.html"); // Reindirizza alla dashboard
+        // Salvp l'utente nella sessione
+        $_SESSION['email'] = $user['email'];
+        // Reindirizza alla dashboard
+        header("Location: dashboard.html");
         echo "Login completata con successo!";
         header("Location: index.php");
         exit();

@@ -1,8 +1,13 @@
 <?php
 session_start();
+
+/*
+Codice utilizzato per il debug, altrimenti venvia fuori errore 500 senza info
+
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
+*/
 
 require_once 'session.php';
 

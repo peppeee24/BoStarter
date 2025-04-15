@@ -1,8 +1,12 @@
 <?php
-session_start(); // Avvia la sessione
-session_unset(); // Rimuove tutte le variabili di sessione
-session_destroy(); // Distrugge la sessione
+// Avvio la sessione
+session_start();
+// Rimuovo tutte le variabili di sessione
+session_unset();
+// Distruggo la sessione
+session_destroy();
 
-header("Location: index.php"); // Reindirizza alla homepage
+// Reindirizzo alla homepage
+header("Location: index.php");
 exit();
 ?>
