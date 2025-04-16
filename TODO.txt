@@ -1,17 +1,9 @@
-TO DO IMPORTANTI
-- Imporre quando si crea un progetto software l’aggiunta di skill al profilo richiesto
-- Testare nuovo sistema di candidature
-- Finire documentazione
-- Approfondire funzionamento trigger
-- Commentare bene tutto codice
-- Rileggere testo e specifiche
-- Fixare: Un utente non può candidarsi piu volte allo stesso progetto, nello steso ruolo se viene accettato, altrimenti candidature doppie
-- aggiungere icona sito nella pagina del profilo utente
-- immagine mancante in flipper city (Accesso anticipato alla versione beta del gioco)
-- fixxare la classifica sull 'affidabilita. funziona all;andare in su, ma non in giu
-- Testare chiusura di un progetto superata la data limite
-- Ogni progetto può avere più foto 
-- controllare che i progetti possono avere solo un finanziamento al giorno
+COSE DA FARE
 
-TO DO NON IMPORTANTI
-- Ottimizzare style e script presenti all’interno di codice
+- Testare Nuovo sistema di candidature (accettazione e rifiuto)
+- Finire documentazione
+- Commentare Triggger --> Nella presentazione
+- Commentare bene tutto codice --> Mancano: profilo.php - progetto.php - crea_progetto.php
+- Rileggere testo e specifiche
+- Aggiungere le imamgini mancanti alle reward
+- fixxare la classifica sull 'affidabilita. funziona all;andare in su, ma non in giu --> A ME VA

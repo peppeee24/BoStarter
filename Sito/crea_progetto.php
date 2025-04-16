@@ -340,7 +340,7 @@ try {
                                         <div class="form-check">
                                             <input class="form-check-input" type="checkbox"
                                                    id="skill_<?= htmlspecialchars($competenza) ?>_<?= $index ?>"
-                                                   onchange="toggleSkillLevel(this, '${index}', '<?= htmlspecialchars($competenza) ?>')" >
+                                                   onchange="toggleSkillLevel(this, '${index}', '<?= htmlspecialchars($competenza) ?>')" required>
                                             <label class="form-check-label" for="skill_<?= htmlspecialchars($competenza) ?>_<?= $index ?>" >
                                                 <?= htmlspecialchars($competenza) ?>
                                             </label>
@@ -611,6 +611,17 @@ try {
         <button type="submit" class="btn btn-primary btn-lg">Crea Progetto</button>
     </form>
 </main>
+
+<!-- Footer -->
+<footer class="bg-dark text-white py-4 mt-5">
+    <div class="container text-center">
+        <p class="mb-1">&copy; <?php echo date('Y'); ?> BoStarter - Tutti i diritti riservati</p>
+        <p class="mb-0">
+            <a href="autore.html" class="text-white text-decoration-underline">Autori</a>
+
+        </p>
+    </div>
+</footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>

@@ -1,7 +1,7 @@
 <?php
 require_once 'session.php';
 
-// Controllo se l'utente è loggato ??
+// Controllo se l'utente è loggato per il nome nell'header
 $loggedIn = isset($_SESSION['email']);
 $userData = null;
 $nickname = '';

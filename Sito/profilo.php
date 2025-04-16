@@ -17,7 +17,7 @@ if (!isset($_SESSION['email'])) {
 }
 
 
-
+// IF di controllo per le candidatura
 if (isset($_GET['action']) && isset($_GET['candidatura_id'])) {
     $action = $_GET['action'];
     $candidatura_id = $_GET['candidatura_id'];
@@ -31,7 +31,10 @@ if (isset($_GET['action']) && isset($_GET['candidatura_id'])) {
     JOIN PROGETTO pr ON PS.nome_progetto = pr.nome
     WHERE C.id = :cid AND pr.email_creatore = :email
 ");
+
+// Verifico se esiste una candidatura per l'utente loggato
     $stmtCheck->execute(['cid' => $candidatura_id, 'email' => $_SESSION['email']]);
+    // L'untente creatrore del progetto accetta la o rifiuta la candidatura
     if ($stmtCheck->fetch(PDO::FETCH_ASSOC)) {
         if ($action === 'accept') {
             $stmtUpdate = $pdo->prepare("UPDATE CANDIDATURA SET esito = 1 WHERE id = :cid");
@@ -45,7 +48,7 @@ if (isset($_GET['action']) && isset($_GET['candidatura_id'])) {
     }
 }
 
-// Recupera dati utente
+// Recupero dati utente
 $sql = "SELECT u.*, 
         CASE 
             WHEN a.email_utente_amm IS NOT NULL THEN 'Amministratore'
@@ -65,7 +68,7 @@ if (!$user) {
     exit();
 }
 
-// Se l'utente è un creatore, recupera numero progetti e affidabilità
+// Se l'utente è un creatore, recupero numero progetti e affidabilità
 $extraDatiCreatore = null;
 if ($user && $user['tipo_utente'] === 'Creatore') {
     $stmtCreatore = $pdo->prepare("SELECT nr_progetti, affidabilita FROM UTENTE_CREATORE WHERE email_utente_creat = :email");
@@ -73,7 +76,7 @@ if ($user && $user['tipo_utente'] === 'Creatore') {
     $extraDatiCreatore = $stmtCreatore->fetch(PDO::FETCH_ASSOC);
 }
 
-// Gestione salvataggio competenze
+//  Salvataggio competenze
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['competenze'])) {
     $pdo->beginTransaction();
     try {
@@ -99,7 +102,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['competenze'])) {
 }
 
 
-// Recupera tutte le competenze disponibili
+// Recupero tutte le competenze disponibili
 $skillsQuery = $pdo->query("SELECT s.competenza, i.livello AS selected_level
                            FROM SKILL s
                            LEFT JOIN INDICA i ON s.competenza = i.competenza 
@@ -113,7 +116,7 @@ foreach ($skillsQuery as $row) {
     ];
 }
 
-// Recupera candidature ricevute (per progetti software creati dall'utente)
+// Recupero candidature ricevute (per progetti software creati dall'utente)
 $stmtReceived = $pdo->prepare("
     SELECT C.id, C.email_utente AS candidato, C.esito, pr.nome AS project_name, PF.nome AS profile_name
     FROM CANDIDATURA C
@@ -125,7 +128,7 @@ $stmtReceived = $pdo->prepare("
 $stmtReceived->execute(['email' => $_SESSION['email']]);
 $receivedCandidatures = $stmtReceived->fetchAll(PDO::FETCH_ASSOC);
 
-// Recupera candidature inviate (dall'utente)
+// Recuper0 candidature inviate (dall'utente)
 $stmtSent = $pdo->prepare("
     SELECT C.id, C.esito, PF.nome AS profile_name, PS.nome_progetto AS project_name
     FROM CANDIDATURA C
@@ -337,5 +340,15 @@ $rewardConseguite = $stmtRewardUtente->fetchAll(PDO::FETCH_ASSOC);
 </section>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Footer -->
+<footer class="bg-dark text-white py-4 mt-5">
+    <div class="container text-center">
+        <p class="mb-1">&copy; <?php echo date('Y'); ?> BoStarter - Tutti i diritti riservati</p>
+        <p class="mb-0">
+            <a href="autore.html" class="text-white text-decoration-underline">Autori</a>
+
+        </p>
+    </div>
+</footer>
 </body>
 </html>

@@ -62,5 +62,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     </div>
 </div>
+
+<!-- Footer -->
+<footer class="bg-dark text-white py-4 mt-5">
+    <div class="container text-center">
+        <p class="mb-1">&copy; <?php echo date('Y'); ?> BoStarter - Tutti i diritti riservati</p>
+        <p class="mb-0">
+            <a href="autore.html" class="text-white text-decoration-underline">Autori</a>
+
+        </p>
+    </div>
+</footer>
 </body>
 </html>
