@@ -6,6 +6,6 @@ COSE DA FARE
 - Commentare bene tutto codice --> Mancano: profilo.php - progetto.php - crea_progetto.php
 - Rileggere testo e specifiche
 - Aggiungere le imamgini mancanti alle reward
-- fixxare la classifica sull 'affidabilita. funziona all;andare in su, ma non in giu --> A ME VA
 - FIXARE finanziamento sullo stesso giorno
 - Fixxare carosello immagini progetto
+- Verificare Classifica in giu quando crei progetto, quando finanzi va
