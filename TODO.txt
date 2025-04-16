@@ -7,3 +7,4 @@ COSE DA FARE
 - Rileggere testo e specifiche
 - Aggiungere le imamgini mancanti alle reward
 - fixxare la classifica sull 'affidabilita. funziona all;andare in su, ma non in giu --> A ME VA
+- controllare che i progetti possano ricevere solo un finanziamento al giorno
