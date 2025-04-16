@@ -7,3 +7,6 @@ COSE DA FARE
 - Rileggere testo e specifiche
 - Aggiungere le imamgini mancanti alle reward
 - fixxare la classifica sull 'affidabilita. funziona all;andare in su, ma non in giu --> A ME VA
+- Verificare quando si carica tante immagini leggere ad un progetto, se viene un carosello o cosa
+- FIXARE finanziamento sullo stesso giorno
+- Fixxare carosello immagini progetto
