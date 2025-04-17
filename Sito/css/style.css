@@ -5,7 +5,6 @@
     --secondary-color: #0D0D0D; /* Nero */
     --background-color: #F5F5F5; /* Grigio chiaro */
     --text-color: #333333; /* Testo scuro */
-    --footer-gradient: linear-gradient(135deg, #1E1E1E, #0D0D0D); /* Gradiente per il footer */
 }
 
 body {
@@ -100,97 +99,95 @@ body {
 }
 
 /* Footer Migliorato */
-.footer {
-    background: var(--footer-gradient);
-    padding: 80px 0 40px;
+footer.bg-dark {
+    background-color: var(--secondary-color) !important;
+    color: #e0e0e0 !important;
+    padding-top: 60px;
+    padding-bottom: 50px;
+    font-size: 0.95rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.footer-heading {
-    font-size: 1.5rem;
-    margin-bottom: 20px;
+footer.bg-dark h5 {
     color: var(--primary-color);
+    font-weight: 700;
+    font-size: 1.25rem;
+    margin-bottom: 8px;
 }
 
-.footer-text {
+footer.bg-dark p {
+    color: #aaa;
     font-size: 0.9rem;
-    color: #ccc;
+    margin: 0;
 }
 
-.footer-links {
-    list-style: none;
-    padding-left: 0;
-}
-
-.footer-links li {
-    margin-bottom: 10px;
-}
-
-.footer-links a {
+footer.bg-dark a {
     color: #ccc;
     text-decoration: none;
-    transition: color 0.3s;
+    transition: all 0.2s ease-in-out;
+    font-weight: 500;
+    font-size: 0.92rem;
 }
 
-.footer-links a:hover {
+footer.bg-dark a:hover {
     color: var(--primary-color);
+    text-decoration: underline;
 }
 
-.footer-contacts {
-    list-style: none;
-    padding-left: 0;
-}
-
-.footer-contacts li {
-    margin-bottom: 10px;
-    color: #ccc;
-}
-
-.footer-contacts i {
+footer.bg-dark i.bi {
+    margin-right: 6px;
     color: var(--primary-color);
-    margin-right: 10px;
+    font-size: 1rem;
+    vertical-align: middle;
 }
 
-.social-icons {
-    display: flex;
-    gap: 15px;
+footer.bg-dark .row > div {
+    margin-bottom: 15px;
 }
 
-.social-icon {
-    color: #ccc;
-    font-size: 1.5rem;
-    transition: color 0.3s;
+@media (min-width: 768px) {
+    footer.bg-dark .row > div {
+        margin-bottom: 0;
+    }
 }
 
-.social-icon:hover {
-    color: var(--primary-color);
-}
-
-.footer-divider {
-    border-color: rgba(255, 255, 255, 0.1);
-    margin: 40px 0;
-}
-
-.footer-copy {
-    font-size: 0.9rem;
-    color: #ccc;
-}
 
 
 /* Stili per le pagine di autenticazione */
+
+.register-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+}
+
+.register-grid .full-width {
+    grid-column: 1 / -1;
+}
+
+.register-grid button {
+    margin-top: 10px;
+}
+
 .auth-page {
     background-color: var(--background-color);
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
+}
+
+body.auth-page {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
 
 .auth-container {
-    width: 100%;
-    max-width: 400px;
-    padding: 20px;
-    margin-top: 80px; /* Spazio per la navbar fissa */
+    flex: 1; /* Fa in modo che il contenuto occupi lo spazio disponibile */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 80px;
 }
 
 .auth-card {

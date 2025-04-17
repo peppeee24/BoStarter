@@ -76,17 +76,29 @@ $skills = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <meta charset="UTF-8">
     <title>Gestione Competenze</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <link rel="stylesheet" href="css/style2.css">
-
-
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="container mt-5">
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
-    <div class="container">
-        <a class="navbar-brand" href="index.php">BoStarter</a>
-    </div>
-</nav>
-<br><br><br>
+        <div class="container">
+            <a class="navbar-brand" href="index.php">
+                <img src="images/logo.png" alt="BoStarter Logo" class="d-inline-block align-text-top">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link active" href="index.php">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="index.php#progetti">Progetti</a></li>
+                    <li class="nav-item"><a class="nav-link" href="statistiche.php">Statistiche</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
 <div class="row">
     <div class="col-md-8">
         <h2>Gestione Competenze</h2>
@@ -151,14 +163,23 @@ $skills = $stmt->fetchAll(PDO::FETCH_ASSOC);
         </table>
     </div>
 </div>
-<!-- Footer -->
-<footer class="bg-dark text-white py-4 mt-5">
-    <div class="container text-center">
-        <p class="mb-1">&copy; <?php echo date('Y'); ?> BoStarter - Tutti i diritti riservati</p>
-        <p class="mb-0">
-            <a href="autore.html" class="text-white text-decoration-underline">Autori</a>
 
-        </p>
+<footer class="bg-dark text-white py-4 mt-5">
+    <div class="container">
+        <div class="row align-items-center text-center text-md-start">
+            <div class="col-md-6 mb-3 mb-md-0">
+                <h5 class="mb-1 fw-bold">BoStarter</h5>
+                <p class="mb-0 small">&copy; <?php echo date('Y'); ?> Tutti i diritti riservati</p>
+            </div>
+            <div class="col-md-6 text-md-end">
+                <a href="autore.html" class="text-white me-3">
+                    <i class="bi bi-people-fill me-1"></i> Autori
+                </a>
+                <a href="mailto:info@bostarter.it" class="text-white text-decoration-none">
+                    <i class="bi bi-envelope-fill me-1"></i> Contattaci
+                </a>
+            </div>
+        </div>
     </div>
 </footer>
 </body>

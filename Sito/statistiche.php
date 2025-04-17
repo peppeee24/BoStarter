@@ -34,6 +34,7 @@ $result_finanziamenti = $pdo->query($sql_finanziamenti);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Statistiche - BoStarter</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -50,6 +51,7 @@ $result_finanziamenti = $pdo->query($sql_finanziamenti);
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item"><a class="nav-link" href="index.php">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="index.php#progetti">Progetti</a></li>
                 <li class="nav-item"><a class="nav-link" href="statistiche.php">Statistiche</a></li>
                 <?php if ($loggedIn): ?>
                     <li class="nav-item dropdown">
@@ -117,5 +119,24 @@ $result_finanziamenti = $pdo->query($sql_finanziamenti);
 </section>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<footer class="bg-dark text-white py-4 mt-5">
+    <div class="container">
+        <div class="row align-items-center text-center text-md-start">
+            <div class="col-md-6 mb-3 mb-md-0">
+                <h5 class="mb-1 fw-bold">BoStarter</h5>
+                <p class="mb-0 small">&copy; <?php echo date('Y'); ?> Tutti i diritti riservati</p>
+            </div>
+            <div class="col-md-6 text-md-end">
+                <a href="autore.html" class="text-white me-3">
+                    <i class="bi bi-people-fill me-1"></i> Autori
+                </a>
+                <a href="mailto:info@bostarter.it" class="text-white text-decoration-none">
+                    <i class="bi bi-envelope-fill me-1"></i> Contattaci
+                </a>
+            </div>
+        </div>
+    </div>
+</footer>
 </body>
 </html>

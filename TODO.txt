@@ -3,9 +3,7 @@ COSE DA FARE
 - Testare Nuovo sistema di candidature (accettazione e rifiuto)
 - Finire documentazione
 - Commentare Triggger --> Nella presentazione
-- Commentare bene tutto codice --> Mancano: profilo.php - progetto.php - crea_progetto.php
+- Commentare bene tutto codice --> Mancano: profilo.php - progetto.php - crea_progetto.php e togliere/cambiare i commenti nel css, ed eventuali javascripts
 - Rileggere testo e specifiche
-- Aggiungere le imamgini mancanti alle reward
 - FIXARE finanziamento sullo stesso giorno
-- Fixxare carosello immagini progetto
 - GESTIRE FILE DI PARTENZA PER NUMERO PROGETTI O VALUTARE LETTURA DAL DB DI FILE PRE CARICATI

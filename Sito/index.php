@@ -59,6 +59,7 @@ $progetti = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <title>BoStarter</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 </head>
 <body>
 
@@ -162,14 +163,23 @@ $progetti = $stmt->fetchAll(PDO::FETCH_ASSOC);
 </section>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<!-- Footer -->
-<footer class="bg-dark text-white py-4 mt-5">
-    <div class="container text-center">
-        <p class="mb-1">&copy; <?php echo date('Y'); ?> BoStarter - Tutti i diritti riservati</p>
-        <p class="mb-0">
-            <a href="autore.html" class="text-white text-decoration-underline">Autori</a>
 
-        </p>
+<footer class="bg-dark text-white py-4 mt-5">
+    <div class="container">
+        <div class="row align-items-center text-center text-md-start">
+            <div class="col-md-6 mb-3 mb-md-0">
+                <h5 class="mb-1 fw-bold">BoStarter</h5>
+                <p class="mb-0 small">&copy; <?php echo date('Y'); ?> Tutti i diritti riservati</p>
+            </div>
+            <div class="col-md-6 text-md-end">
+                <a href="autore.html" class="text-white me-3">
+                    <i class="bi bi-people-fill me-1"></i> Autori
+                </a>
+                <a href="mailto:info@bostarter.it" class="text-white text-decoration-none">
+                    <i class="bi bi-envelope-fill me-1"></i> Contattaci
+                </a>
+            </div>
+        </div>
     </div>
 </footer>
 </body>
