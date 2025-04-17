@@ -185,14 +185,40 @@ try {
     <?php echo $progetto_chiuso ? 'Chiuso' : 'Aperto'; ?>
     </span></p>
 
-    <!-- Galleria immagini -->
-    <div class="row">
-        <?php foreach ($immagini as $img): ?>
-            <div class="col-md-4 mb-3">
-                <img src="<?php echo htmlspecialchars($img['foto_url']); ?>" class="img-fluid rounded" alt="Immagine progetto">
+    <!-- Carosello immagini -->
+    <?php if (!empty($immagini)): ?>
+        <div id="progettoCarousel" class="carousel slide mb-4" data-bs-ride="carousel">
+            <!-- Indicatori -->
+            <div class="carousel-indicators">
+                <?php foreach ($immagini as $index => $img): ?>
+                    <button type="button" data-bs-target="#progettoCarousel" 
+                            data-bs-slide-to="<?php echo $index; ?>" 
+                            class="<?php echo $index === 0 ? 'active' : ''; ?>"></button>
+                <?php endforeach; ?>
             </div>
-        <?php endforeach; ?>
-    </div>
+            
+            <!-- Slide -->
+            <div class="carousel-inner rounded">
+                <?php foreach ($immagini as $index => $img): ?>
+                    <div class="carousel-item <?php echo $index === 0 ? 'active' : ''; ?>">
+                        <img src="<?php echo htmlspecialchars($img['foto_url']); ?>" 
+                             class="d-block w-100 img-fluid" 
+                             alt="Immagine progetto <?php echo $index + 1; ?>">
+                    </div>
+                <?php endforeach; ?>
+            </div>
+            
+            <!-- Controlli -->
+            <button class="carousel-control-prev" type="button" data-bs-target="#progettoCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#progettoCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+    <?php endif; ?>
 
     <!-- Badge tipo progetto -->
     <div class="alert alert-info mb-4">
