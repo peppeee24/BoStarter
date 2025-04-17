@@ -1,9 +1,8 @@
 COSE DA FARE
-
-- Testare Nuovo sistema di candidature (accettazione e rifiuto)
 - Finire documentazione
 - Commentare Triggger --> Nella presentazione
 - Commentare bene tutto codice --> Mancano: profilo.php - progetto.php - crea_progetto.php e togliere/cambiare i commenti nel css, ed eventuali javascripts
 - Rileggere testo e specifiche
-- FIXARE finanziamento sullo stesso giorno
 - GESTIRE FILE DI PARTENZA PER NUMERO PROGETTI O VALUTARE LETTURA DAL DB DI FILE PRE CARICATI
+- Finire grafica pagine
+- Nella pagina personale di ogni utente aggiungere la voce 'Finanziamenti effettutati:' che fa riferimento ai finanziamenti effettuati da ciascun utente
