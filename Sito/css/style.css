@@ -1,7 +1,7 @@
 /* Stili personalizzati per BoStarter */
 
 :root {
-    --primary-color: #2BDE73; /* Verde Kickstarter-like */
+    --primary-color: #007bff; /* Verde Kickstarter-like */
     --secondary-color: #0D0D0D; /* Nero */
     --background-color: #F5F5F5; /* Grigio chiaro */
     --text-color: #333333; /* Testo scuro */
@@ -221,7 +221,7 @@ body {
 
 .auth-card .form-control:focus {
     border-color: var(--primary-color);
-    box-shadow: 0 0 5px rgba(43, 222, 115, 0.5);
+    box-shadow: 0 0 5px rgba(9, 180, 248, 0.5);
 }
 
 .auth-card .btn-primary {
@@ -233,7 +233,7 @@ body {
 }
 
 .auth-card .btn-primary:hover {
-    background-color: #24b85f;
+    background-color: #1283fc;
 }
 
 .auth-link {
