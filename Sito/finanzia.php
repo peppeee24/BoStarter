@@ -43,6 +43,20 @@ try {
 
     // Se il form è stato inviato
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        $data_finanziamento = date("Y-m-d");
+
+        // Verifica che l'utente non abbia già finanziato questo progetto oggi
+        $stmtCheckDup = $pdo->prepare("SELECT COUNT(*) FROM FINANZIAMENTO 
+                                       WHERE email_utente = :email AND nome_progetto = :nome AND data_finanziamento = :data");
+        $stmtCheckDup->execute([
+            'email' => $email_utente,
+            'nome' => $nome_progetto,
+            'data' => $data_finanziamento
+        ]);
+
+        if ($stmtCheckDup->fetchColumn() > 0) {
+            throw new Exception("Hai già effettuato un finanziamento per questo progetto oggi. Riprova domani 😊");
+        }
         $importo = floatval($_POST['importo']);
         $codice_reward = intval($_POST['codice_reward']);
         $data_finanziamento = date("Y-m-d");
