@@ -437,28 +437,57 @@ FOR EACH ROW
 BEGIN
     DECLARE progetti_finanziati INT;
     DECLARE totale_progetti INT;
-    
-    -- Numero di progetti del creatore che hanno ricevuto almeno un finanziamento
+    DECLARE creatore_email VARCHAR(255);
+
+    SELECT email_creatore INTO creatore_email
+    FROM PROGETTO
+    WHERE nome = NEW.nome_progetto;
+
     SELECT COUNT(DISTINCT nome_progetto) INTO progetti_finanziati
     FROM FINANZIAMENTO
     WHERE nome_progetto IN (
-        SELECT nome 
-        FROM PROGETTO 
-        WHERE email_creatore = (SELECT email_creatore FROM PROGETTO WHERE nome = NEW.nome_progetto)
+        SELECT nome FROM PROGETTO WHERE email_creatore = creatore_email
     );
-    
-    -- Numero totale di progetti creati dal creatore
-    SELECT COUNT(*) INTO totale_progetti 
-    FROM PROGETTO 
-    WHERE email_creatore = (SELECT email_creatore FROM PROGETTO WHERE nome = NEW.nome_progetto);
-    
-    -- Aggiornamento dell'affidabilità (scala 0-10)
+
+    SELECT COUNT(*) INTO totale_progetti
+    FROM PROGETTO
+    WHERE email_creatore = creatore_email;
+
     IF totale_progetti > 0 THEN
         UPDATE UTENTE_CREATORE
         SET affidabilita = ROUND((progetti_finanziati / totale_progetti) * 10, 2)
-        WHERE email_utente_creat = (SELECT email_creatore FROM PROGETTO WHERE nome = NEW.nome_progetto);
+        WHERE email_utente_creat = creatore_email;
     END IF;
-END //
+END;
+//
+DELIMITER ;
+
+
+DELIMITER //
+CREATE TRIGGER aggiorna_affidabilita_progetto
+AFTER INSERT ON PROGETTO
+FOR EACH ROW
+BEGIN
+    DECLARE progetti_finanziati INT;
+    DECLARE totale_progetti INT;
+
+    SELECT COUNT(DISTINCT nome_progetto) INTO progetti_finanziati
+    FROM FINANZIAMENTO
+    WHERE nome_progetto IN (
+        SELECT nome FROM PROGETTO WHERE email_creatore = NEW.email_creatore
+    );
+
+    SELECT COUNT(*) INTO totale_progetti
+    FROM PROGETTO
+    WHERE email_creatore = NEW.email_creatore;
+
+    IF totale_progetti > 0 THEN
+        UPDATE UTENTE_CREATORE
+        SET affidabilita = ROUND((progetti_finanziati / totale_progetti) * 10, 2)
+        WHERE email_utente_creat = NEW.email_creatore;
+    END IF;
+END;
+//
 DELIMITER ;
 
 /* Trigger 4: Incrementa il numero di progetti per un creatore alla creazione di un nuovo progetto */

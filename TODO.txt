@@ -8,4 +8,4 @@ COSE DA FARE
 - Aggiungere le imamgini mancanti alle reward
 - FIXARE finanziamento sullo stesso giorno
 - Fixxare carosello immagini progetto
-- Verificare Classifica in giu quando crei progetto, quando finanzi va
+- GESTIRE FILE DI PARTENZA PER NUMERO PROGETTI O VALUTARE LETTURA DAL DB DI FILE PRE CARICATI
