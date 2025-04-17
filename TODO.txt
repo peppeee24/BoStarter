@@ -6,3 +6,4 @@ COSE DA FARE
 - GESTIRE FILE DI PARTENZA PER NUMERO PROGETTI O VALUTARE LETTURA DAL DB DI FILE PRE CARICATI
 - Finire grafica pagine
 - Nella pagina personale di ogni utente aggiungere la voce 'Finanziamenti effettutati:' che fa riferimento ai finanziamenti effettuati da ciascun utente
+- COMMENTARE I TRIGGER E TUTTO IL CODICE SQL
