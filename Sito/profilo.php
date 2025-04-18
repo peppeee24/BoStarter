@@ -141,7 +141,7 @@ $sentCandidatures = $stmtSent->fetchAll(PDO::FETCH_ASSOC);
 
 // Recupera le reward ottenute dall'utente loggato
 $stmtRewardUtente = $pdo->prepare("
-    SELECT R.descrizione, R.foto_url, F.nome_progetto
+    SELECT R.descrizione, R.foto_url, F.nome_progetto, F.importo
     FROM FINANZIAMENTO F
     JOIN REWARD R ON F.codice_reward = R.codice
     WHERE F.email_utente = :email
@@ -338,7 +338,10 @@ $rewardConseguite = $stmtRewardUtente->fetchAll(PDO::FETCH_ASSOC);
                                 <?php endif; ?>
                                 <div class="card-body">
                                     <h5 class="card-title"><?= htmlspecialchars($reward['descrizione']) ?></h5>
-                                    <p class="card-text text-muted">Progetto: <strong><?= htmlspecialchars($reward['nome_progetto']) ?></strong></p>
+                                    <p class="card-text text-muted">
+                                        Progetto: <strong><?= htmlspecialchars($reward['nome_progetto']) ?></strong><br>
+                                        Donato: <strong><?= htmlspecialchars(number_format($reward['importo'], 2)) ?> €</strong>
+                                    </p>
                                 </div>
                             </div>
                         </div>

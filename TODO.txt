@@ -8,7 +8,7 @@ SGAMBE
 - Commentare Triggger --> Nella presentazione
 - COMMENTARE I TRIGGER E TUTTO IL CODICE SQL
 - GESTIRE FILE DI PARTENZA PER NUMERO PROGETTI O VALUTARE LETTURA DAL DB DI FILE PRE CARICATI
-- Nella pagina personale di ogni utente aggiungere la voce 'Finanziamenti effettutati:' che fa riferimento ai finanziamenti effettuati da ciascun utente
+
 
 PEPPE
 - Commentare bene tutto codice --> Mancano: profilo.php - progetto.php - crea_progetto.php e togliere/cambiare i commenti nel css, ed eventuali javascripts
