@@ -66,7 +66,7 @@ $result_finanziamenti = $pdo->query($sql_finanziamenti);
                     </li>
                 <?php else: ?>
                     <li class="nav-item">
-                        <a class="nav-link btn btn-outline-light px-3" href="login.html">Accedi</a>
+                        <a class="nav-link btn btn-outline-light px-3" href="login.php">Accedi</a>
                     </li>
                 <?php endif; ?>
             </ul>
