@@ -771,10 +771,10 @@ DELIMITER ;
 CALL sp_inserisci_utente('test1@example.com','testuser1','$2y$10$kAG8SXG2hVSiKwnkc4Ho1OhFzp8Iqgv7gsv/xx7XiFFGOKGAPn7g2','Mario','Rossi',1990,'Roma');
 CALL sp_inserisci_utente('test2@example.com','testuser2','$2y$10$kAG8SXG2hVSiKwnkc4Ho1OhFzp8Iqgv7gsv/xx7XiFFGOKGAPn7g2','Luca','Bianchi',1985,'Milano');
 CALL sp_inserisci_utente('fedesgambe@icloud.com','fedesgambe','$2y$10$kAG8SXG2hVSiKwnkc4Ho1OhFzp8Iqgv7gsv/xx7XiFFGOKGAPn7g2','Federico','Sgambelluri',2003,'Bologna');
-CALL sp_inserisci_utente('peppe24@gmail.com','peppeeee','$2y$10$aFf/xsZRwAke8XG47X1HUOYTHH4hIdoHe0pTKEXlSuQw4Q9szA0Yu','Giuseppe','Cozza',2003,'Bologna');
-CALL sp_inserisci_utente('simonemagli@gmail.com','sama','$2y$10$kAG8SXG...', 'Simone','Magli',2003,'Bologna');
-CALL sp_inserisci_utente('mirko@gmail.com','Mirko','$2y$10$kAG8SXG...','Mirko','Rossi',1980,'Roma');
-CALL sp_inserisci_utente('test3@example.com','testuser3','$2y$10$kAG8SXG...','Giulia','Verdi',1992,'Napoli');
+CALL sp_inserisci_utente('peppe24@gmail.com','peppeeee','$2y$10$kAG8SXG2hVSiKwnkc4Ho1OhFzp8Iqgv7gsv/xx7XiFFGOKGAPn7g2','Giuseppe','Cozza',2003,'Bologna');
+CALL sp_inserisci_utente('simonemagli@gmail.com','sama','$2y$10$kAG8SXG2hVSiKwnkc4Ho1OhFzp8Iqgv7gsv/xx7XiFFGOKGAPn7g2', 'Simone','Magli',2003,'Bologna');
+CALL sp_inserisci_utente('mirko@gmail.com','Mirko','$2y$10$kAG8SXG2hVSiKwnkc4Ho1OhFzp8Iqgv7gsv/xx7XiFFGOKGAPn7g2','Mirko','Rossi',1980,'Roma');
+CALL sp_inserisci_utente('test3@example.com','testuser3','$2y$10$kAG8SXG2hVSiKwnkc4Ho1OhFzp8Iqgv7gsv/xx7XiFFGOKGAPn7g2','Giulia','Verdi',1992,'Napoli');
 
 -- Creatori
 CALL sp_inserisci_creatore('test1@example.com',1,0);
@@ -841,14 +841,14 @@ CALL sp_aggiungi_componente('Sensore di temperatura','Sensore per rilevazione te
 CALL sp_aggiungi_componente('Modulo Bluetooth','Modulo per connessione Bluetooth',20.00,40);
 CALL sp_aggiungi_componente('Cavo di alimentazione','Cavo per alimentazione componenti elettronici',5.00,200);
 
-
+-- Associazione Hardware
 CALL sp_crea_progetto_hardware('Smart Home AI');
 CALL sp_crea_progetto_hardware('EcoCar');
 CALL sp_crea_progetto_hardware('Smart Park');
 CALL sp_crea_progetto_hardware('Mucca Silver');
 CALL sp_crea_progetto_hardware('Emilio 5.0');
 
-
+-- Associaizoni componenti
 CALL sp_link_formato('Scheda madre','Smart Home AI');
 CALL sp_link_formato('Batteria','Smart Home AI');
 CALL sp_link_formato('Sensore','Smart Home AI');
@@ -888,6 +888,16 @@ CALL sp_aggiungi_comprende('Fisica delle sfere',1,1);
 CALL sp_aggiungi_comprende('Google Maps',3,2);
 CALL sp_aggiungi_comprende('Java',4,2);
 CALL sp_aggiungi_comprende('Python',5,3);
+
+
+-- Competenze
+CALL sp_aggiungi_skill('Analisi 1', 'peppe24@gmail.com');
+CALL sp_aggiungi_skill('Basi di Dati', 'peppe24@gmail.com');
+CALL sp_aggiungi_skill('Chimica dei materiali', 'peppe24@gmail.com');
+CALL sp_aggiungi_skill('Elettronica di base', 'peppe24@gmail.com');
+CALL sp_aggiungi_skill('Python', 'peppe24@gmail.com');
+CALL sp_aggiungi_skill('Google Maps', 'peppe24@gmail.com');
+CALL sp_aggiungi_skill('Fisica delle sfere', 'peppe24@gmail.com');
 
 -- Indica
 CALL sp_indica_competenza('Basi di Dati',5,'simonemagli@gmail.com');

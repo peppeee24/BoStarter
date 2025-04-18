@@ -12,7 +12,7 @@ SGAMBE
 
 PEPPE
 - Commentare bene tutto codice --> Mancano: profilo.php - progetto.php - crea_progetto.php e togliere/cambiare i commenti nel css, ed eventuali javascripts
-- Finire grafica pagine
+
 
 
 
