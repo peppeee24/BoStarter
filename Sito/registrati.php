@@ -170,7 +170,7 @@ VALUES (:email, :codice)";
             </div>
         </form>
         <div class="auth-footer">
-            <p>Hai già un account? <a href="login.html" class="auth-link">Accedi</a></p>
+            <p>Hai già un account? <a href="login.php" class="auth-link">Accedi</a></p>
         </div>
     </div>
 </main>
