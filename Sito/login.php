@@ -2,6 +2,7 @@
 
 // Connessione al database
 require_once 'session.php';
+$errorMessage = "";
 
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -11,7 +12,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Se uno dei campi è vuoto, mostro errore
     if (empty($email) || empty($password)) {
-        echo "Errore: Compila tutti i campi.";
+        $errorMessage = "Compila tutti i campi";
         exit();
     }
 
@@ -31,12 +32,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         header("Location: index.php");
         exit();
     } else {
-        echo "Credenziali non valide.";
-        echo $email;
-        echo $password;
-
-
-
+        $errorMessage = "L'email inserita o la password sono errate. Riprova.";
     }
 }
 
@@ -80,6 +76,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <div class="auth-header text-center">
                 <h2>🔐 Accedi a BoStarter</h2>
                 <p class="text-muted">Bentornato! Inserisci le credenziali per continuare.</p>
+                <?php if (!empty($errorMessage)): ?>
+                    <div class="alert alert-danger"><?= $errorMessage ?></div>
+                <?php endif; ?>
             </div>
             <form action="login.php" method="POST">
                 <div class="mb-3">
