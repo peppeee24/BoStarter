@@ -134,30 +134,32 @@ try {
     </nav>
 
 <!-- Form per il finanziamento -->
-<div class="container mt-5">
-    <div class="card p-4 shadow-sm">
-        <h2 class="mb-4">Finanzia il Progetto: <?php echo htmlspecialchars($progetto['nome']); ?></h2>
-        <form action="" method="POST">
-            <div class="mb-3">
-                <label for="importo" class="form-label">Importo (€):</label>
-                <input type="number" class="form-control" id="importo" name="importo" min="1" step="0.01" required>
-            </div>
+<main>
+    <div class="container mt-5">
+        <div class="card p-4 shadow-sm">
+            <h2 class="mb-4">Finanzia il Progetto: <?php echo htmlspecialchars($progetto['nome']); ?></h2>
+            <form action="" method="POST">
+                <div class="mb-3">
+                    <label for="importo" class="form-label">Importo (€):</label>
+                    <input type="number" class="form-control" id="importo" name="importo" min="1" step="0.01" required>
+                </div>
 
-            <div class="mb-3">
-                <label for="codice_reward" class="form-label">Seleziona una Reward:</label>
-                <select class="form-select" id="codice_reward" name="codice_reward" required>
-                    <?php foreach ($rewards as $reward): ?>
-                        <option value="<?php echo $reward['codice']; ?>">
-                            <?php echo htmlspecialchars($reward['descrizione']); ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
+                <div class="mb-3">
+                    <label for="codice_reward" class="form-label">Seleziona una Reward:</label>
+                    <select class="form-select" id="codice_reward" name="codice_reward" required>
+                        <?php foreach ($rewards as $reward): ?>
+                            <option value="<?php echo $reward['codice']; ?>">
+                                <?php echo htmlspecialchars($reward['descrizione']); ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
 
-            <button type="submit" class="btn btn-primary w-100">Conferma Finanziamento</button>
-        </form>
+                <button type="submit" class="btn btn-primary w-100">Conferma Finanziamento</button>
+            </form>
+        </div>
     </div>
-</div>
+</main>
 
 <footer class="bg-dark text-white py-4 mt-5">
         <div class="container">

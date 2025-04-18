@@ -77,8 +77,8 @@ $skills = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <title>Gestione Competenze</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="css/style2.css">
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style2.css">
 </head>
 <body class="container mt-5">
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
@@ -99,6 +99,7 @@ $skills = $stmt->fetchAll(PDO::FETCH_ASSOC);
         </div>
     </nav>
 
+<main class="container mt-5">
 <div class="row">
     <div class="col-md-8">
         <h2>Gestione Competenze</h2>
@@ -163,7 +164,7 @@ $skills = $stmt->fetchAll(PDO::FETCH_ASSOC);
         </table>
     </div>
 </div>
-
+</main>
 <footer class="bg-dark text-white py-4 mt-5">
     <div class="container">
         <div class="row align-items-center text-center text-md-start">

@@ -7,11 +7,18 @@
     --text-color: #333333; /* Testo scuro */
 }
 
-body {
+html, body {
     font-family: 'Arial', sans-serif;
     color: var(--text-color);
     background-color: var(--background-color);
-    padding-top: 56px; /* Spazio per la navbar fissa */
+    padding-top: 30px; /* Spazio per la navbar fissa */
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+main {
+    flex: 1;
 }
 
 /* Navbar */
@@ -99,6 +106,10 @@ body {
 }
 
 /* Footer Migliorato */
+footer {
+    margin-top: auto;
+}
+
 footer.bg-dark {
     background-color: var(--secondary-color) !important;
     color: #e0e0e0 !important;
@@ -106,6 +117,7 @@ footer.bg-dark {
     padding-bottom: 50px;
     font-size: 0.95rem;
     border-top: 1px solid rgba(255, 255, 255, 0.08);
+    width: 100%;
 }
 
 footer.bg-dark h5 {
