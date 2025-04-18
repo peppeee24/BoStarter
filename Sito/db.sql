@@ -764,7 +764,28 @@ END;
 //
 DELIMITER ;
 
+/*
+RECAP:
+	1.	sp_inserisci_utente
+	2.	sp_inserisci_amministratore
+	3.	sp_inserisci_creatore
+	4.	sp_aggiungi_skill
+	5.	sp_indica_competenza
+	6.	sp_crea_progetto
+	7.	sp_aggiungi_commento
+	8.	sp_rispondi_commento
+	9.	sp_aggiungi_foto
+	10.	sp_aggiungi_reward
+	11.	sp_aggiungi_componente
+	12.	sp_link_formato
+	13.	sp_crea_progetto_software
+	14.	sp_crea_profilo
+	15.	sp_aggiungi_comprende
+	16.	sp_finanzia
+	17.	sp_crea_candidatura
+	18.	sp_crea_progetto_hardware
 
+ */
 -- CHIAMATA ALLA STORE PROEDURE PER INSERIMENTO DEMO
 
 -- Utenti
