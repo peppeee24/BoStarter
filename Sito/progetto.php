@@ -201,7 +201,7 @@ try {
 
     <!-- Carosello immagini -->
     <?php if (!empty($immagini)): ?>
-        <div id="progettoCarousel" class="carousel slide mb-4" data-bs-ride="carousel">
+        <div id="progettoCarousel" class="carousel slide mb-5" data-bs-ride="carousel">
             <!-- Indicatori -->
             <div class="carousel-indicators">
                 <?php foreach ($immagini as $index => $img): ?>

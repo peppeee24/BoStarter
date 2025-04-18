@@ -22,7 +22,8 @@ try {
     $progetto = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if (!$progetto) {
-        die("Errore: Il progetto non esiste.");
+        $errore_finanziamento = "Il progetto non esiste.";
+        return;
     }
 
     // Recupera le reward disponibili per il progetto
@@ -38,7 +39,8 @@ try {
     // Controllo se il progetto è ancora finanziabile
     $budget_raggiunto = $totale_finanziato >= $progetto['budget'] || strtotime($progetto['data_limite']) < time();
     if ($budget_raggiunto) {
-        die("<p style='color: red; text-align: center;'>Il progetto ha già raggiunto il budget o è scaduto.</p>");
+        $errore_finanziamento = "Il progetto ha già raggiunto il budget o è scaduto.";
+        return;
     }
 
     // Se il form è stato inviato
@@ -55,7 +57,7 @@ try {
         ]);
 
         if ($stmtCheckDup->fetchColumn() > 0) {
-            throw new Exception("Hai già effettuato un finanziamento per questo progetto oggi. Riprova domani 😊");
+            throw new Exception("Hai già effettuato un finanziamento per questo progetto oggi. Riprova domani!");
         }
         $importo = floatval($_POST['importo']);
         $codice_reward = intval($_POST['codice_reward']);
@@ -99,7 +101,7 @@ try {
     }
 
 } catch (Exception $e) {
-    echo "<p style='color: red; text-align: center;'>Errore: " . htmlspecialchars($e->getMessage()) . "</p>";
+    $errore_finanziamento = $e->getMessage();
 }
 ?>
 
@@ -154,7 +156,12 @@ try {
                         <?php endforeach; ?>
                     </select>
                 </div>
-
+                <?php if (!empty($errore_finanziamento)): ?>
+                    <div class="alert alert-danger alert-dismissible fade show text-center mx-auto" style="max-width: 600px;" role="alert">
+                        <strong>Errore:</strong> <?= htmlspecialchars($errore_finanziamento) ?>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Chiudi"></button>
+                    </div>
+                <?php endif; ?>
                 <button type="submit" class="btn btn-primary w-100">Conferma Finanziamento</button>
             </form>
         </div>
