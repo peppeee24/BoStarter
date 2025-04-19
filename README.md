@@ -69,7 +69,7 @@ Questa piattaforma è **open-source** e distribuita sotto la licenza [inserire l
 
 🔗 [Visita la piattaforma BOSTARTER](#)
 
-# IINSTALLAZIONE ⚙️
+# INSTALLAZIONE ⚙️
 
 # 📥 Installazione ed Esecuzione del Progetto
 
