@@ -39,7 +39,6 @@ $result_finanziamenti = $pdo->query($sql_finanziamenti);
 </head>
 <body>
 
-<!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
     <div class="container">
         <a class="navbar-brand" href="index.php">
@@ -74,7 +73,6 @@ $result_finanziamenti = $pdo->query($sql_finanziamenti);
     </div>
 </nav>
 
-<!-- Hero Section -->
 <section class="hero-section text-center text-white py-5">
     <div class="container">
         <h1 class="display-4 fw-bold">Statistiche di BoStarter</h1>
@@ -82,21 +80,17 @@ $result_finanziamenti = $pdo->query($sql_finanziamenti);
     </div>
 </section>
 
-<!-- Statistiche -->
 <section class="statistics-section py-5">
     <div class="container">
-        <!-- Classifica Affidabilità -->
         <h2 class="text-center mb-5">Top 3 Utenti Creatori (Affidabilità)</h2>
         <ul class="list-group">
             <?php while($row = $result_affidabilita->fetch(PDO::FETCH_ASSOC)): ?>
-                <!-- Se l'affidabilità è bassa, evidenziamo la riga in rosso -->
                 <li class="list-group-item">
                     <?php echo htmlspecialchars($row['nickname']) . " - Affidabilità: " . $row['affidabilita']; ?>
                 </li>
             <?php endwhile; ?>
         </ul>
 
-        <!-- Progetti più vicini al completamento -->
         <h2 class="text-center mt-5 mb-5">Top 3 Progetti più vicini al completamento</h2>
         <ul class="list-group">
             <?php while($row = $result_progetti->fetch(PDO::FETCH_ASSOC)): ?>
@@ -106,7 +100,6 @@ $result_finanziamenti = $pdo->query($sql_finanziamenti);
             <?php endwhile; ?>
         </ul>
 
-        <!-- Classifica finanziamenti -->
         <h2 class="text-center mt-5 mb-5">Top 3 Utenti per Finanziamenti Erogati</h2>
         <ul class="list-group">
             <?php while($row = $result_finanziamenti->fetch(PDO::FETCH_ASSOC)): ?>

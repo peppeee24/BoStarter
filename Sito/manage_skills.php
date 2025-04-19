@@ -106,7 +106,6 @@ $skills = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <div class="col-md-8">
         <h2>Gestione Competenze</h2>
 
-        <!-- Form aggiunta skill -->
         <form method="POST" class="mb-4">
             <div class="row g-3">
                 <div class="col-md-8">
@@ -122,7 +121,6 @@ $skills = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <small class="text-muted">Verranno creati automaticamente tutti i livelli da 0 a 5</small>
         </form>
 
-        <!-- Lista skills -->
         <h4>Competenze Esistenti</h4>
         <table class="table table-striped">
             <thead>

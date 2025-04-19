@@ -14,9 +14,9 @@ $password = 'root';
 
 
 /*
- PDO (PHP Data Objects) estensione di PHP che fornisce un metodo uniforme e sicuro per accedere a diversi database:
- (MySQL, PostgreSQL, SQLite, Oracle, SQL Server, ecc.).
- */
+    PDO (PHP Data Objects) estensione di PHP che fornisce un metodo uniforme e sicuro per accedere a diversi database:
+    (MySQL, PostgreSQL, SQLite, Oracle, SQL Server, ecc.).
+*/
 
 try {
     // Creazione della connessione PDO

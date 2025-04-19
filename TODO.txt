@@ -10,8 +10,6 @@ SGAMBE
 - GESTIRE FILE DI PARTENZA PER NUMERO PROGETTI O VALUTARE LETTURA DAL DB DI FILE PRE CARICATI
 
 
-PEPPE
-- Commentare bene tutto codice --> Mancano: profilo.php - progetto.php - crea_progetto.php e togliere/cambiare i commenti nel css, ed eventuali javascripts
 
 
 

@@ -207,10 +207,8 @@ try {
     <?php echo $progetto_chiuso ? 'Chiuso' : 'Aperto'; ?>
     </span></p>
 
-    <!-- Carosello immagini -->
     <?php if (!empty($immagini)): ?>
         <div id="progettoCarousel" class="carousel slide mb-5" data-bs-ride="carousel">
-            <!-- Indicatori -->
             <div class="carousel-indicators">
                 <?php foreach ($immagini as $index => $img): ?>
                     <button type="button" data-bs-target="#progettoCarousel" 
@@ -219,7 +217,6 @@ try {
                 <?php endforeach; ?>
             </div>
             
-            <!-- Slide -->
             <div class="carousel-inner rounded">
                 <?php foreach ($immagini as $index => $img): ?>
                     <div class="carousel-item <?php echo $index === 0 ? 'active' : ''; ?>">
@@ -230,7 +227,6 @@ try {
                 <?php endforeach; ?>
             </div>
             
-            <!-- Controlli -->
             <button class="carousel-control-prev" type="button" data-bs-target="#progettoCarousel" data-bs-slide="prev">
                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                 <span class="visually-hidden">Previous</span>
@@ -242,7 +238,6 @@ try {
         </div>
     <?php endif; ?>
 
-    <!-- Badge tipo progetto -->
     <div class="alert alert-info mb-4">
         Tipo progetto:
         <span class="badge bg-dark">
@@ -250,7 +245,6 @@ try {
     </span>
     </div>
 
-    <!-- Sezione per progetti software: Profili richiesti e relative skill -->
     <?php if ($progetto['tipo_progetto'] === 'software' && !empty($profili)): ?>
         <div class="mt-4">
             <h4>Profili Richiesti</h4>
@@ -276,7 +270,6 @@ try {
         </div>
     <?php endif; ?>
 
-    <!-- Sezione componenti hardware -->
     <?php if ($progetto['tipo_progetto'] === 'hardware' && !empty($componenti)): ?>
         <div class="mt-4">
             <h4>Componenti Richiesti</h4>
@@ -303,7 +296,6 @@ try {
         </div>
     <?php endif; ?>
 
-    <!-- Pulsanti di azione -->
     <div class="mt-4">
         <?php if ($loggedIn && !$budget_raggiunto && !$progetto_chiuso): ?>
             <a href="finanzia.php?nome_progetto=<?php echo urlencode($progetto['nome']); ?>"
@@ -332,7 +324,6 @@ try {
         <?php endif; ?>
     </div>
 
-    <!-- Sezione Commenti -->
     <div class="mt-5">
         <h3>Commenti</h3>
         <?php if ($loggedIn): ?>
@@ -365,7 +356,6 @@ try {
                                 <p class="mt-1"><?php echo nl2br(htmlspecialchars($commento['risposta'])); ?></p>
                             </div>
                         <?php elseif ($loggedIn && $email_utente === $progetto['email_creatore']): ?>
-                            <!-- Form di risposta visibile solo al creatore del progetto -->
                             <form action="" method="POST" class="mt-3">
                                 <input type="hidden" name="id_commento" value="<?php echo $commento['id']; ?>">
                                 <div class="form-group">

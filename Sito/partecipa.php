@@ -202,7 +202,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['profilo'])) {
         </div>
     <?php endif; ?>
 
-    <!-- Se il progetto ha più profili -->
     <?php if (!empty($profili)): ?>
         <form method="POST">
             <div class="mb-3">

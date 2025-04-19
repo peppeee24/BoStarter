@@ -141,7 +141,7 @@ $stmtSent = $pdo->prepare("
 $stmtSent->execute(['email' => $_SESSION['email']]);
 $sentCandidatures = $stmtSent->fetchAll(PDO::FETCH_ASSOC);
 
-// Recupera le reward ottenute dall'utente loggato
+// Recupero le reward ottenute dall'utente loggato
 $stmtRewardUtente = $pdo->prepare("
     SELECT R.descrizione, R.foto_url, F.nome_progetto, F.importo
     FROM FINANZIAMENTO F
@@ -194,7 +194,6 @@ $rewardConseguite = $stmtRewardUtente->fetchAll(PDO::FETCH_ASSOC);
         <?php endif; ?>
 
         <div class="row">
-            <!-- Informazioni dell'utente -->
             <div class="col-md-6">
                 <p><strong>Nome:</strong> <?= htmlspecialchars($user['nome'] . ' ' . $user['cognome']) ?></p>
                 <p><strong>Email:</strong> <?= htmlspecialchars($user['email']) ?></p>
@@ -212,7 +211,6 @@ $rewardConseguite = $stmtRewardUtente->fetchAll(PDO::FETCH_ASSOC);
                 <?php endif; ?>
             </div>
 
-            <!-- Form per salvare le competenze -->
             <div class="col-md-6">
                 <form method="POST">
                     <h4>Le tue Competenze</h4>
@@ -234,7 +232,6 @@ $rewardConseguite = $stmtRewardUtente->fetchAll(PDO::FETCH_ASSOC);
             </div>
         </div>
 
-        <!-- Sezione: Candidature Ricevute (per progetti software creati dall'utente) -->
         <div class="mt-5">
             <h4>Candidature Ricevute</h4>
             <?php if (count($receivedCandidatures) > 0): ?>
@@ -284,7 +281,6 @@ $rewardConseguite = $stmtRewardUtente->fetchAll(PDO::FETCH_ASSOC);
             <?php endif; ?>
         </div>
 
-        <!-- Sezione: Candidature Inviate dall'utente -->
         <div class="mt-5">
             <h4>Candidature Inviate</h4>
             <?php if (count($sentCandidatures) > 0): ?>
@@ -323,7 +319,6 @@ $rewardConseguite = $stmtRewardUtente->fetchAll(PDO::FETCH_ASSOC);
             <?php endif; ?>
         </div>
 
-        <!-- Sezione: Reward Ottenute -->
         <div class="mt-5">
             <h4>🎁 Reward Ottenute</h4>
             <?php if (!empty($rewardConseguite)): ?>

@@ -143,7 +143,6 @@ try {
         </div>
     </nav>
 
-<!-- Form per il finanziamento -->
 <main>
     <div class="container mt-5">
         <div class="card p-4 shadow-sm">
@@ -195,7 +194,6 @@ try {
         </div>
     </footer>
 
-<!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

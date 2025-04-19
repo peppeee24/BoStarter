@@ -2,7 +2,7 @@
 session_start();
 require 'session.php';
 
-// Verifico se sono loggato, se non lo sono vengo reiderizzato alla pagine di login
+// Verifico se sono loggato, se non lo sono vengo reinderizzato alla pagina di login
 if (!isset($_SESSION['email'])) {
     header("Location: login.html");
     exit();
@@ -490,30 +490,30 @@ try {
             const profiliContainer = document.getElementById('profili-container');
 
             form.addEventListener('submit', function (e) {
-                // ⚠️ Check almeno una reward
+                // Check almeno una reward
                 const rewardBoxes = rewardContainer.querySelectorAll('.reward-box2');
                 if (rewardBoxes.length === 0) {
                     e.preventDefault();
-                    alert("⚠️ Devi aggiungere almeno una reward per creare il progetto.");
+                    alert("Devi aggiungere almeno una reward per creare il progetto.");
                     return false;
                 }
 
-                // ⚠️ Se tipo = hardware, controlla che ci sia almeno un componente
+                // Se tipo = hardware, controlla che ci sia almeno un componente
                 if (tipoSelect.value === 'hardware') {
                     const componentiBoxes = componentiContainer.querySelectorAll('.componente-box2');
                     if (componentiBoxes.length === 0) {
                         e.preventDefault();
-                        alert("⚠️ Devi aggiungere almeno un componente hardware.");
+                        alert("Devi aggiungere almeno un componente hardware.");
                         return false;
                     }
                 }
 
-                // ⚠️ Se tipo = software, controlla che ci sia almeno un profilo
+                // Se tipo = software, controlla che ci sia almeno un profilo
                 if (tipoSelect.value === 'software') {
                     const profiliBoxes = profiliContainer.querySelectorAll('.profilo-box');
                     if (profiliBoxes.length === 0) {
                         e.preventDefault();
-                        alert("⚠️ Devi aggiungere almeno un profilo richiesto.");
+                        alert("Devi aggiungere almeno un profilo richiesto.");
                         return false;
                     }
                 }
@@ -521,13 +521,13 @@ try {
 
             // Controllo dimensione immagini progetto
             const immaginiProgettoInput = document.querySelector('input[name="foto[]"]');
-            const maxFileSize = 5 * 1024 * 1024; // 5MB
+            const maxFileSize = 5 * 1024 * 1024; // max 5MB
 
             if (immaginiProgettoInput && immaginiProgettoInput.files.length > 0) {
                 for (let file of immaginiProgettoInput.files) {
                     if (file.size > maxFileSize) {
                         e.preventDefault();
-                        alert(`⚠️ L'immagine "${file.name}" del progetto supera il limite di 5 MB.`);
+                        alert(`L'immagine "${file.name}" del progetto supera il limite di 5 MB.`);
                         return false;
                     }
                 }
@@ -564,7 +564,6 @@ try {
     <?php endif; ?>
 
     <form method="POST" enctype="multipart/form-data" id="form-progetto">
-        <!-- Sezione base -->
         <div class="mb-4">
             <label class="form-label">Nome Progetto *</label>
             <input type="text" name="nome" class="form-control" required maxlength="255">
@@ -588,7 +587,6 @@ try {
             </div>
         </div>
 
-        <!-- Sezione immagini -->
         <div class="mb-4">
             <label class="form-label">Immagini del Progetto (max 5MB, jpg/png/webp)</label>
             <input type="file" class="form-control" name="foto[]" multiple
@@ -597,7 +595,6 @@ try {
             <div id="anteprima-imgs" class="mt-2"></div>
         </div>
 
-        <!-- Sezione reward -->
         <div class="mb-4">
             <label class="form-label">Premi per il Progetto</label>
             <div id="reward-container"></div>
@@ -607,7 +604,6 @@ try {
         </div>
 
 
-        <!-- Sezione tipo progetto -->
         <div class="mb-4">
             <label class="form-label">Tipo Progetto *</label>
             <select name="tipo_progetto" id="tipo_progetto"
@@ -618,7 +614,6 @@ try {
             </select>
         </div>
 
-        <!-- Sezione componenti hardware -->
         <div id="componenti-section" style="display: none;">
             <div class="mb-4">
                 <h5>Componenti Hardware</h5>
@@ -630,7 +625,7 @@ try {
             </div>
         </div>
 
-        <!-- Sezione profili software -->
+
         <div id="profili-section" style="display: none;">
             <div class="mb-4">
                 <h5>Profili Richiesti</h5>

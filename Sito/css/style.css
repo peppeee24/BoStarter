@@ -1,17 +1,15 @@
-/* Stili personalizzati per BoStarter */
-
 :root {
-    --primary-color: #007bff; /* Verde Kickstarter-like */
-    --secondary-color: #0D0D0D; /* Nero */
-    --background-color: #F5F5F5; /* Grigio chiaro */
-    --text-color: #333333; /* Testo scuro */
+    --primary-color: #007bff;
+    --secondary-color: #0D0D0D;
+    --background-color: #F5F5F5;
+    --text-color: #333333;
 }
 
 html, body {
     font-family: 'Arial', sans-serif;
     color: var(--text-color);
     background-color: var(--background-color);
-    padding-top: 30px; /* Spazio per la navbar fissa */
+    padding-top: 30px;
     display: flex;
     flex-direction: column;
     height: 100%;
@@ -39,7 +37,7 @@ main {
     color: var(--primary-color) !important;
 }
 
-/* Hero Section */
+/* Hero */
 .hero-section {
     background-color: var(--secondary-color);
     padding: 100px 0;
@@ -105,7 +103,7 @@ main {
     font-weight: bold;
 }
 
-/* Footer Migliorato */
+/* Footer */
 footer {
     margin-top: auto;
 }
@@ -165,7 +163,7 @@ footer.bg-dark .row > div {
 
 
 
-/* Stili per le pagine di autenticazione */
+/* Pagina di autenticazione */
 
 .register-grid {
     display: grid;
@@ -195,7 +193,7 @@ body.auth-page {
 }
 
 .auth-container {
-    flex: 1; /* Fa in modo che il contenuto occupi lo spazio disponibile */
+    flex: 1;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -283,7 +281,6 @@ body.auth-page {
     display: inline-block;
 }
 
-/* Controlli visibili e raffinati */
 .carousel-control-prev,
 .carousel-control-next {
     width: 6%;
@@ -313,9 +310,7 @@ body.auth-page {
     }
   }
 
-/* Stili personalizzati per le statistiche */
-
-/* Righe della tabella */
+/* Statistiche */
 .statistics-section ul.list-group li:nth-child(odd) {
     background-color: #f9f9f9; /* Colore di sfondo alternato per le righe dispari */
 }
@@ -324,7 +319,7 @@ body.auth-page {
     background-color: #e9ecef; /* Colore di sfondo alternato per le righe pari */
 }
 
-/* Aggiungi un po' di bordi e spessore per il testo */
+
 .statistics-section ul.list-group li {
     border: 1px solid #ddd;
     padding: 10px;
@@ -332,31 +327,29 @@ body.auth-page {
     transition: background-color 0.3s ease;
 }
 
-/* Cambia colore della riga al passaggio del mouse */
+
 .statistics-section ul.list-group li:hover {
     background-color: #f1f1f1;
     cursor: pointer;
 }
 
-/* Evidenziare i totali o i numeri rilevanti */
 .statistics-section ul.list-group li strong {
-    color: #007bff; /* Colore blu per il testo in grassetto (ad esempio per i numeri importanti) */
+    color: #007bff;
 }
 
-/* Titoli delle sezioni */
+
 .statistics-section h2 {
     font-weight: bold;
     color: #333;
-    border-bottom: 2px solid #007bff; /* Linea sotto il titolo per evidenziare la sezione */
+    border-bottom: 2px solid #007bff; 
     padding-bottom: 10px;
     margin-bottom: 20px;
 }
 
-/* Aggiungi un bordo colorato per le sezioni più importanti */
 .statistics-section .important-section {
-    border: 2px solid #dc3545; /* Rosso per le sezioni importanti */
+    border: 2px solid #dc3545;
     padding: 15px;
-    background-color: #f8d7da; /* Rosso chiaro di sfondo */
+    background-color: #f8d7da; 
     border-radius: 5px;
 }
 

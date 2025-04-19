@@ -24,17 +24,17 @@ try {
         $pdo->beginTransaction();
 
         try {
-// Inserimento utente base
-$stmt = $pdo->prepare("CALL sp_inserisci_utente(?, ?, ?, ?, ?, ?, ?)");
-$stmt->execute([
-    $email,
-    $nickname,
-    $password,
-    $nome,
-    $cognome,
-    $anno_nascita,
-    $luogo_nascita
-]);
+        // Inserimento utente base
+        $stmt = $pdo->prepare("CALL sp_inserisci_utente(?, ?, ?, ?, ?, ?, ?)");
+        $stmt->execute([
+            $email,
+            $nickname,
+            $password,
+            $nome,
+            $cognome,
+            $anno_nascita,
+            $luogo_nascita
+        ]);
 /*
             $sql = "INSERT INTO UTENTE (email, nickname, password, nome, cognome, anno_nascita, luogo_nascita)
 VALUES (:email, :nickname, :password, :nome, :cognome, :anno_nascita, :luogo_nascita)";
@@ -99,7 +99,6 @@ VALUES (:email, :codice)";
 </head>
 <body class="auth-page">
 
-    <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
         <div class="container">
             <a class="navbar-brand" href="index.php">

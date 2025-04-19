@@ -64,7 +64,6 @@ $progetti = $stmt->fetchAll(PDO::FETCH_ASSOC);
 </head>
 <body>
 
-<!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
     <div class="container">
         <a class="navbar-brand" href="index.php">
@@ -102,7 +101,6 @@ $progetti = $stmt->fetchAll(PDO::FETCH_ASSOC);
     </div>
 </nav>
 
-<!-- Hero Section -->
 <section class="hero-section text-center text-white py-5">
     <div class="container">
         <h1 class="display-4 fw-bold">Benvenuto su BoStarter</h1>
@@ -114,7 +112,6 @@ $progetti = $stmt->fetchAll(PDO::FETCH_ASSOC);
     </div>
 </section>
 
-<!-- Progetti -->
 <section id="progetti" class="featured-projects py-5">
     <div class="container">
         <h2 class="text-center mb-5">Progetti in Evidenza</h2>
@@ -138,7 +135,6 @@ $progetti = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <?php endforeach; ?>
         </div>
 
-        <!-- Paginazione -->
         <nav aria-label="Navigazione">
             <ul class="pagination justify-content-center mt-4">
                 <?php if ($pagina_corrente > 1): ?>
