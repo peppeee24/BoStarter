@@ -57,7 +57,17 @@ try {
 
         // Inserimento progetto principale
         // ??? sono dei segnaposto per i valori, servono per evitare di lasciare spazi buchi per SQL Injection
-        $stmtProgetto = $pdo->prepare("INSERT INTO PROGETTO 
+        $stmtProgetto = $pdo->prepare("CALL sp_crea_progetto(?, ?, ?, ?, ?, ?)");
+        $data_oggi = date('Y-m-d');
+        $stmtProgetto->execute([
+            $nome_progetto,
+            $descrizione,
+            $data_oggi,
+            $email_creatore,
+            $budget,
+            $data_limite
+        ]);
+        /*$stmtProgetto = $pdo->prepare("INSERT INTO PROGETTO 
             (nome, descrizione, data_inserimento, email_creatore, budget, data_limite) 
             VALUES (?, ?, CURDATE(), ?, ?, ?)");
         $stmtProgetto->execute([
@@ -66,22 +76,26 @@ try {
             $email_creatore,
             $budget,
             $data_limite
-        ]);
+        ]);*/
 
         // Inserimento tipo specifico
         if ($tipo_progetto == 'hardware') {
-            $pdo->prepare("INSERT INTO PROGETTO_HARDWARE (nome_progetto) VALUES (?)")
+            $pdo->prepare("CALL sp_crea_progetto_hardware(?)")
                 ->execute([$nome_progetto]);
+            /*$pdo->prepare("INSERT INTO PROGETTO_HARDWARE (nome_progetto) VALUES (?)")
+                ->execute([$nome_progetto]);*/
 
             // Gestione componenti
             if (!empty($componenti)) {
-                $stmtComponente = $pdo->prepare("INSERT INTO COMPONENTE 
+                $stmtComponente = $pdo->prepare("CALL sp_aggiungi_componente(?, ?, ?, ?)");
+                $stmtFormato = $pdo->prepare("CALL sp_link_formato(?, ?)");
+                /*$stmtComponente = $pdo->prepare("INSERT INTO COMPONENTE 
                     (nome, descrizione, prezzo, quantita) 
                     VALUES (?, ?, ?, ?)");
 
                 $stmtFormato = $pdo->prepare("INSERT INTO FORMATO 
                     (nome_componente, nome_hardware) 
-                    VALUES (?, ?)");
+                    VALUES (?, ?)");*/
 
                 foreach ($componenti as $comp) {
                     $prezzo = (float)str_replace(',', '.', $comp['prezzo']);
@@ -103,18 +117,22 @@ try {
                 }
             }
         } else {
-            $pdo->prepare("INSERT INTO PROGETTO_SOFTWARE (nome_progetto) VALUES (?)")
+            $pdo->prepare("CALL sp_crea_progetto_software(?)")
                 ->execute([$nome_progetto]);
+            /*$pdo->prepare("INSERT INTO PROGETTO_SOFTWARE (nome_progetto) VALUES (?)")
+                ->execute([$nome_progetto]);*/
 
             // Gestione profili per progetti software
             if (!empty($profili)) {
-                $stmtProfilo = $pdo->prepare("INSERT INTO PROFILO 
+                $stmtProfilo = $pdo->prepare("CALL sp_crea_profilo(?, ?)");
+                /*$stmtProfilo = $pdo->prepare("INSERT INTO PROFILO 
                     (nome, nome_software) 
-                    VALUES (?, ?)");
-
-                $stmtComprende = $pdo->prepare("INSERT INTO COMPRENDE
+                    VALUES (?, ?)");*/
+                
+                $stmtComprende = $pdo->prepare("CALL sp_aggiungi_comprende(?, ?, ?)");
+                /*$stmtComprende = $pdo->prepare("INSERT INTO COMPRENDE
                     (competenza, livello, id_profilo)
-                    VALUES (?, ?, ?)");
+                    VALUES (?, ?, ?)");*/
 
                 foreach ($profili as $profilo) {
                     if (!empty($profilo['nome'])) {
@@ -152,9 +170,10 @@ try {
 
         // Gestione rewards
         if (!empty($rewards)) {
-            $stmtReward = $pdo->prepare("INSERT INTO REWARD 
+            $stmtReward = $pdo->prepare("CALL sp_aggiungi_reward(?, ?, ?)");
+            /*$stmtReward = $pdo->prepare("INSERT INTO REWARD 
                 (nome_progetto, descrizione, foto_url) 
-                VALUES (?, ?, ?)");
+                VALUES (?, ?, ?)");*/
 
             // Cartella per le immagini dei reward
             $uploadRewardDir = 'images/uploads/progetti/' . $nome_progetto . '/rewards/';
@@ -213,9 +232,10 @@ try {
             if (!file_exists($uploadDir)) {
                 mkdir($uploadDir, 0755, true);
             }
-
-            $stmtFoto = $pdo->prepare("INSERT INTO FOTO_PROGETTO 
-                (nome_progetto, foto_url) VALUES (?, ?)");
+            
+            $stmtFoto = $pdo->prepare("CALL sp_aggiungi_foto(?, ?)");
+            /*$stmtFoto = $pdo->prepare("INSERT INTO FOTO_PROGETTO 
+                (nome_progetto, foto_url) VALUES (?, ?)");*/
 
             foreach ($_FILES['foto']['tmp_name'] as $key => $tmpName) {
                 // Validazione

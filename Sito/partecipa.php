@@ -127,6 +127,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['profilo'])) {
         } else {
             // Esegui l'inserimento se non ci sono duplicati
             try {
+                $stmtCandidatura = $pdo->prepare("CALL sp_crea_candidatura(?, ?)");
+                $stmtCandidatura->execute([$email_utente, $id_profilo]);
+                /*
                 $stmtCandidatura = $pdo->prepare("
             INSERT INTO CANDIDATURA (email_utente, id_profilo, esito) 
             VALUES (:email_utente, :id_profilo, FALSE)
@@ -134,7 +137,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['profilo'])) {
                 $stmtCandidatura->execute([
                     'email_utente' => $email_utente,
                     'id_profilo' => $id_profilo
-                ]);
+                ]);*/
                 $successo = "Candidatura inviata con successo!";
             } catch (PDOException $e) {
                 $errore = "Errore nell'invio della candidatura: " . $e->getMessage();

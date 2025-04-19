@@ -18,9 +18,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         try {
             $pdo->beginTransaction();
             // Faccio l'insert della competenza nel db
-            $stmt = $pdo->prepare("INSERT INTO SKILL (competenza, email_utente_amm) 
-                                  VALUES (?, ?)");
+            $stmt = $pdo->prepare("CALL sp_aggiungi_skill(?, ?)");
             $stmt->execute([$competenza, $_SESSION['email']]);
+            /*$stmt = $pdo->prepare("INSERT INTO SKILL (competenza, email_utente_amm) 
+                                  VALUES (?, ?)");
+            $stmt->execute([$competenza, $_SESSION['email']]);*/
             $pdo->commit();
         } catch (PDOException $e) {
             $pdo->rollBack();

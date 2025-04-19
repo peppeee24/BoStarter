@@ -76,7 +76,15 @@ try {
         }
 
         // Inserimento finanziamento nel database
-        $stmtInsert = $pdo->prepare("INSERT INTO FINANZIAMENTO (data_finanziamento, importo, email_utente, nome_progetto, codice_reward) 
+        $stmtInsert = $pdo->prepare("CALL sp_finanzia(?, ?, ?, ?, ?)");
+        $stmtInsert->execute([
+            $data_finanziamento,
+            $importo,
+            $email_utente,
+            $nome_progetto,
+            $codice_reward
+        ]);
+        /*$stmtInsert = $pdo->prepare("INSERT INTO FINANZIAMENTO (data_finanziamento, importo, email_utente, nome_progetto, codice_reward) 
                                      VALUES (:data_finanziamento, :importo, :email_utente, :nome_progetto, :codice_reward)");
         $stmtInsert->execute([
             'data_finanziamento' => $data_finanziamento,
@@ -84,7 +92,7 @@ try {
             'email_utente' => $email_utente,
             'nome_progetto' => $nome_progetto,
             'codice_reward' => $codice_reward
-        ]);
+        ]);*/
 
         // Aggiorna il totale finanziato
         $totale_finanziato += $importo;

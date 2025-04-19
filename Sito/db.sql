@@ -810,7 +810,7 @@ CALL sp_inserisci_amministratore('peppe24@gmail.com','$2y$10$aFf/xsZRwAke8XG47X1
 -- Progetti
 CALL sp_crea_progetto('Smart Home AI','Un sistema di intelligenza artificiale per la gestione delle case smart.',CURDATE(),'test1@example.com',15000,DATE_ADD(CURDATE(),INTERVAL 30 DAY));
 CALL sp_crea_progetto('EcoCar','Un’auto elettrica ecologica con materiali sostenibili.',CURDATE(),'test2@example.com',25000,DATE_ADD(CURDATE(),INTERVAL 45 DAY));
-CALL sp_crea_progetto('VR Learning','Una piattaforma di apprendimento in realtà virtuale per scuole e università.',CURDATE(),'test3@example.com',20000,DATE_ADD(CURDATE(),INTERVAL 60 DAY));
+CALL sp_crea_progetto('VR Learning','Una piattaforma di apprendimento in realtà virtuale per scuole e università.',CURDATE(),'test3@example.com',20000,DATE_ADD(CURDATE(),INTERVAL -60 DAY));
 CALL sp_crea_progetto('Mucca Silver','Una mucca di carta stagnola',CURDATE(),'fedesgambe@icloud.com',15000,DATE_ADD(CURDATE(),INTERVAL -30 DAY));
 CALL sp_crea_progetto('Smart Park','Un parcheggio digitale per trovare sempre posto',CURDATE(),'simonemagli@gmail.com',25000,DATE_ADD(CURDATE(),INTERVAL 45 DAY));
 CALL sp_crea_progetto('Flipper City','Gioca a flipper, ma la mappa è la tua città',CURDATE(),'fedesgambe@icloud.com',20000,DATE_ADD(CURDATE(),INTERVAL 60 DAY));

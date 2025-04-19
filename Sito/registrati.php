@@ -25,6 +25,17 @@ try {
 
         try {
 // Inserimento utente base
+$stmt = $pdo->prepare("CALL sp_inserisci_utente(?, ?, ?, ?, ?, ?, ?)");
+$stmt->execute([
+    $email,
+    $nickname,
+    $password,
+    $nome,
+    $cognome,
+    $anno_nascita,
+    $luogo_nascita
+]);
+/*
             $sql = "INSERT INTO UTENTE (email, nickname, password, nome, cognome, anno_nascita, luogo_nascita)
 VALUES (:email, :nickname, :password, :nome, :cognome, :anno_nascita, :luogo_nascita)";
             $stmt = $pdo->prepare($sql);
@@ -36,26 +47,31 @@ VALUES (:email, :nickname, :password, :nome, :cognome, :anno_nascita, :luogo_nas
                 'cognome' => $cognome,
                 'anno_nascita' => $anno_nascita,
                 'luogo_nascita' => $luogo_nascita
-            ]);
+            ]);*/
 
 // Gestione tipi utente speciali
             if ($userType === 'admin') {
                 if (empty($securityCode)) {
                     throw new Exception("Il codice di sicurezza è obbligatorio per gli amministratori");
                 }
-
-                $sqlAdmin = "INSERT INTO UTENTE_AMMINISTRATORE (email_utente_amm, codice_sicurezza)
+                
+                $stmtAdmin = $pdo->prepare("CALL sp_inserisci_amministratore(?, ?)");
+                $stmtAdmin->execute([$email, $securityCode]);
+                /*$sqlAdmin = "INSERT INTO UTENTE_AMMINISTRATORE (email_utente_amm, codice_sicurezza)
 VALUES (:email, :codice)";
                 $stmtAdmin = $pdo->prepare($sqlAdmin);
-                $stmtAdmin->execute(['email' => $email, 'codice' => $securityCode]);
+                $stmtAdmin->execute(['email' => $email, 'codice' => $securityCode]);*/
             } elseif ($userType === 'creator') {
-                $sqlCreator = "INSERT INTO UTENTE_CREATORE (email_utente_creat) VALUES (:email)";
+                $stmtCreator = $pdo->prepare("CALL sp_inserisci_creatore(?, ?, ?)");
+                $stmtCreator->execute([$email, 0, 0.0]); // nr_progetti = 0, affid = 0.0 come default
+
+                /*$sqlCreator = "INSERT INTO UTENTE_CREATORE (email_utente_creat) VALUES (:email)";
                 $stmtCreator = $pdo->prepare($sqlCreator);
-                $stmtCreator->execute(['email' => $email]);
+                $stmtCreator->execute(['email' => $email]);*/
             }
 
             $pdo->commit();
-            header("Location: login.html");
+            header("Location: login.php");
             exit();
         } catch (Exception $e) {
             $pdo->rollBack();

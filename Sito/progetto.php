@@ -110,6 +110,10 @@ try {
     if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['nuovo_commento']) && $loggedIn) {
         $testo_commento = trim($_POST['nuovo_commento']);
         if (!empty($testo_commento)) {
+            $data_oggi = date('Y-m-d');
+            $stmtInserisciCommento = $pdo->prepare("CALL sp_aggiungi_commento(?, ?, ?, ?)");
+            $stmtInserisciCommento->execute([$email_utente, $nome_progetto, $data_oggi, $testo_commento]);
+            /*
             $stmtInserisciCommento = $pdo->prepare("
                 INSERT INTO COMMENTO (email_utente, nome_progetto, data_commento, testo)
                 VALUES (:email, :nome_progetto, CURDATE(), :testo)
@@ -118,7 +122,7 @@ try {
                 'email' => $email_utente,
                 'nome_progetto' => $nome_progetto,
                 'testo' => $testo_commento
-            ]);
+            ]);*/
             header("Location: progetto.php?nome_progetto=" . urlencode($nome_progetto));
             exit();
         }
@@ -131,7 +135,10 @@ try {
 
         if (!empty($testo_risposta)) {
             try {
-                $stmtInserisciRisposta = $pdo->prepare("
+                $data_oggi = date('Y-m-d');
+                $stmtInserisciRisposta = $pdo->prepare("CALL sp_rispondi_commento(?, ?, ?, ?)");
+                $stmtInserisciRisposta->execute([$id_commento, $email_utente, $data_oggi, $testo_risposta]);
+                /*$stmtInserisciRisposta = $pdo->prepare("
                     INSERT INTO RISPOSTA_COMMENTO (id_commento, email_creatore, data_risposta, testo)
                     VALUES (:id_commento, :email_creatore, CURDATE(), :testo)
                 ");
@@ -139,7 +146,7 @@ try {
                     'id_commento' => $id_commento,
                     'email_creatore' => $email_utente,
                     'testo' => $testo_risposta
-                ]);
+                ]);*/
                 header("Location: progetto.php?nome_progetto=" . urlencode($nome_progetto));
                 exit();
             } catch (PDOException $e) {

@@ -87,9 +87,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['competenze'])) {
         // Inserisce le nuove competenze (solo se il livello selezionato è maggiore di 0)
         foreach ($_POST['competenze'] as $competenza => $livello) {
             if ($livello >= 0) {
-                $insertStmt = $pdo->prepare("INSERT INTO INDICA (competenza, livello, email_utente) 
-                                             VALUES (?, ?, ?)");
+                $insertStmt = $pdo->prepare("CALL sp_indica_competenza(?, ?, ?)");
                 $insertStmt->execute([$competenza, $livello, $_SESSION['email']]);
+                /*$insertStmt = $pdo->prepare("INSERT INTO INDICA (competenza, livello, email_utente) 
+                                             VALUES (?, ?, ?)");
+                $insertStmt->execute([$competenza, $livello, $_SESSION['email']]);*/
             }
         }
         $pdo->commit();
