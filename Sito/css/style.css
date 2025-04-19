@@ -352,12 +352,6 @@ body.auth-page {
     margin-bottom: 20px;
 }
 
-/* Classifica Affidabilità: Colore rosso per gli utenti con bassa affidabilità */
-.statistics-section ul.list-group li.affidabilita-bassa {
-    color: red;
-    font-weight: bold;
-}
-
 /* Aggiungi un bordo colorato per le sezioni più importanti */
 .statistics-section .important-section {
     border: 2px solid #dc3545; /* Rosso per le sezioni importanti */

@@ -3,6 +3,7 @@ session_start();
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 require 'session.php'; // Connessione al database
+$pdo->prepare("CALL sp_chiudi_progetti_scaduti()")->execute();
 
 if (!isset($_GET['nome_progetto'])) {
     die("Errore: Nessun progetto specificato.");

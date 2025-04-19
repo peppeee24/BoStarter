@@ -764,6 +764,17 @@ END;
 //
 DELIMITER ;
 
+DELIMITER //
+CREATE PROCEDURE sp_chiudi_progetti_scaduti()
+BEGIN
+    UPDATE PROGETTO
+    SET stato = 'chiuso'
+    WHERE stato = 'aperto' AND data_limite < CURDATE();
+END;
+//
+DELIMITER ;
+
+
 /*
 RECAP:
 	1.	sp_inserisci_utente

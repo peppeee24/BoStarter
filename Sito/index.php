@@ -1,5 +1,6 @@
 <?php
 require_once 'session.php';
+$pdo->prepare("CALL sp_chiudi_progetti_scaduti()")->execute();
 
 // Controllo se l'utente è loggato
 $loggedIn = isset($_SESSION['email']);

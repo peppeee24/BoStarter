@@ -90,7 +90,7 @@ $result_finanziamenti = $pdo->query($sql_finanziamenti);
         <ul class="list-group">
             <?php while($row = $result_affidabilita->fetch(PDO::FETCH_ASSOC)): ?>
                 <!-- Se l'affidabilità è bassa, evidenziamo la riga in rosso -->
-                <li class="list-group-item <?php echo ($row['affidabilita'] < 5) ? 'affidabilita-bassa' : ''; ?>">
+                <li class="list-group-item">
                     <?php echo htmlspecialchars($row['nickname']) . " - Affidabilità: " . $row['affidabilita']; ?>
                 </li>
             <?php endwhile; ?>
