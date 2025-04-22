@@ -124,10 +124,10 @@ try {
 
             // Gestione profili per progetti software
             if (!empty($profili)) {
-                $stmtProfilo = $pdo->prepare("CALL sp_crea_profilo(?, ?)");
-                /*$stmtProfilo = $pdo->prepare("INSERT INTO PROFILO 
+                //$stmtProfilo = $pdo->prepare("CALL sp_crea_profilo(?, ?)");
+                $stmtProfilo = $pdo->prepare("INSERT INTO PROFILO 
                     (nome, nome_software) 
-                    VALUES (?, ?)");*/
+                    VALUES (?, ?)");
                 
                 $stmtComprende = $pdo->prepare("CALL sp_aggiungi_comprende(?, ?, ?)");
                 /*$stmtComprende = $pdo->prepare("INSERT INTO COMPRENDE
