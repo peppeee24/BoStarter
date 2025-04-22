@@ -393,13 +393,20 @@ DELIMITER;
 
 /* Log registrazione nuovo utente */
 DROP TRIGGER IF EXISTS log_nuovo_utente;
+DELIMITER //
 
-CREATE TRIGGER log_nuovo_utente
-    AFTER INSERT ON UTENTE
+CREATE TRIGGER log_nuovo_utente AFTER INSERT ON UTENTE
     FOR EACH ROW
 BEGIN
-    CALL InserisciLogEvento('Nuovo Utente', NEW.email, CONCAT('Utente ', NEW.nickname, ' si è registrato.'));
+    CALL InserisciLogEvento(
+    'Nuovo Utente',
+    NEW.email,
+    CONCAT('Utente ', NEW.nickname, ' si è registrato.')
+  );
 END;
+//
+DELIMITER ;
+
 
 /* Log inserimento skill di curriculum (tabella INDICA) */
 DELIMITER //
