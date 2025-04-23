@@ -332,7 +332,7 @@ try {
                 <button type="submit" class="btn btn-primary mt-2">Invia Commento</button>
             </form>
         <?php else: ?>
-            <p><a href="login.html">Accedi</a> per lasciare un commento.</p>
+            <p><a href="login.php">Accedi</a> per lasciare un commento.</p>
         <?php endif; ?>
 
         <?php if (empty($commenti)): ?>
