@@ -1,110 +1,641 @@
 [
   {
-    "_id": "67f65fd58566b770b0270b9a",
-    "id": 13,
-    "data": "2025-04-09T11:53:56.000Z",
-    "descrizione": "L'utente ha commentato il progetto TestLog.",
-    "email_utente": "simonemagli@gmail.com",
-    "evento": "Nuovo Commento",
+    "_id": "6807a7e1b9151583f046a54a",
+    "id": 57,
+    "data": "2025-04-22T15:06:53.000Z",
+    "descrizione": "Utente gggg si è registrato.",
+    "email_utente": "gggg@gmail.com",
+    "evento": "Nuovo Utente",
     "sincronizzato": 0
   },
   {
-    "_id": "67f65fc18566b770b0270b99",
-    "id": 12,
-    "data": "2025-04-09T11:52:24.000Z",
-    "descrizione": "L'utente ha commentato il progetto TestLog.",
+    "_id": "67e12444ddce3cc4d66765e2",
+    "id": 5,
+    "data": "2025-04-22T15:06:16.000Z",
+    "descrizione": "Utente sama si è registrato.",
     "email_utente": "simonemagli@gmail.com",
-    "evento": "Nuovo Commento",
+    "evento": "Nuovo Utente",
     "sincronizzato": 0
   },
   {
-    "_id": "67f65fc18566b770b0270b98",
-    "id": 11,
-    "data": "2025-04-09T11:47:27.000Z",
-    "descrizione": "L'utente ha commentato il progetto TestLog.",
-    "email_utente": "simonemagli@gmail.com",
-    "evento": "Nuovo Commento",
+    "_id": "67e12444ddce3cc4d66765e4",
+    "id": 6,
+    "data": "2025-04-22T15:06:16.000Z",
+    "descrizione": "Utente Mirko si è registrato.",
+    "email_utente": "mirko@gmail.com",
+    "evento": "Nuovo Utente",
     "sincronizzato": 0
   },
   {
-    "_id": "67f65fc18566b770b0270b95",
+    "_id": "67e12444ddce3cc4d66765e6",
+    "id": 7,
+    "data": "2025-04-22T15:06:16.000Z",
+    "descrizione": "Utente testuser3 si è registrato.",
+    "email_utente": "test3@example.com",
+    "evento": "Nuovo Utente",
+    "sincronizzato": 0
+  },
+  {
+    "_id": "67e12444ddce3cc4d66765e8",
     "id": 8,
-    "data": "2025-04-09T11:42:17.000Z",
-    "descrizione": "L'utente ha creato il progetto TestLog.",
+    "data": "2025-04-22T15:06:16.000Z",
+    "descrizione": "Utente ha creato il progetto Smart Home AI.",
+    "email_utente": "test1@example.com",
+    "evento": "Nuovo Progetto",
+    "sincronizzato": 0
+  },
+  {
+    "_id": "67e12444ddce3cc4d66765ea",
+    "id": 9,
+    "data": "2025-04-22T15:06:16.000Z",
+    "descrizione": "Utente ha creato il progetto EcoCar.",
+    "email_utente": "test2@example.com",
+    "evento": "Nuovo Progetto",
+    "sincronizzato": 0
+  },
+  {
+    "_id": "67e12444ddce3cc4d66765ec",
+    "id": 10,
+    "data": "2025-04-22T15:06:16.000Z",
+    "descrizione": "Utente ha creato il progetto VR Learning.",
+    "email_utente": "test3@example.com",
+    "evento": "Nuovo Progetto",
+    "sincronizzato": 0
+  },
+  {
+    "_id": "67e12444ddce3cc4d66765ee",
+    "id": 11,
+    "data": "2025-04-22T15:06:16.000Z",
+    "descrizione": "Utente ha creato il progetto Mucca Silver.",
+    "email_utente": "fedesgambe@icloud.com",
+    "evento": "Nuovo Progetto",
+    "sincronizzato": 0
+  },
+  {
+    "_id": "67e12444ddce3cc4d66765f0",
+    "id": 12,
+    "data": "2025-04-22T15:06:16.000Z",
+    "descrizione": "Utente ha creato il progetto Smart Park.",
     "email_utente": "simonemagli@gmail.com",
     "evento": "Nuovo Progetto",
     "sincronizzato": 0
   },
   {
-    "_id": "67f65fc18566b770b0270b96",
-    "id": 9,
-    "data": "2025-04-09T11:42:17.000Z",
-    "descrizione": "L'utente ha creato il profilo Matematico per il progetto software TestLog.",
+    "_id": "67e12444ddce3cc4d66765f2",
+    "id": 13,
+    "data": "2025-04-22T15:06:16.000Z",
+    "descrizione": "Utente ha creato il progetto Flipper City.",
+    "email_utente": "fedesgambe@icloud.com",
+    "evento": "Nuovo Progetto",
+    "sincronizzato": 0
+  },
+  {
+    "_id": "67e12444ddce3cc4d66765f4",
+    "id": 14,
+    "data": "2025-04-22T15:06:16.000Z",
+    "descrizione": "Utente ha creato il progetto Emilio 5.0.",
+    "email_utente": "fedesgambe@icloud.com",
+    "evento": "Nuovo Progetto",
+    "sincronizzato": 0
+  },
+  {
+    "_id": "67e12444ddce3cc4d66765f6",
+    "id": 15,
+    "data": "2025-04-22T15:06:16.000Z",
+    "descrizione": "Utente ha aggiunto una reward per il progetto EcoCar.",
+    "email_utente": "test2@example.com",
+    "evento": "Nuova Reward",
+    "sincronizzato": 0
+  },
+  {
+    "_id": "67e12444ddce3cc4d66765f8",
+    "id": 16,
+    "data": "2025-04-22T15:06:16.000Z",
+    "descrizione": "Utente ha aggiunto una reward per il progetto EcoCar.",
+    "email_utente": "test2@example.com",
+    "evento": "Nuova Reward",
+    "sincronizzato": 0
+  },
+  {
+    "_id": "67e12444ddce3cc4d66765fa",
+    "id": 17,
+    "data": "2025-04-22T15:06:16.000Z",
+    "descrizione": "Utente ha aggiunto una reward per il progetto EcoCar.",
+    "email_utente": "test2@example.com",
+    "evento": "Nuova Reward",
+    "sincronizzato": 0
+  },
+  {
+    "_id": "67e12444ddce3cc4d66765fc",
+    "id": 18,
+    "data": "2025-04-22T15:06:16.000Z",
+    "descrizione": "Utente ha aggiunto una reward per il progetto Smart Home AI.",
+    "email_utente": "test1@example.com",
+    "evento": "Nuova Reward",
+    "sincronizzato": 0
+  },
+  {
+    "_id": "67e12444ddce3cc4d66765fe",
+    "id": 19,
+    "data": "2025-04-22T15:06:16.000Z",
+    "descrizione": "Utente ha aggiunto una reward per il progetto Smart Home AI.",
+    "email_utente": "test1@example.com",
+    "evento": "Nuova Reward",
+    "sincronizzato": 0
+  },
+  {
+    "_id": "67e12444ddce3cc4d6676600",
+    "id": 20,
+    "data": "2025-04-22T15:06:16.000Z",
+    "descrizione": "Utente ha aggiunto una reward per il progetto Smart Home AI.",
+    "email_utente": "test1@example.com",
+    "evento": "Nuova Reward",
+    "sincronizzato": 0
+  },
+  {
+    "_id": "67e12444ddce3cc4d6676602",
+    "id": 21,
+    "data": "2025-04-22T15:06:16.000Z",
+    "descrizione": "Utente ha aggiunto una reward per il progetto VR Learning.",
+    "email_utente": "test3@example.com",
+    "evento": "Nuova Reward",
+    "sincronizzato": 0
+  },
+  {
+    "_id": "67e12444ddce3cc4d6676604",
+    "id": 22,
+    "data": "2025-04-22T15:06:16.000Z",
+    "descrizione": "Utente ha aggiunto una reward per il progetto VR Learning.",
+    "email_utente": "test3@example.com",
+    "evento": "Nuova Reward",
+    "sincronizzato": 0
+  },
+  {
+    "_id": "67e12444ddce3cc4d6676606",
+    "id": 23,
+    "data": "2025-04-22T15:06:16.000Z",
+    "descrizione": "Utente ha aggiunto una reward per il progetto VR Learning.",
+    "email_utente": "test3@example.com",
+    "evento": "Nuova Reward",
+    "sincronizzato": 0
+  },
+  {
+    "_id": "67e12444ddce3cc4d6676608",
+    "id": 24,
+    "data": "2025-04-22T15:06:16.000Z",
+    "descrizione": "Utente ha aggiunto una reward per il progetto Mucca Silver.",
+    "email_utente": "fedesgambe@icloud.com",
+    "evento": "Nuova Reward",
+    "sincronizzato": 0
+  },
+  {
+    "_id": "67e12444ddce3cc4d667660a",
+    "id": 25,
+    "data": "2025-04-22T15:06:16.000Z",
+    "descrizione": "Utente ha aggiunto una reward per il progetto Mucca Silver.",
+    "email_utente": "fedesgambe@icloud.com",
+    "evento": "Nuova Reward",
+    "sincronizzato": 0
+  },
+  {
+    "_id": "67e12444ddce3cc4d667660c",
+    "id": 26,
+    "data": "2025-04-22T15:06:16.000Z",
+    "descrizione": "Utente ha aggiunto una reward per il progetto Mucca Silver.",
+    "email_utente": "fedesgambe@icloud.com",
+    "evento": "Nuova Reward",
+    "sincronizzato": 0
+  },
+  {
+    "_id": "67e12444ddce3cc4d667660e",
+    "id": 27,
+    "data": "2025-04-22T15:06:16.000Z",
+    "descrizione": "Utente ha aggiunto una reward per il progetto Smart Park.",
     "email_utente": "simonemagli@gmail.com",
+    "evento": "Nuova Reward",
+    "sincronizzato": 0
+  },
+  {
+    "_id": "67e12444ddce3cc4d6676610",
+    "id": 28,
+    "data": "2025-04-22T15:06:16.000Z",
+    "descrizione": "Utente ha aggiunto una reward per il progetto Smart Park.",
+    "email_utente": "simonemagli@gmail.com",
+    "evento": "Nuova Reward",
+    "sincronizzato": 0
+  },
+  {
+    "_id": "67e12444ddce3cc4d6676612",
+    "id": 29,
+    "data": "2025-04-22T15:06:16.000Z",
+    "descrizione": "Utente ha aggiunto una reward per il progetto Smart Park.",
+    "email_utente": "simonemagli@gmail.com",
+    "evento": "Nuova Reward",
+    "sincronizzato": 0
+  },
+  {
+    "_id": "67e12444ddce3cc4d6676614",
+    "id": 30,
+    "data": "2025-04-22T15:06:16.000Z",
+    "descrizione": "Utente ha aggiunto una reward per il progetto Flipper City.",
+    "email_utente": "fedesgambe@icloud.com",
+    "evento": "Nuova Reward",
+    "sincronizzato": 0
+  },
+  {
+    "_id": "67e12444ddce3cc4d6676616",
+    "id": 31,
+    "data": "2025-04-22T15:06:16.000Z",
+    "descrizione": "Utente ha aggiunto una reward per il progetto Flipper City.",
+    "email_utente": "fedesgambe@icloud.com",
+    "evento": "Nuova Reward",
+    "sincronizzato": 0
+  },
+  {
+    "_id": "67e12476ddce3cc4d667661f",
+    "id": 32,
+    "data": "2025-04-22T15:06:16.000Z",
+    "descrizione": "Utente ha aggiunto una reward per il progetto Flipper City.",
+    "email_utente": "fedesgambe@icloud.com",
+    "evento": "Nuova Reward",
+    "sincronizzato": 0
+  },
+  {
+    "_id": "67e1272dddce3cc4d6676688",
+    "id": 33,
+    "data": "2025-04-22T15:06:16.000Z",
+    "descrizione": "Utente ha aggiunto una reward per il progetto Emilio 5.0.",
+    "email_utente": "fedesgambe@icloud.com",
+    "evento": "Nuova Reward",
+    "sincronizzato": 0
+  },
+  {
+    "_id": "67e1272dddce3cc4d667668a",
+    "id": 34,
+    "data": "2025-04-22T15:06:16.000Z",
+    "descrizione": "Utente ha aggiunto una reward per il progetto Emilio 5.0.",
+    "email_utente": "fedesgambe@icloud.com",
+    "evento": "Nuova Reward",
+    "sincronizzato": 0
+  },
+  {
+    "_id": "6807a75eb9151583f046a4c4",
+    "id": 1,
+    "data": "2025-04-22T15:06:16.000Z",
+    "descrizione": "Utente testuser1 si è registrato.",
+    "email_utente": "test1@example.com",
+    "evento": "Nuovo Utente",
+    "sincronizzato": 0
+  },
+  {
+    "_id": "6807a75eb9151583f046a4c6",
+    "id": 2,
+    "data": "2025-04-22T15:06:16.000Z",
+    "descrizione": "Utente testuser2 si è registrato.",
+    "email_utente": "test2@example.com",
+    "evento": "Nuovo Utente",
+    "sincronizzato": 0
+  },
+  {
+    "_id": "6807a75eb9151583f046a4c8",
+    "id": 3,
+    "data": "2025-04-22T15:06:16.000Z",
+    "descrizione": "Utente fedesgambe si è registrato.",
+    "email_utente": "fedesgambe@icloud.com",
+    "evento": "Nuovo Utente",
+    "sincronizzato": 0
+  },
+  {
+    "_id": "6807a75eb9151583f046a4ca",
+    "id": 4,
+    "data": "2025-04-22T15:06:16.000Z",
+    "descrizione": "Utente peppeeee si è registrato.",
+    "email_utente": "peppe24@gmail.com",
+    "evento": "Nuovo Utente",
+    "sincronizzato": 0
+  },
+  {
+    "_id": "6807a75eb9151583f046a4ea",
+    "id": 35,
+    "data": "2025-04-22T15:06:16.000Z",
+    "descrizione": "Utente ha aggiunto una reward per il progetto Emilio 5.0.",
+    "email_utente": "fedesgambe@icloud.com",
+    "evento": "Nuova Reward",
+    "sincronizzato": 0
+  },
+  {
+    "_id": "6807a75eb9151583f046a4ec",
+    "id": 36,
+    "data": "2025-04-22T15:06:16.000Z",
+    "descrizione": "Utente ha creato il profilo Fisico per il progetto software Flipper City.",
+    "email_utente": "fedesgambe@icloud.com",
     "evento": "Nuovo Profilo",
     "sincronizzato": 0
   },
   {
-    "_id": "67f65fc18566b770b0270b97",
-    "id": 10,
-    "data": "2025-04-09T11:42:17.000Z",
-    "descrizione": "L'utente ha aggiunto una reward per il progetto TestLog.",
-    "email_utente": "simonemagli@gmail.com",
-    "evento": "Nuova Reward",
+    "_id": "6807a75eb9151583f046a4ee",
+    "id": 37,
+    "data": "2025-04-22T15:06:16.000Z",
+    "descrizione": "Utente ha creato il profilo Ingegnere IT per il progetto software Flipper City.",
+    "email_utente": "fedesgambe@icloud.com",
+    "evento": "Nuovo Profilo",
     "sincronizzato": 0
   },
   {
-    "_id": "67f65fc18566b770b0270b92",
-    "id": 5,
-    "data": "2025-04-08T16:58:26.000Z",
-    "descrizione": "L'utente ha aggiunto la skill Basi di Dati con livello 2.",
+    "_id": "6807a75eb9151583f046a4f0",
+    "id": 38,
+    "data": "2025-04-22T15:06:16.000Z",
+    "descrizione": "Utente ha creato il profilo Programmatore per il progetto software Flipper City.",
+    "email_utente": "fedesgambe@icloud.com",
+    "evento": "Nuovo Profilo",
+    "sincronizzato": 0
+  },
+  {
+    "_id": "6807a75eb9151583f046a4f2",
+    "id": 39,
+    "data": "2025-04-22T15:06:16.000Z",
+    "descrizione": "L amministratore ha aggiunto la competenza Analisi 1.",
+    "email_utente": "peppe24@gmail.com",
+    "evento": "Nuova Skill",
+    "sincronizzato": 0
+  },
+  {
+    "_id": "6807a75eb9151583f046a4f4",
+    "id": 40,
+    "data": "2025-04-22T15:06:16.000Z",
+    "descrizione": "L amministratore ha aggiunto la competenza Basi di Dati.",
+    "email_utente": "peppe24@gmail.com",
+    "evento": "Nuova Skill",
+    "sincronizzato": 0
+  },
+  {
+    "_id": "6807a75eb9151583f046a4f6",
+    "id": 41,
+    "data": "2025-04-22T15:06:16.000Z",
+    "descrizione": "L amministratore ha aggiunto la competenza Chimica dei materiali.",
+    "email_utente": "peppe24@gmail.com",
+    "evento": "Nuova Skill",
+    "sincronizzato": 0
+  },
+  {
+    "_id": "6807a75eb9151583f046a4f8",
+    "id": 42,
+    "data": "2025-04-22T15:06:16.000Z",
+    "descrizione": "L amministratore ha aggiunto la competenza Elettronica di base.",
+    "email_utente": "peppe24@gmail.com",
+    "evento": "Nuova Skill",
+    "sincronizzato": 0
+  },
+  {
+    "_id": "6807a75eb9151583f046a4fa",
+    "id": 43,
+    "data": "2025-04-22T15:06:16.000Z",
+    "descrizione": "L amministratore ha aggiunto la competenza Python.",
+    "email_utente": "peppe24@gmail.com",
+    "evento": "Nuova Skill",
+    "sincronizzato": 0
+  },
+  {
+    "_id": "6807a75eb9151583f046a4fc",
+    "id": 44,
+    "data": "2025-04-22T15:06:16.000Z",
+    "descrizione": "L amministratore ha aggiunto la competenza Google Maps.",
+    "email_utente": "peppe24@gmail.com",
+    "evento": "Nuova Skill",
+    "sincronizzato": 0
+  },
+  {
+    "_id": "6807a75eb9151583f046a4fe",
+    "id": 45,
+    "data": "2025-04-22T15:06:16.000Z",
+    "descrizione": "L amministratore ha aggiunto la competenza Fisica delle sfere.",
+    "email_utente": "peppe24@gmail.com",
+    "evento": "Nuova Skill",
+    "sincronizzato": 0
+  },
+  {
+    "_id": "6807a75eb9151583f046a500",
+    "id": 46,
+    "data": "2025-04-22T15:06:16.000Z",
+    "descrizione": "Utente ha aggiunto la skill Basi di Dati con livello 5.",
+    "email_utente": "simonemagli@gmail.com",
+    "evento": "Inserimento Skill",
+    "sincronizzato": 0
+  },
+  {
+    "_id": "6807a75eb9151583f046a502",
+    "id": 47,
+    "data": "2025-04-22T15:06:16.000Z",
+    "descrizione": "Utente ha aggiunto la skill Fisica delle sfere con livello 3.",
     "email_utente": "fedesgambe@icloud.com",
     "evento": "Inserimento Skill",
     "sincronizzato": 0
   },
   {
-    "_id": "67f65fc18566b770b0270b93",
-    "id": 6,
-    "data": "2025-04-08T16:58:26.000Z",
-    "descrizione": "L'utente ha aggiunto la skill Fisica delle sfere con livello 3.",
+    "_id": "6807a75eb9151583f046a504",
+    "id": 48,
+    "data": "2025-04-22T15:06:16.000Z",
+    "descrizione": "Utente ha aggiunto la skill Fisica delle sfere con livello 5.",
+    "email_utente": "mirko@gmail.com",
+    "evento": "Inserimento Skill",
+    "sincronizzato": 0
+  },
+  {
+    "_id": "6807a75eb9151583f046a506",
+    "id": 49,
+    "data": "2025-04-22T15:06:16.000Z",
+    "descrizione": "Utente ha aggiunto la skill Google Maps con livello 3.",
     "email_utente": "fedesgambe@icloud.com",
     "evento": "Inserimento Skill",
     "sincronizzato": 0
   },
   {
-    "_id": "67f65fc18566b770b0270b94",
-    "id": 7,
-    "data": "2025-04-08T16:58:26.000Z",
-    "descrizione": "L'utente ha aggiunto la skill Google Maps con livello 3.",
+    "_id": "6807a79bb9151583f046a520",
+    "id": 50,
+    "data": "2025-04-22T15:06:16.000Z",
+    "descrizione": "Utente ha aggiunto la skill Google Maps con livello 5.",
+    "email_utente": "mirko@gmail.com",
+    "evento": "Inserimento Skill",
+    "sincronizzato": 0
+  },
+  {
+    "_id": "6807a7e1b9151583f046a53e",
+    "id": 51,
+    "data": "2025-04-22T15:06:16.000Z",
+    "descrizione": "Utente ha aggiunto la skill Java con livello 5.",
     "email_utente": "fedesgambe@icloud.com",
     "evento": "Inserimento Skill",
     "sincronizzato": 0
   },
   {
-    "_id": "67e32a1fb3c350ae71bf5495",
-    "id": 2,
-    "data": "2025-04-06T15:43:59.000Z",
-    "descrizione": "L'utente ha creato il progetto Pong Remastered.",
+    "_id": "6807a7e1b9151583f046a540",
+    "id": 52,
+    "data": "2025-04-22T15:06:16.000Z",
+    "descrizione": "Utente ha aggiunto la skill Python con livello 5.",
     "email_utente": "simonemagli@gmail.com",
-    "evento": "Nuovo Progetto",
+    "evento": "Inserimento Skill",
     "sincronizzato": 0
   },
   {
-    "_id": "67f65fc18566b770b0270b91",
-    "id": 3,
-    "data": "2025-04-06T15:43:59.000Z",
-    "descrizione": "L'utente ha aggiunto una reward per il progetto Pong Remastered.",
-    "email_utente": "simonemagli@gmail.com",
-    "evento": "Nuova Reward",
+    "_id": "6807a7e1b9151583f046a542",
+    "id": 53,
+    "data": "2025-04-22T15:06:16.000Z",
+    "descrizione": "Utente ha finanziato il progetto EcoCar con 78 euro.",
+    "email_utente": "fedesgambe@icloud.com",
+    "evento": "Nuovo Finanziamento",
     "sincronizzato": 0
   },
   {
-    "_id": "67e32a1fb3c350ae71bf5494",
-    "id": 1,
-    "data": "2025-04-01T15:49:40.000Z",
-    "descrizione": "L'utente test3nick si è registrato.",
-    "email_utente": "test@gmail.com",
-    "evento": "Nuovo Utente",
+    "_id": "6807a7e1b9151583f046a544",
+    "id": 54,
+    "data": "2025-04-22T15:06:16.000Z",
+    "descrizione": "Utente ha scelto la reward con codice 1 per il progetto EcoCar.",
+    "email_utente": "fedesgambe@icloud.com",
+    "evento": "Scelta Reward",
+    "sincronizzato": 0
+  },
+  {
+    "_id": "6807a7e1b9151583f046a546",
+    "id": 55,
+    "data": "2025-04-22T15:06:16.000Z",
+    "descrizione": "Utente ha finanziato il progetto Flipper City con 67 euro.",
+    "email_utente": "simonemagli@gmail.com",
+    "evento": "Nuovo Finanziamento",
+    "sincronizzato": 0
+  },
+  {
+    "_id": "6807a7e1b9151583f046a548",
+    "id": 56,
+    "data": "2025-04-22T15:06:16.000Z",
+    "descrizione": "Utente ha scelto la reward con codice 17 per il progetto Flipper City.",
+    "email_utente": "simonemagli@gmail.com",
+    "evento": "Scelta Reward",
+    "sincronizzato": 0
+  },
+  {
+    "_id": "6807a95db9151583f046a602",
+    "id": 71,
+    "data": "2025-04-22T14:36:04.000Z",
+    "descrizione": "L amministratore ha aggiunto la competenza Mucca.",
+    "email_utente": "peppe24@gmail.com",
+    "evento": "Nuova Skill",
+    "sincronizzato": 0
+  },
+  {
+    "_id": "6807a935b9151583f046a5f0",
+    "id": 70,
+    "data": "2025-04-22T14:35:30.000Z",
+    "descrizione": "Utente ha risposto a un commento con ID 2.",
+    "email_utente": "fedesgambe@icloud.com",
+    "evento": "Risposta a Commento",
+    "sincronizzato": 0
+  },
+  {
+    "_id": "6807a935b9151583f046a5ee",
+    "id": 69,
+    "data": "2025-04-22T14:35:27.000Z",
+    "descrizione": "Utente ha commentato il progetto Flipper City.",
+    "email_utente": "fedesgambe@icloud.com",
+    "evento": "Nuovo Commento",
+    "sincronizzato": 0
+  },
+  {
+    "_id": "6807a917b9151583f046a5e0",
+    "id": 68,
+    "data": "2025-04-22T14:34:57.000Z",
+    "descrizione": "Utente ha accettato la candidatura di peppe24@gmail.com per il profilo 1.",
+    "email_utente": "fedesgambe@icloud.com",
+    "evento": "Gestione Candidatura",
+    "sincronizzato": 0
+  },
+  {
+    "_id": "6807a881b9151583f046a5a2",
+    "id": 67,
+    "data": "2025-04-22T14:32:32.000Z",
+    "descrizione": "Utente si è candidato per il profilo 1.",
+    "email_utente": "peppe24@gmail.com",
+    "evento": "Nuova Candidatura",
+    "sincronizzato": 0
+  },
+  {
+    "_id": "6807a881b9151583f046a594",
+    "id": 60,
+    "data": "2025-04-22T14:32:25.000Z",
+    "descrizione": "Utente ha aggiunto la skill Analisi 1 con livello 3.",
+    "email_utente": "peppe24@gmail.com",
+    "evento": "Inserimento Skill",
+    "sincronizzato": 0
+  },
+  {
+    "_id": "6807a881b9151583f046a596",
+    "id": 61,
+    "data": "2025-04-22T14:32:25.000Z",
+    "descrizione": "Utente ha aggiunto la skill Basi di Dati con livello 0.",
+    "email_utente": "peppe24@gmail.com",
+    "evento": "Inserimento Skill",
+    "sincronizzato": 0
+  },
+  {
+    "_id": "6807a881b9151583f046a598",
+    "id": 62,
+    "data": "2025-04-22T14:32:25.000Z",
+    "descrizione": "Utente ha aggiunto la skill Chimica dei materiali con livello 0.",
+    "email_utente": "peppe24@gmail.com",
+    "evento": "Inserimento Skill",
+    "sincronizzato": 0
+  },
+  {
+    "_id": "6807a881b9151583f046a59a",
+    "id": 63,
+    "data": "2025-04-22T14:32:25.000Z",
+    "descrizione": "Utente ha aggiunto la skill Elettronica di base con livello 2.",
+    "email_utente": "peppe24@gmail.com",
+    "evento": "Inserimento Skill",
+    "sincronizzato": 0
+  },
+  {
+    "_id": "6807a881b9151583f046a59c",
+    "id": 64,
+    "data": "2025-04-22T14:32:25.000Z",
+    "descrizione": "Utente ha aggiunto la skill Fisica delle sfere con livello 5.",
+    "email_utente": "peppe24@gmail.com",
+    "evento": "Inserimento Skill",
+    "sincronizzato": 0
+  },
+  {
+    "_id": "6807a881b9151583f046a59e",
+    "id": 65,
+    "data": "2025-04-22T14:32:25.000Z",
+    "descrizione": "Utente ha aggiunto la skill Google Maps con livello 0.",
+    "email_utente": "peppe24@gmail.com",
+    "evento": "Inserimento Skill",
+    "sincronizzato": 0
+  },
+  {
+    "_id": "6807a881b9151583f046a5a0",
+    "id": 66,
+    "data": "2025-04-22T14:32:25.000Z",
+    "descrizione": "Utente ha aggiunto la skill Python con livello 0.",
+    "email_utente": "peppe24@gmail.com",
+    "evento": "Inserimento Skill",
+    "sincronizzato": 0
+  },
+  {
+    "_id": "6807a84fb9151583f046a578",
+    "id": 58,
+    "data": "2025-04-22T14:31:38.000Z",
+    "descrizione": "Utente ha finanziato il progetto Emilio 5.0 con 1 euro.",
+    "email_utente": "peppe24@gmail.com",
+    "evento": "Nuovo Finanziamento",
+    "sincronizzato": 0
+  },
+  {
+    "_id": "6807a84fb9151583f046a57a",
+    "id": 59,
+    "data": "2025-04-22T14:31:38.000Z",
+    "descrizione": "Utente ha scelto la reward con codice 19 per il progetto Emilio 5.0.",
+    "email_utente": "peppe24@gmail.com",
+    "evento": "Scelta Reward",
     "sincronizzato": 0
   }
 ]

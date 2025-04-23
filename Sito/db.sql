@@ -393,13 +393,20 @@ DELIMITER;
 
 /* Log registrazione nuovo utente */
 DROP TRIGGER IF EXISTS log_nuovo_utente;
+DELIMITER //
 
-CREATE TRIGGER log_nuovo_utente
-    AFTER INSERT ON UTENTE
+CREATE TRIGGER log_nuovo_utente AFTER INSERT ON UTENTE
     FOR EACH ROW
 BEGIN
-    CALL InserisciLogEvento('Nuovo Utente', NEW.email, CONCAT('Utente ', NEW.nickname, ' si è registrato.'));
+    CALL InserisciLogEvento(
+    'Nuovo Utente',
+    NEW.email,
+    CONCAT('Utente ', NEW.nickname, ' si è registrato.')
+  );
 END;
+//
+DELIMITER ;
+
 
 /* Log inserimento skill di curriculum (tabella INDICA) */
 DELIMITER //
@@ -412,7 +419,7 @@ BEGIN
 END //
 DELIMITER;
 
-/* Procedura per log della visualizzazione dei progetti */
+/* Procedura per log della visualizzazione dei progetti
 DELIMITER
 //
 CREATE PROCEDURE Log_Visualizzazione_Progetti(
@@ -422,7 +429,7 @@ BEGIN
 CALL InserisciLogEvento('Visualizzazione Progetti', p_email_utente,
         'Utente ha visualizzato la lista dei progetti disponibili.');
 END //
-DELIMITER ;
+DELIMITER ;*/
 
 /* Log finanziamento di un progetto */
 DELIMITER //
@@ -487,7 +494,7 @@ BEGIN
 END //
 DELIMITER;
 
-/* Procedura per log di autenticazione amministratore */
+/* Procedura per log di autenticazione amministratore
 DELIMITER
 //
 CREATE PROCEDURE Log_Autenticazione_Amministratore(
@@ -499,7 +506,7 @@ CALL InserisciLogEvento('Autenticazione Amministratore', p_email_utente,
 END
 //
 DELIMITER ;
-
+*/
 
 -- OPERAZIONI CHE RIGUARDANO GLI UTENTI CREATORI
 
