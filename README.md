@@ -116,7 +116,7 @@ node script.js
 ## 5. Configurazione Specifica per Windows
 1. **Verifica porte MAMP**:
     - Apri MAMP → Preferences → Ports
-    - Confronta la porta MySQL con quella nello script
+    - Confronta la porta MySQL con quella nello script.js
 
 2. **Avvio da terminale integrato**:
     - Apri la cartella `js` del progetto
